@@ -36,6 +36,7 @@ type Options<T> = {
   onSelect?: (model: T) => void;
   refreshController?: BehaviorSubject<null>;
   filters?: Filter[];
+  hideFields?: string[];
 };
 
 export function createGridViaDataSource<Model>(dataSourceAddress: string, options: Options<Model> = {}): IElement {
@@ -181,9 +182,11 @@ async function createGrid<Model>(
     documentListModalController.open.next(true);
   };
 
+  let hiddenFields = options.hideFields || [];
+
   gridElement.columnDefinitions(
     schemaOnlyResult.schema.fields
-      .filter(field => field.isVisible)
+      .filter(field => field.isVisible && !hiddenFields.includes(field.fieldName))
       .sort((current, next) => next.order - current.order)
       .reverse()
       .map(field => {
