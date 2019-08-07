@@ -14,11 +14,18 @@ import {
   TextSize
 } from "flmc-lite-renderer";
 import { BehaviorSubject } from "rxjs";
-import { GridResultModel, SortSchemaType, FieldShemaTypeName, FilterSchemaType, Schema, FieldSchema } from "models";
-import Grid, { GridElement } from "flmc-lite-renderer/form/elements/grid/GridElement";
+import { map } from "rxjs/operators";
+import {
+  GridResultModel,
+  SortSchemaType,
+  FieldShemaTypeName,
+  FilterSchemaType,
+  Schema,
+  FieldSchema
+} from "./GridResultModel";
+import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { Sorts, Filter } from "./GridRequestModel";
-import { ActionDefinitions } from "flmc-lite-renderer/form/elements/grid/GridElementAttributes";
-import { language } from "localizations/language";
+import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { Icon } from "@material-ui/core";
 // @ts-ignore
 
