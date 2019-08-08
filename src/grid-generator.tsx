@@ -211,57 +211,65 @@ async function createGrid<Model>(
 
   // get schema
 
-  let schemaOnlyResult = await fetchData(datasourceAddress, 0, 0, true, true, null, options.filters || []);
-
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);
     documentListModalController.open.next(true);
   };
 
-  let hiddenFields = options.hideFields || [];
+  let currentSchema: Schema = {
+    fields: [],
+    filters: [],
+    sorts: []
+  };
 
-  gridElement.columnDefinitions(
-    schemaOnlyResult.schema.fields
-      .filter(field => field.isVisible && !hiddenFields.includes(field.fieldName))
-      .sort((current, next) => next.order - current.order)
-      .reverse()
-      .map(field => {
-        let filtering = false;
-        if (field.type.name == FieldShemaTypeName.Int)
-          filtering =
-            schemaOnlyResult.schema.filters.filter(
-              filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.EQUAL_BY
-            ).length > 0;
-        if (field.type.name == FieldShemaTypeName.String)
-          filtering =
-            schemaOnlyResult.schema.filters.filter(
-              filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.LIKE
-            ).length > 0;
-        let definition: any = {
-          field: field.fieldName,
-          title: field.title,
-          editable: field.isEditable ? "always" : "never",
-          filtering: filtering,
-          sorting:
-            schemaOnlyResult.schema.sorts.filter(
-              sort => sort.fieldName == field.fieldName && sort.type == SortSchemaType.All
-            ).length > 0
-        };
+  function updateSchema(schema: Schema) {
+    currentSchema = schema;
+    let hiddenFields = options.hideFields || [];
 
-        let customRenderer = handleCustomComponentRenderer(field, {
-          onImageListClick: documents => handleDocumentList(documents)
-        });
+    gridElement.columnDefinitions(
+      schema.fields
+        .filter(field => field.isVisible && !hiddenFields.includes(field.fieldName))
+        .sort((current, next) => next.order - current.order)
+        .reverse()
+        .map(field => {
+          let filtering = false;
+          if (field.type.name == FieldShemaTypeName.Int)
+            filtering =
+              schema.filters.filter(
+                filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.EQUAL_BY
+              ).length > 0;
+          if (field.type.name == FieldShemaTypeName.String)
+            filtering =
+              schema.filters.filter(
+                filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.LIKE
+              ).length > 0;
+          let definition: any = {
+            field: field.fieldName,
+            title: field.title,
+            editable: field.isEditable ? "always" : "never",
+            filtering: filtering,
+            sorting:
+              schema.sorts.filter(sort => sort.fieldName == field.fieldName && sort.type == SortSchemaType.All).length >
+              0
+          };
 
-        if (customRenderer) definition.render = customRenderer;
+          let customRenderer = handleCustomComponentRenderer(field, {
+            onImageListClick: documents => handleDocumentList(documents)
+          });
 
-        return definition;
-      })
-  );
+          if (customRenderer) definition.render = customRenderer;
 
-  let totalCount: number = schemaOnlyResult.pagination.totalPage;
+          return definition;
+        })
+    );
+  }
+
+  let needSchema = true;
+  let cachedPageSize = 0;
+  let lastFilters: Filter[] | null = null;
 
   gridElement.datasource(async query => {
-    let filters = materialTableFilterToGridFilter(query.filters, schemaOnlyResult.schema);
+    let filters = materialTableFilterToGridFilter(query.filters, currentSchema);
     if (query.search) {
       filters.push({
         fieldName: "ALL",
@@ -269,12 +277,16 @@ async function createGrid<Model>(
         value: query.search
       });
     }
+
+    let needPageSize = lastFilters == null || isFilterChanged(lastFilters, filters);
+    lastFilters = filters;
+
     var result = await fetchData(
       datasourceAddress,
       query.page,
       query.pageSize,
-      false,
-      false,
+      needSchema,
+      needPageSize,
       query.orderBy != null
         ? [
             {
@@ -285,10 +297,20 @@ async function createGrid<Model>(
         : null,
       [...filters, ...(options.filters || [])]
     );
+
+    if (needSchema) {
+      needSchema = false;
+      updateSchema(result.schema);
+    }
+
+    if (needPageSize) {
+      cachedPageSize = result.pagination.totalPage;
+    }
+
     return {
       data: result.value,
-      page: query.page,
-      totalCount: totalCount!
+      page: needPageSize ? 0 : query.page,
+      totalCount: cachedPageSize
     };
   });
   return gridElement;
@@ -320,6 +342,18 @@ async function fetchData(
       filters: filters
     })
   })).json();
+}
+
+function isFilterChanged(oldFilters: Filter[], newFilters: Filter[]): boolean {
+  if (oldFilters.length != newFilters.length) return true;
+  for (let filter of newFilters) {
+    if (
+      oldFilters.filter(v => v.fieldName === filter.fieldName && v.type === filter.type && v.value === filter.value)
+        .length === 0
+    )
+      return true;
+  }
+  return false;
 }
 
 function materialTableFilterToGridFilter(filters: any[], schema: Schema): Filter[] {
