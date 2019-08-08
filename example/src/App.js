@@ -2,6 +2,7 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import FLMC, { FormController, Label } from "flmc-lite-renderer";
+import { createGridViaDataSource } from "flmc-grid-generator";
 import { BehaviorSubject } from "rxjs";
 
 class SampleForm extends FormController {
@@ -9,7 +10,7 @@ class SampleForm extends FormController {
   date = new BehaviorSubject(null);
   dateTime = new BehaviorSubject(null);
 
-  elements = [];
+  elements = [createGridViaDataSource("invalid address")];
 }
 
 const categoties = {
