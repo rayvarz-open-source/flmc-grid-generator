@@ -120,11 +120,12 @@ async function createGrid<Model>(
   gridElement.gridOptions({
     actionsColumnIndex: -1,
     filtering: true,
-    padding: "default",
+    padding: "dense",
     selection: false,
     pageSize: 5,
     initialPage: 0,
-    pageSizeOptions: [5, 10, 20, 25, 50]
+    pageSizeOptions: [5, 10, 20, 25, 50],
+    loadingType: "linear"
   });
 
   gridElement.refreshEvent(refreshEvenet);
