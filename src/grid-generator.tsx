@@ -25,7 +25,10 @@ import {
 } from "./GridResultModel";
 import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { Sorts, Filter } from "./GridRequestModel";
-import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import {
+  ActionDefinitions,
+  LocalizationDefinition
+} from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { Icon } from "@material-ui/core";
 // @ts-ignore
 
@@ -44,9 +47,35 @@ type Options<T> = {
   refreshController?: BehaviorSubject<null>;
   filters?: Filter[];
   hideFields?: string[];
+  localization: {
+    materialTable: LocalizationDefinition;
+    loading: string;
+    errorFetchingSchema: string;
+    retry: string;
+    refresh: string;
+    create: string;
+    select: string;
+    delete: string;
+    edit: string;
+  };
 };
 
-export function createGridViaDataSource<Model>(dataSourceAddress: string, options: Options<Model> = {}): IElement {
+export function createGridViaDataSource<Model>(
+  dataSourceAddress: string,
+  options: Options<Model> = {
+    localization: {
+      create: "Create",
+      delete: "Delete",
+      errorFetchingSchema: "Error fetching schema",
+      loading: "Loading...",
+      materialTable: undefined,
+      refresh: "Refresh",
+      retry: "Retry",
+      select: "Select",
+      edit: "Edit"
+    }
+  }
+): IElement {
   let containerChildren = new BehaviorSubject<IElement[]>([]);
   let container = Container(containerChildren);
 
@@ -64,7 +93,7 @@ async function handleSchemaFetch<Model>(
     elementController.next([
       Container([
         Space().height(50),
-        Label("Loading")
+        Label(options.localization.loading)
           .colors("secondary")
           .variant(TextSize.H6)
           .align(TextAlignment.Center),
@@ -95,8 +124,8 @@ async function handleSchemaFetch<Model>(
     elementController.next([await gridElement, documentListElement]);
   } catch (e) {
     elementController.next([
-      Label("Error fetching schema").colors("primary"),
-      Button("Retry").onClick(() => handleSchemaFetch(datasourceAddress, elementController, options))
+      Label(options.localization.errorFetchingSchema).colors("primary"),
+      Button(options.localization.retry).onClick(() => handleSchemaFetch(datasourceAddress, elementController, options))
     ]);
   }
 }
@@ -115,7 +144,7 @@ async function createGrid<Model>(
 
   let refreshEvenet = options.refreshController || new BehaviorSubject<null>(null);
 
-  gridElement.localizationDefinition({});
+  gridElement.localizationDefinition(options.localization.materialTable);
 
   gridElement.gridOptions({
     actionsColumnIndex: -1,
@@ -136,7 +165,7 @@ async function createGrid<Model>(
   actionDefinitions.push({
     icon: "refresh",
     isFreeAction: true,
-    tooltip: "Refresh",
+    tooltip: options.localization.refresh,
     onClick: (event: any, data: Model) => refreshEvenet.next(null)
   });
 
@@ -144,7 +173,7 @@ async function createGrid<Model>(
     actionDefinitions.push({
       icon: "add_box",
       isFreeAction: true,
-      tooltip: "Create",
+      tooltip: options.localization.create,
       onClick: (event: any, data: Model) => options.onCreate!()
     });
   }
@@ -153,7 +182,7 @@ async function createGrid<Model>(
     actionDefinitions.push({
       icon: "edit_box",
       isFreeAction: false,
-      tooltip: "Edit",
+      tooltip: options.localization.edit,
       onClick: (event: any, data: Model) => options.onEdit!(data)
     });
   }
@@ -162,7 +191,7 @@ async function createGrid<Model>(
     actionDefinitions.push({
       icon: "check",
       isFreeAction: false,
-      tooltip: "Select",
+      tooltip: options.localization.select,
       onClick: (event: any, data: Model) => options.onSelect!(data)
     });
   }
@@ -171,7 +200,7 @@ async function createGrid<Model>(
     actionDefinitions.push({
       icon: "delete_box",
       isFreeAction: false,
-      tooltip: "Delete",
+      tooltip: options.localization.delete,
       onClick: async (event: any, data: Model) => {
         if (await options.onDelete!(data as Model)) {
           // TODO: refresh
