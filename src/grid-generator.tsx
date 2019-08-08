@@ -30,12 +30,10 @@ import {
   LocalizationDefinition
 } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { Icon } from "@material-ui/core";
-// @ts-ignore
-
 import { DocumentModel } from "./DocumentModel";
-// import { map } from "rxjs/operators";
-// import * as _momentJalali from "moment-jalali";
-// const momentJalali = _momentJalali;
+// @ts-ignore
+import _momentJalali from "moment-jalali";
+const momentJalali = _momentJalali;
 
 // TODO: seperate to fiels and document
 
@@ -366,18 +364,18 @@ function handleCustomComponentRenderer(field: FieldSchema, callbacks: CallBacks)
       return rowData => <p>{formatMoney(rowData[field.fieldName], 0, 3)}</p>;
     case FieldShemaTypeName.Bit:
       return rowData => <Icon>{rowData[field.fieldName] ? "check" : "close"}</Icon>;
-    // case FieldShemaTypeName.PersianDate:
-    //   return rowData => {
-    //     let date = rowData[field.fieldName];
-    //     if (!date) return <p> - </p>;
-    //     return <p>{momentJalali(new Date(date).toISOString()).format("jYYYY/jM/jD")}</p>;
-    //   };
-    // case FieldShemaTypeName.GregorianDateTime:
-    //   return rowData => {
-    //     let date = rowData[field.fieldName];
-    //     if (!date) return <p> - </p>;
-    //     return <p>{momentJalali(new Date(date).toISOString()).format("YYYY/M/D")}</p>;
-    //   };
+    case FieldShemaTypeName.PersianDate:
+      return rowData => {
+        let date = rowData[field.fieldName];
+        if (!date) return <p> - </p>;
+        return <p>{momentJalali(new Date(date).toISOString()).format("jYYYY/jM/jD")}</p>;
+      };
+    case FieldShemaTypeName.GregorianDateTime:
+      return rowData => {
+        let date = rowData[field.fieldName];
+        if (!date) return <p> - </p>;
+        return <p>{momentJalali(new Date(date).toISOString()).format("YYYY/M/D")}</p>;
+      };
     case FieldShemaTypeName.Image:
       return rowData => {
         let document = rowData[field.fieldName] == null ? [] : [rowData[field.fieldName]];
