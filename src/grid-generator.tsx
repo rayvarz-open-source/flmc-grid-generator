@@ -405,13 +405,26 @@ type Props = {
 
 function GridImageCell({ documents, onClick }: Props): React.ReactElement {
   return (
-    <div className="grid-image-container">
+    <div
+      style={{
+        flexDirection: "row",
+        position: "relative"
+      }}
+    >
       {documents.map((image, index) => (
         <a key={index + "_GridImageCell"} onClick={() => onClick()}>
           <img
             src={image.thumb}
-            className="grid-image"
             style={{
+              transform: "translateY(-25px)",
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              position: "absolute",
+              display: "block",
+              boxShadow: "1px 1px 1px white",
+              transition: "0.2s",
+              cursor: "pointer",
               marginRight: index * 9,
               zIndex: index + 1000
             }}
