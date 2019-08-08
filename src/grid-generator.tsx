@@ -125,6 +125,7 @@ async function createGrid<Model>(
     pageSize: 5,
     initialPage: 0,
     pageSizeOptions: [5, 10, 20, 25, 50],
+    debounceInterval: 0.7,
     loadingType: "linear"
   });
 
