@@ -14,7 +14,8 @@ export enum FieldShemaTypeName {
   Money = "Money",
   Bit = "Bit",
   Image = "Image",
-  ImageList = "ImageList"
+  ImageList = "ImageList",
+  Barcode = "Barcode"
 }
 
 export interface FieldSchema {

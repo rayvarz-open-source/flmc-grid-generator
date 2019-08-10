@@ -40,7 +40,7 @@
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
-    "flmc-lite-renderer": "^1.0.9",
+    "flmc-lite-renderer": "^1.0.15",
     "material-table": "^1.40.0",
     "prettier": "1.18.2",
     "react-scripts-ts": "^4.0.8",
@@ -60,6 +60,7 @@
     "build/**/*"
   ],
   "dependencies": {
+    "jsbarcode": "^3.11.0",
     "moment-jalali": "^0.3.9"
   }
 }

@@ -1,5 +1,6 @@
 import { DocumentModel } from "./DocumentModel";
 import { FieldSchema, FieldShemaTypeName } from "./GridResultModel";
+import { Barcode } from "./CustomViews/Barcode";
 import * as React from "react";
 import { Icon } from "@material-ui/core";
 // @ts-ignore
@@ -56,6 +57,8 @@ export function handleCustomComponentRenderer(field: FieldSchema, callbacks: Cal
           documents={rowData[field.fieldName]}
         />
       );
+    case FieldShemaTypeName.Barcode:
+      return rowData => <Barcode value={rowData[field.fieldName]} />;
     default:
       return undefined;
   }

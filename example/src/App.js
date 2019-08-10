@@ -2,7 +2,8 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import FLMC, { FormController, Label } from "flmc-lite-renderer";
-import { createGridViaDataSource } from "flmc-grid-generator";
+import { createGridViaDataSource, createLocalGridGenerator } from "flmc-grid-generator";
+import { FieldShemaTypeName } from "flmc-grid-generator/build/GridResultModel";
 import { BehaviorSubject } from "rxjs";
 
 class SampleForm extends FormController {
@@ -10,7 +11,29 @@ class SampleForm extends FormController {
   date = new BehaviorSubject(null);
   dateTime = new BehaviorSubject(null);
 
-  elements = [createGridViaDataSource("invalid address")];
+  elements = [
+    createLocalGridGenerator(
+      {
+        sorts: [],
+        filters: [],
+        fields: [
+          {
+            fieldName: "barcode",
+            title: "Barcode",
+            isVisible: true,
+            type: {
+              name: FieldShemaTypeName.Barcode
+            }
+          }
+        ]
+      },
+      [
+        {
+          barcode: "21312414"
+        }
+      ]
+    )
+  ];
 }
 
 const categoties = {
