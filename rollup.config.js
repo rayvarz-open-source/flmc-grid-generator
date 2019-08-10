@@ -51,7 +51,19 @@ export default {
       // relative to the current directory, or the name
       // of a module in node_modules
       namedExports: {
-        "node_modules/react-is/index.js": ["ForwardRef", "isValidElementType", "isContextConsumer"]
+        "node_modules/react-is/index.js": ["ForwardRef", "isValidElementType", "isContextConsumer"],
+        "src/GridResultModel.ts": [
+          "GridResultModel",
+          "PaginationInfo",
+          "Schema",
+          "SortSchema",
+          "SortSchemaType",
+          "FilterSchema",
+          "FilterSchemaType",
+          "FieldSchema",
+          "FieldShemaTypeName",
+          "FieldSchemaTypeSource"
+        ]
       }
     })
   ]
