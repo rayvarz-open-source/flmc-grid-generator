@@ -1,3 +1,3 @@
-import { createGridViaDataSource } from "./grid-generator";
+import { createGridViaDataSource } from "./GridGenerator";
 
 export { createGridViaDataSource };

@@ -1,0 +1,77 @@
+import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
+import { Options } from "./Options";
+import { BehaviorSubject } from "rxjs";
+import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+
+export function setupGridWithOptions<Model>(
+  gridElement: GridElement,
+  options: Options<Model>,
+  refreshEvent: BehaviorSubject<null>
+) {
+  gridElement.localizationDefinition(options.localization.materialTable);
+
+  gridElement.gridOptions({
+    actionsColumnIndex: -1,
+    filtering: true,
+    padding: "dense",
+    selection: false,
+    pageSize: 5,
+    initialPage: 0,
+    pageSizeOptions: [5, 10, 20, 25, 50],
+    debounceInterval: 0.7,
+    loadingType: "linear"
+  });
+
+  gridElement.refreshEvent(refreshEvent);
+
+  let actionDefinitions: ActionDefinitions = [];
+
+  actionDefinitions.push({
+    icon: "refresh",
+    isFreeAction: true,
+    tooltip: options.localization.refresh,
+    onClick: (event: any, data: Model) => refreshEvent.next(null)
+  });
+
+  if (options.onCreate != null) {
+    actionDefinitions.push({
+      icon: "add_box",
+      isFreeAction: true,
+      tooltip: options.localization.create,
+      onClick: (event: any, data: Model) => options.onCreate!()
+    });
+  }
+
+  if (options.onEdit != null) {
+    actionDefinitions.push({
+      icon: "edit_box",
+      isFreeAction: false,
+      tooltip: options.localization.edit,
+      onClick: (event: any, data: Model) => options.onEdit!(data)
+    });
+  }
+
+  if (options.onSelect != null) {
+    actionDefinitions.push({
+      icon: "check",
+      isFreeAction: false,
+      tooltip: options.localization.select,
+      onClick: (event: any, data: Model) => options.onSelect!(data)
+    });
+  }
+
+  if (options.onDelete != null) {
+    actionDefinitions.push({
+      icon: "delete_box",
+      isFreeAction: false,
+      tooltip: options.localization.delete,
+      onClick: async (event: any, data: Model) => {
+        if (await options.onDelete!(data as Model)) {
+          // TODO: refresh
+        }
+      }
+    });
+  }
+
+  gridElement.actionDefinitions(actionDefinitions);
+}
