@@ -91,6 +91,7 @@ export function GridImageCell({ documents, onClick }: Props): React.ReactElement
               boxShadow: "1px 1px 1px white",
               transition: "0.2s",
               cursor: "pointer",
+              objectFit: "contain",
               marginRight: index * 9,
               zIndex: index + 1000
             }}
