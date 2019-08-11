@@ -11,6 +11,7 @@ export type Options<T> = {
   refreshController?: BehaviorSubject<null>;
   filters?: Filter[];
   hideFields?: string[];
+  export?: boolean;
   localization: {
     materialTable: LocalizationDefinition;
     loading: string;
