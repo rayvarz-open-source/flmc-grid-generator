@@ -10,6 +10,7 @@ import { setupGridWithSchema } from "./SetupGridWithSchema";
 import { setupGridWithOptions } from "./SetupGridWithOptions";
 import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { defaultOptions, Options } from "./Options";
+import { setupGridSelection } from "./SetupSelection";
 
 export function createGridViaDataSource<Model>(
   dataSourceAddress: string,
@@ -70,7 +71,16 @@ async function createGrid<Model>(
   let gridElement = Grid();
 
   let refreshEvent = options.refreshController || new BehaviorSubject<null>(null);
-  setupGridWithOptions(gridElement, options, refreshEvent);
+
+  let currentPageData = new BehaviorSubject<Model[]>([]);
+  let keyFieldName = new BehaviorSubject<string>("");
+
+  let handleCheckedChange =
+    options.selection == null
+      ? undefined
+      : setupGridSelection(gridElement, options.selection, currentPageData, keyFieldName);
+
+  setupGridWithOptions(gridElement, options, refreshEvent, handleCheckedChange);
 
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);
@@ -121,14 +131,32 @@ async function createGrid<Model>(
       needSchema = false;
       currentSchema = result.schema;
       setupGridWithSchema(result.schema, gridElement, options, handleDocumentList);
+      keyFieldName.next(result.schema.fields.filter(v => v.isKey)[0].fieldName);
     }
 
     if (needPageSize) {
-      cachedPageSize = result.pagination.totalPage;
+      cachedPageSize = result.pagination.totalRow;
     }
-
+    currentPageData.next(result.value);
     return {
-      data: result.value,
+      data: result.value.map(v => {
+        let mixin = {};
+        if (options.selection != null) {
+          mixin = {
+            ...mixin,
+            tableData: {
+              checked:
+                options.selection.value.filter(selected => selected[keyFieldName.value] == v[keyFieldName.value])
+                  .length > 0
+            }
+          };
+        }
+
+        return {
+          ...v,
+          ...mixin
+        };
+      }),
       page: needPageSize ? 0 : query.page,
       totalCount: cachedPageSize
     };

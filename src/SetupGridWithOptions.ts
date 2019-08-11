@@ -6,7 +6,8 @@ import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/G
 export function setupGridWithOptions<Model>(
   gridElement: GridElement,
   options: Options<Model>,
-  refreshEvent: BehaviorSubject<null>
+  refreshEvent: BehaviorSubject<null>,
+  onCheckedChange?: (rowData: Model, checked: boolean) => void
 ) {
   gridElement.localizationDefinition(options.localization.materialTable);
 
@@ -14,12 +15,23 @@ export function setupGridWithOptions<Model>(
     actionsColumnIndex: -1,
     filtering: true,
     padding: "dense",
-    selection: false,
     pageSize: 5,
     initialPage: 0,
     pageSizeOptions: [5, 10, 20, 25, 50],
     debounceInterval: 0.7,
-    loadingType: "linear"
+    loadingType: "linear",
+    selection: options.selection != null,
+    showTextRowsSelected: false,
+    selectionProps:
+      onCheckedChange == null
+        ? undefined
+        : rowData => {
+            return {
+              onChange: e => {
+                onCheckedChange(rowData, e.target.checked);
+              }
+            };
+          }
   });
 
   gridElement.refreshEvent(refreshEvent);

@@ -1,38 +1,33 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import FLMC, { FormController, Label } from "flmc-lite-renderer";
+import FLMC, { FormController, Label, Button } from "flmc-lite-renderer";
 import { createGridViaDataSource, createLocalGridGenerator } from "flmc-grid-generator";
+import { defaultOptions } from "flmc-grid-generator/build/Options";
 import { FieldShemaTypeName } from "flmc-grid-generator/build/GridResultModel";
 import { BehaviorSubject } from "rxjs";
+import { map } from "rxjs/operators";
 
 class SampleForm extends FormController {
   time = new BehaviorSubject(null);
   date = new BehaviorSubject(null);
   dateTime = new BehaviorSubject(null);
+  selection = new BehaviorSubject([]);
 
   elements = [
-    createLocalGridGenerator(
-      {
-        sorts: [],
-        filters: [],
-        fields: [
-          {
-            fieldName: "barcode",
-            title: "Barcode",
-            isVisible: true,
-            type: {
-              name: FieldShemaTypeName.Barcode
-            }
-          }
-        ]
-      },
-      [
+    createGridViaDataSource("http://178.22.121.237/aloni.web.api/api/item/getAllStoreItems", {
+      filters: [
         {
-          barcode: "21312414"
+          fieldName: "fStoreId",
+          type: "equalBy",
+          value: 9
         }
-      ]
-    )
+      ],
+      selection: this.selection,
+      ...defaultOptions
+    }),
+    Label(this.selection.pipe(map(v => `${v.length} selected`))),
+    Button("deselect All").onClick(() => this.selection.next([]))
   ];
 }
 

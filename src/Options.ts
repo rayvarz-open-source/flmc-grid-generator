@@ -7,6 +7,7 @@ export type Options<T> = {
   onDelete?: (model: T) => Promise<boolean>;
   onCreate?: () => void;
   onSelect?: (model: T) => void;
+  selection?: BehaviorSubject<T[]>;
   refreshController?: BehaviorSubject<null>;
   filters?: Filter[];
   hideFields?: string[];

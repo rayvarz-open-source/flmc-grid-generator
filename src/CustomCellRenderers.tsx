@@ -58,7 +58,11 @@ export function handleCustomComponentRenderer(field: FieldSchema, callbacks: Cal
         />
       );
     case FieldShemaTypeName.Barcode:
-      return rowData => <Barcode value={rowData[field.fieldName]} />;
+      return rowData => {
+        let data = rowData[field.fieldName];
+        if (data == null) return <> </>;
+        return <Barcode value={data} />;
+      };
     default:
       return undefined;
   }

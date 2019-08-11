@@ -14,7 +14,7 @@ export function setupGridWithSchema(
 
   gridElement.columnDefinitions(
     schema.fields
-      .filter(field => field.isVisible && !hiddenFields.includes(field.fieldName))
+      .filter(field => field.isVisible && !hiddenFields.includes(field.fieldName) && field.type != null)
       .sort((current, next) => next.order - current.order)
       .reverse()
       .map(field => {

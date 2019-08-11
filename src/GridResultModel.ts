@@ -60,6 +60,7 @@ export interface Schema {
 
 export interface PaginationInfo {
   totalPage: number;
+  totalRow: number;
 }
 
 export interface GridResultModel<Model> {
