@@ -60,7 +60,7 @@ function createGrid<Model>(
     documentListModalController.images.next(documents);
     documentListModalController.open.next(true);
   };
-  debugger;
+
   gridElement.datasource(items);
   return gridElement;
 }
