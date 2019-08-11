@@ -15,7 +15,7 @@ class SampleForm extends FormController {
   selection = new BehaviorSubject([]);
 
   elements = [
-    createGridViaDataSource("http://178.22.121.237/aloni.web.api/api/item/getAllStoreItems", {
+    createGridViaDataSource("-", {
       filters: [
         {
           fieldName: "fStoreId",
