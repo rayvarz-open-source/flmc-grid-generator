@@ -87,18 +87,18 @@ async function createGrid<Model>(
     documentListModalController.open.next(true);
   };
 
-  let currentSchema: Schema = {
+  let schema = new BehaviorSubject<Schema>({
     fields: [],
     filters: [],
     sorts: []
-  };
+  });
 
   let needSchema = true;
   let cachedPageSize = 0;
   let lastFilters: Filter[] | null = null;
 
   gridElement.datasource(async query => {
-    let filters = materialTableFilterToGridFilter(query.filters, currentSchema);
+    let filters = materialTableFilterToGridFilter(query.filters, schema.value);
     if (query.search) {
       filters.push({
         fieldName: "ALL",
@@ -129,7 +129,7 @@ async function createGrid<Model>(
 
     if (needSchema) {
       needSchema = false;
-      currentSchema = result.schema;
+      schema.next(result.schema);
       setupGridWithSchema(result.schema, gridElement, options, handleDocumentList);
       keyFieldName.next(result.schema.fields.filter(v => v.isKey)[0].fieldName);
     }
