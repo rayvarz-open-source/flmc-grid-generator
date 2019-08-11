@@ -1,8 +1,12 @@
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { Options } from "./Options";
-import { Schema, FieldShemaTypeName, FilterSchemaType, SortSchemaType } from "./GridResultModel";
+import { Schema, FieldShemaTypeName, FilterSchemaType, SortSchemaType, FieldSchema } from "./GridResultModel";
 import { handleCustomComponentRenderer } from "./CustomCellRenderers";
 import { DocumentModel } from "./DocumentModel";
+
+function isExportable(field: FieldSchema) {
+  return field.type.name != FieldShemaTypeName.Image && field.type.name != FieldShemaTypeName.ImageList;
+}
 
 export function setupGridWithSchema(
   schema: Schema,
@@ -29,6 +33,7 @@ export function setupGridWithSchema(
             schema.filters.filter(filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.LIKE)
               .length > 0;
         let definition: any = {
+          export: isExportable(field),
           field: field.fieldName,
           title: field.title,
           editable: field.isEditable ? "always" : "never",

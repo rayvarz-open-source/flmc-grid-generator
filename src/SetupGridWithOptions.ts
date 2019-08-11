@@ -22,6 +22,7 @@ export function setupGridWithOptions<Model>(
     loadingType: "linear",
     selection: options.selection != null,
     showTextRowsSelected: false,
+    exportButton: true,
     selectionProps:
       onCheckedChange == null
         ? undefined
