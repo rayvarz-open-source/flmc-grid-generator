@@ -50,16 +50,11 @@ function createGrid<Model>(
   let refreshEvent = options.refreshController || new BehaviorSubject<null>(null);
   setupGridWithOptions(gridElement, options, refreshEvent);
 
-  schema.subscribe({
-    next: v => {
-      setupGridWithSchema(v, gridElement, options, handleDocumentList);
-    }
-  });
-
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);
     documentListModalController.open.next(true);
   };
+  setupGridWithSchema(schema, gridElement, options, handleDocumentList);
 
   gridElement.datasource(items);
   return gridElement;

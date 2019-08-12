@@ -12,9 +12,13 @@ import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { defaultOptions, Options } from "./Options";
 import { setupGridSelection } from "./SetupSelection";
 
+type RemoteGridOptions<T> = Options<T> & {
+  schema?: BehaviorSubject<Schema>;
+};
+
 export function createGridViaDataSource<Model>(
   dataSourceAddress: string,
-  options: Options<Model> = defaultOptions
+  options: RemoteGridOptions<Model> = defaultOptions
 ): IElement {
   let containerChildren = new BehaviorSubject<IElement[]>([]);
   let container = Container(containerChildren);
@@ -27,7 +31,7 @@ export function createGridViaDataSource<Model>(
 async function handleSchemaFetch<Model>(
   datasourceAddress: string,
   elementController: BehaviorSubject<IElement[]>,
-  options: Options<Model>
+  options: RemoteGridOptions<Model>
 ) {
   try {
     elementController.next([
@@ -65,7 +69,7 @@ type DocumentListModel = {
 
 async function createGrid<Model>(
   datasourceAddress: string,
-  options: Options<Model>,
+  options: RemoteGridOptions<Model>,
   documentListModalController: DocumentListModel
 ): Promise<GridElement> {
   let gridElement = Grid();
@@ -82,16 +86,18 @@ async function createGrid<Model>(
 
   setupGridWithOptions(gridElement, options, refreshEvent, handleCheckedChange);
 
+  let schema =
+    options.schema ||
+    new BehaviorSubject<Schema>({
+      fields: [],
+      filters: [],
+      sorts: []
+    });
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);
     documentListModalController.open.next(true);
   };
-
-  let schema = new BehaviorSubject<Schema>({
-    fields: [],
-    filters: [],
-    sorts: []
-  });
+  setupGridWithSchema(schema, gridElement, options, handleDocumentList);
 
   let needSchema = true;
   let cachedPageSize = 0;
@@ -130,7 +136,6 @@ async function createGrid<Model>(
     if (needSchema) {
       needSchema = false;
       schema.next(result.schema);
-      setupGridWithSchema(result.schema, gridElement, options, handleDocumentList);
       keyFieldName.next(result.schema.fields.filter(v => v.isKey)[0].fieldName);
     }
 
