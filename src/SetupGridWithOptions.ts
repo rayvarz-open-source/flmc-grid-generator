@@ -88,7 +88,7 @@ export function setupGridWithOptions<Model>(
     });
   }
 
-  if (hideColumnsController != null) {
+  if (hideColumnsController != null && (options.hideColumnModal || true)) {
     actionDefinitions.push({
       icon: "visibility",
       isFreeAction: true,

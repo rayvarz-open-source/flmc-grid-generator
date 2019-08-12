@@ -8,9 +8,10 @@ import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { setupGridWithOptions } from "./SetupGridWithOptions";
 import { setupGridWithSchema } from "./SetupGridWithSchema";
+import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnModal";
 
 export function createLocalGridGenerator<Model>(
-  schema: Observable<Schema> | Schema,
+  schema: BehaviorSubject<Schema> | Schema,
   items: Observable<Model[]> | Model[],
   options: Options<Model> = defaultOptions
 ): IElement {
@@ -22,13 +23,20 @@ export function createLocalGridGenerator<Model>(
   let docuemntListOpen = new BehaviorSubject<boolean>(false);
   let docuemntList = new BehaviorSubject<DocumentModel[]>([]);
   let documentListElement = setupImagePreviewModal(docuemntList, docuemntListOpen);
-
+  let hideColumnsModalController = setupHideColumnModal(schemaController, options);
   containerChildren.next([
-    createGrid(itemsController, schemaController, options, {
-      images: docuemntList,
-      open: docuemntListOpen
-    }),
-    documentListElement
+    createGrid(
+      itemsController,
+      schemaController,
+      options,
+      {
+        images: docuemntList,
+        open: docuemntListOpen
+      },
+      hideColumnsModalController
+    ),
+    documentListElement,
+    hideColumnsModalController.element
   ]);
 
   return container;
@@ -43,12 +51,13 @@ function createGrid<Model>(
   items: Observable<Model[]>,
   schema: Observable<Schema>,
   options: Options<Model>,
-  documentListModalController: DocumentListModel
+  documentListModalController: DocumentListModel,
+  hideColumnModalController: HideColumnsController
 ): GridElement {
   let gridElement = Grid();
 
   let refreshEvent = options.refreshController || new BehaviorSubject<null>(null);
-  setupGridWithOptions(gridElement, options, refreshEvent);
+  setupGridWithOptions(gridElement, options, refreshEvent, undefined, hideColumnModalController);
 
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);

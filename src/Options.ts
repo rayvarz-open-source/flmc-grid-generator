@@ -12,6 +12,7 @@ export type Options<T> = {
   filters?: Filter[];
   hideFields?: string[];
   export?: boolean;
+  hideColumnModal?: boolean;
   localization: {
     materialTable: LocalizationDefinition;
     loading: string;
