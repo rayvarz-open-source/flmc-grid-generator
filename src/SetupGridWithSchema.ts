@@ -7,7 +7,9 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 function isExportable(field: FieldSchema) {
-  return field.type.name != FieldShemaTypeName.Image && field.type.name != FieldShemaTypeName.ImageList;
+  return (
+    field.type.name != FieldShemaTypeName.Image && field.type.name != FieldShemaTypeName.ImageList && field.isVisible
+  );
 }
 
 export function setupGridWithSchema(
