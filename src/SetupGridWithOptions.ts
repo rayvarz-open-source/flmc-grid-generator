@@ -2,12 +2,14 @@ import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridEle
 import { Options } from "./Options";
 import { BehaviorSubject } from "rxjs";
 import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { HideColumnsController } from "./SetupHideColumnModal";
 
 export function setupGridWithOptions<Model>(
   gridElement: GridElement,
   options: Options<Model>,
   refreshEvent: BehaviorSubject<null>,
-  onCheckedChange?: (rowData: Model, checked: boolean) => void
+  onCheckedChange?: (rowData: Model, checked: boolean) => void,
+  hideColumnsController?: HideColumnsController
 ) {
   gridElement.localizationDefinition(options.localization.materialTable);
 
@@ -83,6 +85,15 @@ export function setupGridWithOptions<Model>(
           // TODO: refresh
         }
       }
+    });
+  }
+
+  if (hideColumnsController != null) {
+    actionDefinitions.push({
+      icon: "visibility",
+      isFreeAction: true,
+      tooltip: options.localization.columnVisibility,
+      onClick: async (event: any, data: Model) => hideColumnsController.open.next(true)
     });
   }
 

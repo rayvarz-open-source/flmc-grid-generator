@@ -11,6 +11,7 @@ import { setupGridWithOptions } from "./SetupGridWithOptions";
 import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { defaultOptions, Options } from "./Options";
 import { setupGridSelection } from "./SetupSelection";
+import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnModal";
 
 export type RemoteGridOptions<T> = Options<T> & {
   schema?: BehaviorSubject<Schema>;
@@ -39,6 +40,13 @@ export function createGridViaDataSource<Model>(
           )
       : dataSource;
 
+  if (options.schema == null)
+    options.schema = new BehaviorSubject<Schema>({
+      fields: [],
+      filters: [],
+      sorts: []
+    });
+
   handleSchemaFetch(dataSourceFunction, containerChildren, options); // *** side effect
 
   return container;
@@ -50,26 +58,21 @@ async function handleSchemaFetch<Model>(
   options: RemoteGridOptions<Model>
 ) {
   try {
-    elementController.next([
-      Container([
-        Space().height(50),
-        Label(options.localization.loading)
-          .colors("secondary")
-          .variant(TextSize.H6)
-          .align(TextAlignment.Center),
-        Space().height(50)
-      ]).direction(ContainerDirection.Column)
-    ]);
-
     let docuemntListOpen = new BehaviorSubject<boolean>(false);
     let docuemntList = new BehaviorSubject<DocumentModel[]>([]);
     let documentListElement = setupImagePreviewModal(docuemntList, docuemntListOpen);
+    let hideColumnsModalController = setupHideColumnModal(options.schema!, options);
 
-    let gridElement = createGrid(datasource, options, {
-      images: docuemntList,
-      open: docuemntListOpen
-    });
-    elementController.next([await gridElement, documentListElement]);
+    let gridElement = createGrid(
+      datasource,
+      options,
+      {
+        images: docuemntList,
+        open: docuemntListOpen
+      },
+      hideColumnsModalController
+    );
+    elementController.next([await gridElement, documentListElement, hideColumnsModalController.element]);
   } catch (e) {
     elementController.next([
       Label(options.localization.errorFetchingSchema).colors("primary"),
@@ -86,7 +89,8 @@ type DocumentListModel = {
 async function createGrid<Model>(
   datasource: DataSourceFunction<Model>,
   options: RemoteGridOptions<Model>,
-  documentListModalController: DocumentListModel
+  documentListModalController: DocumentListModel,
+  hideColumnController: HideColumnsController
 ): Promise<GridElement> {
   let gridElement = Grid();
 
@@ -100,15 +104,9 @@ async function createGrid<Model>(
       ? undefined
       : setupGridSelection(gridElement, options.selection, currentPageData, keyFieldName);
 
-  setupGridWithOptions(gridElement, options, refreshEvent, handleCheckedChange);
+  setupGridWithOptions(gridElement, options, refreshEvent, handleCheckedChange, hideColumnController);
 
-  let schema =
-    options.schema ||
-    new BehaviorSubject<Schema>({
-      fields: [],
-      filters: [],
-      sorts: []
-    });
+  let schema = options.schema!;
   const handleDocumentList = (documents: DocumentModel[]) => {
     documentListModalController.images.next(documents);
     documentListModalController.open.next(true);

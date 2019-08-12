@@ -22,6 +22,8 @@ export type Options<T> = {
     select: string;
     delete: string;
     edit: string;
+    columnVisibility: string;
+    columnVisibilityTitle: string;
   };
 };
 
@@ -35,6 +37,8 @@ export const defaultOptions = {
     refresh: "Refresh",
     retry: "Retry",
     select: "Select",
-    edit: "Edit"
+    edit: "Edit",
+    columnVisibility: "Hide/Show Columns",
+    columnVisibilityTitle: "Hide/Show Columns"
   }
 };
