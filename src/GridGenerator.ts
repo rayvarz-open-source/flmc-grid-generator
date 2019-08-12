@@ -1,7 +1,7 @@
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { Label, Container, Button, ContainerDirection, Space, TextAlignment, TextSize } from "flmc-lite-renderer";
 import { BehaviorSubject } from "rxjs";
-import { GridResultModel, FilterSchemaType, Schema } from "./GridResultModel";
+import { GridResultModel, FilterSchemaType, Schema, PaginationInfo } from "./GridResultModel";
 import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { Sorts, Filter } from "./GridRequestModel";
 import { DocumentModel } from "./DocumentModel";
@@ -15,6 +15,7 @@ import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnMo
 
 export type RemoteGridOptions<T> = Options<T> & {
   schema?: BehaviorSubject<Schema>;
+  pagination?: BehaviorSubject<PaginationInfo>;
 };
 
 export type DataSource<T> = string | DataSourceFunction<T>;
@@ -45,6 +46,12 @@ export function createGridViaDataSource<Model>(
       fields: [],
       filters: [],
       sorts: []
+    });
+
+  if (options.pagination == null)
+    options.pagination = new BehaviorSubject<PaginationInfo>({
+      totalPage: 0,
+      totalRow: 0
     });
 
   handleSchemaFetch(dataSourceFunction, containerChildren, options); // *** side effect
@@ -154,6 +161,7 @@ async function createGrid<Model>(
     }
 
     if (needPageSize) {
+      options.pagination!.next(result.pagination);
       cachedPageSize = result.pagination.totalRow;
     }
     currentPageData.next(result.value);
