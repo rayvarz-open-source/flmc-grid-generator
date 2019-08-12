@@ -16,6 +16,7 @@ import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnMo
 export type RemoteGridOptions<T> = Options<T> & {
   schema?: BehaviorSubject<Schema>;
   pagination?: BehaviorSubject<PaginationInfo>;
+  filtersController?: BehaviorSubject<Filter[]>;
 };
 
 export type DataSource<T> = string | DataSourceFunction<T>;
@@ -53,6 +54,8 @@ export function createGridViaDataSource<Model>(
       totalPage: 0,
       totalRow: 0
     });
+
+  if (options.filtersController == null) options.filtersController = new BehaviorSubject<Filter[]>([]);
 
   handleSchemaFetch(dataSourceFunction, containerChildren, options); // *** side effect
 
@@ -137,6 +140,8 @@ async function createGrid<Model>(
     let needPageSize = lastFilters == null || isFilterChanged(lastFilters, filters);
     lastFilters = filters;
 
+    let requestFilters = [...filters, ...(options.filters || [])];
+
     var result = await datasource({
       pageNo: query.page,
       pageSize: query.pageSize,
@@ -151,8 +156,10 @@ async function createGrid<Model>(
               }
             ]
           : null,
-      filters: [...filters, ...(options.filters || [])]
+      filters: requestFilters
     });
+
+    options.filtersController!.next(requestFilters);
 
     if (needSchema) {
       needSchema = false;
