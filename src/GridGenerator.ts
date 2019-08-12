@@ -12,24 +12,40 @@ import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { defaultOptions, Options } from "./Options";
 import { setupGridSelection } from "./SetupSelection";
 
-type RemoteGridOptions<T> = Options<T> & {
+export type RemoteGridOptions<T> = Options<T> & {
   schema?: BehaviorSubject<Schema>;
 };
 
+export type DataSource<T> = string | DataSourceFunction<T>;
+
 export function createGridViaDataSource<Model>(
-  dataSourceAddress: string,
+  dataSource: DataSource<Model>,
   options: RemoteGridOptions<Model> = defaultOptions
 ): IElement {
   let containerChildren = new BehaviorSubject<IElement[]>([]);
   let container = Container(containerChildren);
 
-  handleSchemaFetch(dataSourceAddress, containerChildren, options); // *** side effect
+  const dataSourceFunction =
+    typeof dataSource === "string"
+      ? (props: DataSourceOptions) =>
+          fetchData(
+            dataSource,
+            props.pageNo,
+            props.pageSize,
+            props.needSchema,
+            props.needPagination,
+            props.sorts,
+            props.filters
+          )
+      : dataSource;
+
+  handleSchemaFetch(dataSourceFunction, containerChildren, options); // *** side effect
 
   return container;
 }
 
 async function handleSchemaFetch<Model>(
-  datasourceAddress: string,
+  datasource: DataSourceFunction<Model>,
   elementController: BehaviorSubject<IElement[]>,
   options: RemoteGridOptions<Model>
 ) {
@@ -49,7 +65,7 @@ async function handleSchemaFetch<Model>(
     let docuemntList = new BehaviorSubject<DocumentModel[]>([]);
     let documentListElement = setupImagePreviewModal(docuemntList, docuemntListOpen);
 
-    let gridElement = createGrid(datasourceAddress, options, {
+    let gridElement = createGrid(datasource, options, {
       images: docuemntList,
       open: docuemntListOpen
     });
@@ -57,7 +73,7 @@ async function handleSchemaFetch<Model>(
   } catch (e) {
     elementController.next([
       Label(options.localization.errorFetchingSchema).colors("primary"),
-      Button(options.localization.retry).onClick(() => handleSchemaFetch(datasourceAddress, elementController, options))
+      Button(options.localization.retry).onClick(() => handleSchemaFetch(datasource, elementController, options))
     ]);
   }
 }
@@ -68,7 +84,7 @@ type DocumentListModel = {
 };
 
 async function createGrid<Model>(
-  datasourceAddress: string,
+  datasource: DataSourceFunction<Model>,
   options: RemoteGridOptions<Model>,
   documentListModalController: DocumentListModel
 ): Promise<GridElement> {
@@ -116,22 +132,22 @@ async function createGrid<Model>(
     let needPageSize = lastFilters == null || isFilterChanged(lastFilters, filters);
     lastFilters = filters;
 
-    var result = await fetchData(
-      datasourceAddress,
-      query.page,
-      query.pageSize,
-      needSchema,
-      needPageSize,
-      query.orderBy != null
-        ? [
-            {
-              fieldName: query.orderBy.field as string,
-              type: query.orderDirection.toUpperCase()
-            }
-          ]
-        : null,
-      [...filters, ...(options.filters || [])]
-    );
+    var result = await datasource({
+      pageNo: query.page,
+      pageSize: query.pageSize,
+      needSchema: needSchema,
+      needPagination: needPageSize,
+      sorts:
+        query.orderBy != null
+          ? [
+              {
+                fieldName: query.orderBy.field as string,
+                type: query.orderDirection.toUpperCase()
+              }
+            ]
+          : null,
+      filters: [...filters, ...(options.filters || [])]
+    });
 
     if (needSchema) {
       needSchema = false;
@@ -168,6 +184,16 @@ async function createGrid<Model>(
   });
   return gridElement;
 }
+
+export type DataSourceOptions = {
+  pageNo: number;
+  pageSize: number;
+  needSchema: boolean;
+  needPagination: boolean;
+  sorts: Sorts | null;
+  filters: Filter[];
+};
+export type DataSourceFunction<Model> = (options: DataSourceOptions) => Promise<GridResultModel<Model>>;
 
 // TODO: get single object
 async function fetchData(
