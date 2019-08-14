@@ -1,7 +1,7 @@
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
-import { Options } from "./Options";
-import { BehaviorSubject } from "rxjs";
 import { ActionDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { BehaviorSubject } from "rxjs";
+import { Options } from "./Options";
 import { HideColumnsController } from "./SetupHideColumnModal";
 
 export function setupGridWithOptions<Model>(

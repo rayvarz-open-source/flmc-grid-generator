@@ -18,13 +18,15 @@ export enum FieldShemaTypeName {
   Barcode = "Barcode"
 }
 
+export type FieldType = {
+  name: FieldShemaTypeName;
+  source: FieldSchemaTypeSource | null;
+};
+
 export interface FieldSchema {
   fieldName: string;
   title: string;
-  type: {
-    name: FieldShemaTypeName;
-    source: FieldSchemaTypeSource | null;
-  };
+  type: FieldType;
   isKey: boolean;
   isVisible: boolean;
   order: number;
@@ -37,6 +39,8 @@ export enum FilterSchemaType {
 }
 
 export interface FilterSchema {
+  filterName: string;
+  isDefault: boolean;
   fieldName: string;
   type: FilterSchemaType;
   value: null;

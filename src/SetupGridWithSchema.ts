@@ -1,10 +1,10 @@
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
-import { Options } from "./Options";
-import { Schema, FieldShemaTypeName, FilterSchemaType, SortSchemaType, FieldSchema } from "./GridResultModel";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { handleCustomComponentRenderer } from "./CustomCellRenderers";
 import { DocumentModel } from "./DocumentModel";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { FieldSchema, FieldShemaTypeName, Schema, SortSchemaType } from "./GridResultModel";
+import { Options } from "./Options";
 
 function isExportable(field: FieldSchema) {
   return (
@@ -28,27 +28,23 @@ export function setupGridWithSchema(
           .sort((current, next) => next.order - current.order)
           .reverse()
           .map(field => {
-            let filtering = false;
-            if (field.type.name == FieldShemaTypeName.Int)
-              filtering =
-                schemaSnapshot.filters.filter(
-                  filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.EQUAL_BY
-                ).length > 0;
-            if (field.type.name == FieldShemaTypeName.String)
-              filtering =
-                schemaSnapshot.filters.filter(
-                  filter => filter.fieldName == field.fieldName && filter.type == FilterSchemaType.LIKE
-                ).length > 0;
+            let filters = schemaSnapshot.filters.filter(filter => filter.fieldName === field.fieldName);
+            let defaultFilter: any = filters.filter(v => v.isDefault);
+            defaultFilter = defaultFilter.length > 0 ? defaultFilter[0] : undefined;
+            let sorts = schemaSnapshot.sorts.filter(
+              sort => sort.fieldName == field.fieldName && sort.type == SortSchemaType.All
+            );
+
             let definition: any = {
               export: isExportable(field),
               field: field.fieldName,
               title: field.title,
               editable: field.isEditable ? "always" : "never",
-              filtering: filtering,
-              sorting:
-                schemaSnapshot.sorts.filter(
-                  sort => sort.fieldName == field.fieldName && sort.type == SortSchemaType.All
-                ).length > 0
+              fieldDefinition: field,
+              filter: defaultFilter,
+              filterPlaceholder: filters.length > 0 ? filters[0].fieldName : " ",
+              filtering: filters.length > 0,
+              sorting: sorts.length > 0
             };
 
             let customRenderer = handleCustomComponentRenderer(field, {

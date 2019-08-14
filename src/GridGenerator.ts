@@ -1,17 +1,18 @@
+import { Button, Container, Label } from "flmc-lite-renderer";
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
-import { Label, Container, Button, ContainerDirection, Space, TextAlignment, TextSize } from "flmc-lite-renderer";
-import { BehaviorSubject } from "rxjs";
-import { GridResultModel, FilterSchemaType, Schema, PaginationInfo } from "./GridResultModel";
 import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
-import { Sorts, Filter } from "./GridRequestModel";
+import { BehaviorSubject } from "rxjs";
 import { DocumentModel } from "./DocumentModel";
-import { materialTableFilterToGridFilter, isFilterChanged } from "./Filter";
-import { setupGridWithSchema } from "./SetupGridWithSchema";
-import { setupGridWithOptions } from "./SetupGridWithOptions";
-import { setupImagePreviewModal } from "./SetupImagePreviewModal";
+import { isFilterChanged, materialTableFilterToGridFilter } from "./Filter";
+import { Filter, Sorts } from "./GridRequestModel";
+import { FilterSchemaType, GridResultModel, PaginationInfo, Schema } from "./GridResultModel";
 import { defaultOptions, Options } from "./Options";
+import { setupCustomFilters } from "./SetupCustomFilters";
+import { setupGridWithOptions } from "./SetupGridWithOptions";
+import { setupGridWithSchema } from "./SetupGridWithSchema";
+import { HideColumnsController, setupHideColumnModal } from "./SetupHideColumnModal";
+import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 import { setupGridSelection } from "./SetupSelection";
-import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnModal";
 
 export type RemoteGridOptions<T> = Options<T> & {
   schema?: BehaviorSubject<Schema>;
@@ -195,6 +196,9 @@ async function createGrid<Model>(
       totalCount: cachedPageSize
     };
   });
+
+  setupCustomFilters(gridElement);
+
   return gridElement;
 }
 
