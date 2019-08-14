@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import DateFnsUtils from "@date-io/date-fns";
 import { FormControlLabel, Tooltip } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControl from "@material-ui/core/FormControl";
@@ -14,6 +13,12 @@ import TextField from "@material-ui/core/TextField";
 import { DatePicker, DateTimePicker, MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
 import * as React from "react";
 import { FieldSchema, FieldShemaTypeName } from "../GridResultModel";
+import jMoment from "moment-jalaali";
+import JalaliUtils from "@date-io/jalaali";
+import MomentUtils from "@date-io/moment";
+import moment = require("moment");
+
+jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -85,6 +90,7 @@ class CustomFilterRowView extends React.Component<Props> {
     <FormControlLabel
       control={
         <Checkbox
+          indeterminate={columnDef.tableData.filterValue === undefined}
           checked={columnDef.tableData.filterValue === "checked"}
           onChange={() => {
             let val;
@@ -102,6 +108,7 @@ class CustomFilterRowView extends React.Component<Props> {
   );
 
   renderDefaultFilter = columnDef => {
+    if (columnDef.filter == null) return;
     const fieldType = columnDef.fieldDefinition.type.name;
 
     const isNumeric = fieldType === FieldShemaTypeName.Money || fieldType === FieldShemaTypeName.Int;
@@ -109,13 +116,7 @@ class CustomFilterRowView extends React.Component<Props> {
       <Tooltip title={columnDef.filter.filterName || ""}>
         <TextField
           placeholder={"Y"}
-          style={{
-            ...(isNumeric
-              ? {
-                  float: "right"
-                }
-              : {})
-          }}
+          style={isNumeric ? { float: "right" } : {}}
           type={isNumeric ? "number" : "text"}
           value={columnDef.tableData.filterValue || ""}
           onChange={event => {
@@ -127,37 +128,31 @@ class CustomFilterRowView extends React.Component<Props> {
   };
 
   renderDateTypeFilter = columnDef => {
-    let dateInputElement: React.ReactNode = null;
+    if (columnDef.filter == null) return;
+    let field: FieldSchema = columnDef.fieldDefinition;
     const onDateInputChange = date => this.props.onFilterChanged(columnDef.tableData.id, date);
 
-    if (columnDef.type === "date") {
-      dateInputElement = (
-        <DatePicker value={columnDef.tableData.filterValue || null} onChange={onDateInputChange} clearable />
-      );
-    } else if (columnDef.type === "datetime") {
-      dateInputElement = (
-        <DateTimePicker value={columnDef.tableData.filterValue || null} onChange={onDateInputChange} clearable />
-      );
-    } else if (columnDef.type === "time") {
-      dateInputElement = (
-        <TimePicker value={columnDef.tableData.filterValue || null} onChange={onDateInputChange} clearable />
-      );
-    }
-    dateInputElement = (
-      <DatePicker
-        style={{ minWidth: 80 }}
-        placeholder={"Y"}
-        value={columnDef.tableData.filterValue || null}
-        onChange={onDateInputChange}
-        clearable
-      />
-    );
+    let value = columnDef.tableData.filterValue || null;
 
-    return <MuiPickersUtilsProvider utils={DateFnsUtils}>{dateInputElement}</MuiPickersUtilsProvider>;
+    return (
+      <MuiPickersUtilsProvider
+        utils={field.type.name === FieldShemaTypeName.GregorianDateTime ? MomentUtils : JalaliUtils}
+      >
+        <Tooltip title={columnDef.filter.filterName || ""}>
+          <DatePicker
+            format={field.type.name === FieldShemaTypeName.GregorianDateTime ? "YYYY/MM/DD" : "jYYYY/jM/jD"}
+            style={{ minWidth: 80 }}
+            value={value}
+            onChange={onDateInputChange}
+            clearable
+          />
+        </Tooltip>
+      </MuiPickersUtilsProvider>
+    );
   };
 
   getComponentForColumn(columnDef) {
-    if (columnDef.filter == null) return null;
+    // if (columnDef.filter == null) return null;
     let field: FieldSchema = columnDef.fieldDefinition;
     if (columnDef.filtering === false) {
       return null;
