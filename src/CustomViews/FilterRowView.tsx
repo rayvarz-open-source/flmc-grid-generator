@@ -18,7 +18,7 @@ import JalaliUtils from "@date-io/jalaali";
 import MomentUtils from "@date-io/moment";
 import moment = require("moment");
 
-jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
+jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
