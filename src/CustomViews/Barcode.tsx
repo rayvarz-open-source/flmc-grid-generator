@@ -77,7 +77,7 @@ export class Barcode extends React.Component<any> {
   format: "CODE128",
   renderer: "img",
   width: 2,
-  height: 40,
+  height: 25,
   displayValue: true,
   fontOptions: "",
   font: "monospace",
