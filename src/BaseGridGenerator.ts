@@ -22,11 +22,12 @@ import { Filter } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
 import { PaginationInfo } from "./Models/Pagination";
 import { Schema } from "./Models/Schema";
+import { Sort } from "./Models/Sort";
 
 export type BaseControllers<Model extends object> = {
   schemaController: BehaviorSubject<Schema>;
   filtersController: BehaviorSubject<Filter[]>;
-  sortsController: BehaviorSubject<Filter[]>;
+  sortsController: BehaviorSubject<Sort[]>;
   paginationController: BehaviorSubject<PaginationInfo>;
   commandController: BehaviorSubject<GridCommand>;
   selectionController: BehaviorSubject<Model[]>;
@@ -48,20 +49,6 @@ export type BaseBuilders = {
   hideColumnModalBuilder: () => ModalElement;
   observablesBuilder: () => AttributeObservables;
 };
-
-/*
-  let observables: AttributeObservables = {
-    actionDefinitions: new BehaviorSubject<ActionDefinitions>([]).asObservable(),
-    columnDefinitions: new BehaviorSubject<ColumnDefinitions>([]).asObservable(),
-    componentsOverride: new BehaviorSubject<ComponentsOverride>({}).asObservable(),
-    datasource: new BehaviorSubject<Datasource>([]).asObservable(),
-    rowActionDefinitions: new BehaviorSubject<RowActionDefinitions>({}).asObservable(),
-    gridOptions: new BehaviorSubject<GridOptions>({}).asObservable(),
-    title: new BehaviorSubject<Title>("").asObservable(),
-    localizationDefinition: new BehaviorSubject<LocalizationDefinition>({}).asObservable(),
-  };
-
-*/
 
 export type BaseProps<Model extends object> = {
   dataSource: DataSource<Model>;

@@ -9,7 +9,7 @@ export type GridCommand = {
   param?: any;
 };
 
-export const GridCommands: { [key: string]: GridCommand | ((...args: any[]) => GridCommand) } = {
+export const GridCommands = {
   refresh: {
     name: GridCommandName.RefreshCurrentPage
   },
