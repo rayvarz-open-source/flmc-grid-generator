@@ -72,7 +72,9 @@ function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupF
               needInfo: options.needPagination,
               pageNo: options.pageNo,
               pageSize: options.pageSize
-            }
+            },
+            filters: [...(options.filters || []), ...(source.request!.filters || [])],
+            sorts: [...(options.sorts || []), ...(source.request!.sorts || [])]
           })
         });
         return (await result.json()) as any;

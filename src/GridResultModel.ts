@@ -2,7 +2,7 @@ export interface FieldSchemaTypeSource {
   address: string | null;
   keyFieldName: string;
   valueFieldName: string;
-  request: object | null;
+  request: any | null;
   values: any[];
 }
 
