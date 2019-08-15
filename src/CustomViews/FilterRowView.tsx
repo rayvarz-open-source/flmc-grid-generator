@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import JalaliUtils from "@date-io/jalaali";
 import MomentUtils from "@date-io/moment";
-import { FormControl, FormControlLabel, Tooltip } from "@material-ui/core";
+import { FormControl, FormControlLabel, Icon, IconButton, InputAdornment, Tooltip } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
 import Input from "@material-ui/core/Input";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,9 +10,15 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { Container, Modal } from "flmc-lite-renderer";
+import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
+import { MapToView } from "flmc-lite-renderer/build/form/elements/ElementToViewMapper";
 import jMoment from "moment-jalaali";
 import * as React from "react";
+import { BehaviorSubject } from "rxjs";
+import { createGridViaDataSource } from "..";
 import { FieldSchema, FieldShemaTypeName, FilterSchema } from "../GridResultModel";
+import { defaultOptions } from "../Options";
 
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
 
@@ -24,16 +30,6 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250
     }
-  }
-};
-
-const defaultProps = {
-  emptyCell: false,
-  columns: [],
-  selection: false,
-  hasActions: false,
-  localization: {
-    filterTooltip: "Filter"
   }
 };
 
@@ -50,12 +46,108 @@ type Props = {
   localization?: any;
 };
 
+type RemoteLookupFilterProps = {
+  field: FieldSchema;
+  columnDef: any;
+  onFilterChanged: (id: number, targetValue: any) => void;
+};
+
+function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupFilterProps) {
+  const [open, setOpen] = React.useState(() => new BehaviorSubject<boolean>(false));
+  const [value, setValue] = React.useState<any>("");
+  let source = field.type.source!;
+
+  function createElement(): IElement {
+    let element = createGridViaDataSource(
+      async options => {
+        let result = await fetch(source.address!, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({
+            ...source.request,
+            schema: options.needSchema,
+            pagination: {
+              needInfo: options.needPagination,
+              pageNo: options.pageNo,
+              pageSize: options.pageSize
+            }
+          })
+        });
+        return (await result.json()) as any;
+      },
+      {
+        onSelect: (model: any) => {
+          setValue(model[source.valueFieldName]);
+          onFilterChanged(columnDef.tableData.id, model[source.keyFieldName]);
+          open.next(false);
+        },
+        ...defaultOptions
+      }
+    );
+    return element;
+  }
+
+  const modal = React.useMemo(
+    () =>
+      Modal(Container([createElement()]))
+        .open(open)
+        .noEscapeKeyDownClose(false)
+        .noBackdropClickClose(false)
+        .maxHeight(window.innerWidth * 0.8),
+    [open]
+  );
+
+  return (
+    <>
+      <Tooltip title={columnDef.filter.filterName || ""}>
+        <FormControl style={{ minWidth: 180 }}>
+          <Input
+            value={value}
+            disabled
+            endAdornment={
+              value != "" ? (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      setValue("");
+                      onFilterChanged(columnDef.tableData.id, null);
+                    }}
+                  >
+                    <Icon>close</Icon>
+                  </IconButton>
+                </InputAdornment>
+              ) : (
+                undefined
+              )
+            }
+            startAdornment={
+              <InputAdornment position="start">
+                <IconButton onClick={() => open.next(true)}>
+                  <Icon>menu</Icon>
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+      </Tooltip>
+      <MapToView weight={0} element={modal} />
+    </>
+  );
+}
+
 class CustomFilterRowView extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
   }
 
-  renderLookupFilter = columnDef => {
+  renderRemoteLookupFilter = columnDef => {
+    let field: FieldSchema = columnDef.fieldDefinition;
+    return <RemoteLookupFilter field={field} columnDef={columnDef} onFilterChanged={this.props.onFilterChanged} />;
+  };
+
+  renderLocalLookupFilter = columnDef => {
     let filter: FieldSchema = columnDef.fieldDefinition;
     let source = filter.type.source!;
     let view = (
@@ -163,7 +255,9 @@ class CustomFilterRowView extends React.Component<Props> {
       case FieldShemaTypeName.PersianDate:
         return this.renderDateTypeFilter(columnDef);
       case FieldShemaTypeName.LocalList:
-        return this.renderLookupFilter(columnDef);
+        return this.renderLocalLookupFilter(columnDef);
+      case FieldShemaTypeName.List:
+        return this.renderRemoteLookupFilter(columnDef);
       default:
         return this.renderDefaultFilter(columnDef);
     }
