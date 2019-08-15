@@ -1,8 +1,8 @@
 "use strict";
 
-import * as React from "react";
 import * as JsBarcode from "jsbarcode";
 import * as PropTypes from "prop-types";
+import * as React from "react";
 
 var getDOMNode;
 // Super naive semver detection but it's good enough. We support 0.12, 0.13
@@ -75,7 +75,7 @@ export class Barcode extends React.Component<any> {
 };
 (Barcode as any).defaultProps = {
   format: "CODE128",
-  renderer: "img",
+  renderer: "svg",
   width: 2,
   height: 25,
   displayValue: true,
