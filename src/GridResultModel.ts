@@ -1,21 +1,23 @@
 export interface FieldSchemaTypeSource {
-  address: string;
-  key: string;
-  value: string;
+  address: string | null;
+  keyFieldName: string;
+  valueFieldName: string;
   request: object | null;
+  values: any[];
 }
 
 export enum FieldShemaTypeName {
   Int = "Int",
   String = "String",
-  List = "List",
   GregorianDateTime = "GregorianDateTime",
   PersianDate = "PersianDate",
   Money = "Money",
   Bit = "Bit",
   Image = "Image",
   ImageList = "ImageList",
-  Barcode = "Barcode"
+  Barcode = "Barcode",
+  List = "List",
+  LocalList = "LocalList"
 }
 
 export type FieldType = {

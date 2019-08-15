@@ -1,22 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { FormControlLabel, Tooltip } from "@material-ui/core";
+import JalaliUtils from "@date-io/jalaali";
+import MomentUtils from "@date-io/moment";
+import { FormControl, FormControlLabel, Tooltip } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
-import { DatePicker, DateTimePicker, MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
-import * as React from "react";
-import { FieldSchema, FieldShemaTypeName } from "../GridResultModel";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import jMoment from "moment-jalaali";
-import JalaliUtils from "@date-io/jalaali";
-import MomentUtils from "@date-io/moment";
-import moment = require("moment");
+import * as React from "react";
+import { FieldSchema, FieldShemaTypeName, FilterSchema } from "../GridResultModel";
 
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
 
@@ -59,32 +55,32 @@ class CustomFilterRowView extends React.Component<Props> {
     super(props);
   }
 
-  renderLookupFilter = columnDef => (
-    <FormControl style={{ width: "100%" }}>
-      <InputLabel htmlFor="select-multiple-checkbox">{columnDef.filterPlaceholder}</InputLabel>
-      <Select
-        multiple
-        value={columnDef.tableData.filterValue || []}
-        onChange={event => {
-          this.props.onFilterChanged(columnDef.tableData.id, event.target.value);
-        }}
-        input={<Input id="select-multiple-checkbox" />}
-        renderValue={selecteds => (selecteds as any).map(selected => columnDef.lookup[selected]).join(", ")}
-        MenuProps={MenuProps}
-      >
-        {Object.keys(columnDef.lookup).map(key => (
-          <MenuItem key={key} value={key}>
-            <Checkbox
-              checked={
-                columnDef.tableData.filterValue ? columnDef.tableData.filterValue.indexOf(key.toString()) > -1 : false
-              }
-            />
-            <ListItemText primary={columnDef.lookup[key]} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
+  renderLookupFilter = columnDef => {
+    let filter: FieldSchema = columnDef.fieldDefinition;
+    let source = filter.type.source!;
+    let view = (
+      <Tooltip title={columnDef.filter.filterName || ""}>
+        <FormControl>
+          <Select
+            placeholder={"🔎"}
+            value={columnDef.tableData.filterValue}
+            onChange={event => this.props.onFilterChanged(columnDef.tableData.id, event.target.value)}
+            input={<Input />}
+          >
+            <MenuItem value={undefined}>
+              <em>-</em>
+            </MenuItem>
+            {source.values.map(v => (
+              <MenuItem key={v[source.keyFieldName]} value={v[source.keyFieldName]}>
+                {v[source.valueFieldName]}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Tooltip>
+    );
+    return view;
+  };
 
   renderBooleanFilter = columnDef => (
     <FormControlLabel
@@ -115,7 +111,7 @@ class CustomFilterRowView extends React.Component<Props> {
     return (
       <Tooltip title={columnDef.filter.filterName || ""}>
         <TextField
-          placeholder={"Y"}
+          placeholder={"🔎"}
           style={isNumeric ? { float: "right" } : {}}
           type={isNumeric ? "number" : "text"}
           value={columnDef.tableData.filterValue || ""}
@@ -152,8 +148,9 @@ class CustomFilterRowView extends React.Component<Props> {
   };
 
   getComponentForColumn(columnDef) {
-    // if (columnDef.filter == null) return null;
+    if (columnDef.filter == null) return null;
     let field: FieldSchema = columnDef.fieldDefinition;
+    let filter: FilterSchema = columnDef.filter;
     if (columnDef.filtering === false) {
       return null;
     }
@@ -165,6 +162,8 @@ class CustomFilterRowView extends React.Component<Props> {
         return this.renderDateTypeFilter(columnDef);
       case FieldShemaTypeName.PersianDate:
         return this.renderDateTypeFilter(columnDef);
+      case FieldShemaTypeName.LocalList:
+        return this.renderLookupFilter(columnDef);
       default:
         return this.renderDefaultFilter(columnDef);
     }
