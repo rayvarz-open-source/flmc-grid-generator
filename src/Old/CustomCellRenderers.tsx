@@ -1,10 +1,10 @@
-import { DocumentModel } from "./DocumentModel";
-import { FieldSchema, FieldShemaTypeName } from "./GridResultModel";
-import { Barcode } from "./CustomViews/Barcode";
-import * as React from "react";
 import { Icon } from "@material-ui/core";
 // @ts-ignore
 import _momentJalali from "moment-jalali";
+import * as React from "react";
+import { Barcode } from "./CustomViews/Barcode";
+import { DocumentModel } from "./DocumentModel";
+import { FieldSchema, FieldShemaTypeName } from "./GridResultModel";
 const momentJalali = _momentJalali;
 
 export type RowRenderer = (rowData: any) => React.ReactElement;

@@ -17,7 +17,7 @@ import jMoment from "moment-jalaali";
 import * as React from "react";
 import { BehaviorSubject } from "rxjs";
 import { createGridViaDataSource } from "..";
-import { FieldSchema, FieldShemaTypeName, FilterSchema } from "../GridResultModel";
+import { FieldSchema, FieldShemaTypeName, FilterSchema } from "../../GridResultModel";
 import { defaultOptions } from "../Options";
 
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
