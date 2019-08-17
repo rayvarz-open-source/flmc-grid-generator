@@ -50,6 +50,14 @@ export type BaseBuilders = {
   observablesBuilder: () => AttributeObservables;
 };
 
+export type ElementInstances = {
+  elements: {
+    container: ContainerElement;
+    grid: GridElement;
+    hideColumnModal: ModalElement;
+  };
+};
+
 export type BaseProps<Model extends object> = {
   dataSource: DataSource<Model>;
   options: BaseOptions;
@@ -74,12 +82,20 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
   let gridElement = props.builders.gridBuilder();
   let hideColumnModalElement = props.builders.hideColumnModalBuilder();
 
+  let elements: ElementInstances = {
+    elements: {
+      container: containerElement,
+      grid: gridElement,
+      hideColumnModal: hideColumnModalElement
+    }
+  };
+
   props.controllers.containerController.next([gridElement, hideColumnModalElement]);
   // attribute observables
   let observables = props.builders.observablesBuilder();
   // run handlers
   for (let handler of handlers) {
-    observables = handler(props, observables);
+    observables = handler({ ...props, ...elements }, observables);
   }
   // connect grid to observables
   gridElement

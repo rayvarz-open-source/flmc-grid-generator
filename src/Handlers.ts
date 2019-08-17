@@ -1,6 +1,11 @@
-import { BaseProps } from "@material-ui/core/OverridableComponent";
-import { AttributeObservables } from "./BaseGridGenerator";
+import { AttributeObservables, BaseProps, ElementInstances } from "./BaseGridGenerator";
+import { commandHandler } from "./CommandHandler/SetupCommandHandler";
 
-export type Handler = (props: BaseProps<any>, observables: AttributeObservables) => AttributeObservables;
+export type Handler = (
+  props: BaseProps<any> & ElementInstances,
+  observables: AttributeObservables
+) => AttributeObservables;
 
-export const handlers: Handler[] = [];
+export const handlers: Handler[] = [
+  commandHandler //
+];
