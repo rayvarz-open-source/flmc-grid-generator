@@ -6,6 +6,7 @@ import { localDataSourceHandler } from "./DataSourceHandler/LocalDataSourceHandl
 import { remoteDataSourceHandler } from "./DataSourceHandler/RemoteDataSourceHandler";
 import { exportHandler } from "./ExportHandler/ExportHandler";
 import { filterHandler } from "./FilterHandler/FilterHandler";
+import { refreshActionHandler } from "./RefreshActionHandler/RefreshActionHandler";
 import { selectionHandler } from "./SelectionHandler/SelectionHandler";
 import { sortHandler } from "./SortHandler/SortHandler";
 
@@ -23,5 +24,6 @@ export const handlers: Handler[] = [
   customRowRendererHandler,
   filterHandler,
   sortHandler,
-  exportHandler
+  exportHandler,
+  refreshActionHandler
 ];
