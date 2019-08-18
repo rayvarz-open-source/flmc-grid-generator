@@ -1,6 +1,7 @@
 import { AttributeObservables, BaseProps, ElementInstances } from "../BaseGridGenerator";
 import { columnDefinitionHandler } from "./ColumnDefinitionHandler/ColumnDefinitionHandler";
 import { commandHandler } from "./CommandHandler/CommandHandler";
+import { customActionHandler } from "./CustomActionHandler/CustomActionHandler";
 import { customRowRendererHandler } from "./CustomRowRenderHandler/CustomRowRendererHandler";
 import { localDataSourceHandler } from "./DataSourceHandler/LocalDataSourceHandler";
 import { remoteDataSourceHandler } from "./DataSourceHandler/RemoteDataSourceHandler";
@@ -29,5 +30,6 @@ export const handlers: Handler[] = [
   sortHandler,
   exportHandler,
   refreshActionHandler,
-  hideColumnsModalHandler
+  hideColumnsModalHandler,
+  customActionHandler
 ];
