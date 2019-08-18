@@ -1,31 +1,52 @@
+import { GridGenerator } from "flmc-grid-generator";
+import FLMC, { Button, FormController, Label } from "flmc-lite-renderer";
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import FLMC, { FormController, Label, Button } from "flmc-lite-renderer";
-import { createGridViaDataSource, createLocalGridGenerator } from "flmc-grid-generator";
-import { defaultOptions } from "flmc-grid-generator/build/Options";
-import { FieldShemaTypeName } from "flmc-grid-generator/build/GridResultModel";
 import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
+import "./App.css";
+
+const createGridViaDataSource = datasource => {
+  return GridGenerator({
+    dataSource: async dataSourceProps => {
+      let result = await fetch(datasource, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          storeId: 9
+        },
+        body: JSON.stringify({
+          filters: [
+            {
+              fieldName: "fStoreId",
+              type: "equalBy",
+              value: 9
+            },
+            ...dataSourceProps.filters
+          ],
+          sorts: dataSourceProps.sorts,
+          ignoredFields: [],
+          schema: dataSourceProps.needSchema,
+          pagination: {
+            needInfo: dataSourceProps.needPagination,
+            pageNo: dataSourceProps.pageNo,
+            pageSize: dataSourceProps.pageSize
+          }
+        })
+      });
+      let resultAsJson = await result.json();
+      return resultAsJson;
+    }
+  });
+};
 
 class SampleForm extends FormController {
   time = new BehaviorSubject(null);
   date = new BehaviorSubject(null);
   dateTime = new BehaviorSubject(null);
   selection = new BehaviorSubject([]);
-
+  //
   elements = [
-    createGridViaDataSource("-", {
-      filters: [
-        {
-          fieldName: "fStoreId",
-          type: "equalBy",
-          value: 9
-        }
-      ],
-      selection: this.selection,
-      ...defaultOptions
-    }),
+    createGridViaDataSource("-"),
     Label(this.selection.pipe(map(v => `${v.length} selected`))),
     Button("deselect All").onClick(() => this.selection.next([]))
   ];
