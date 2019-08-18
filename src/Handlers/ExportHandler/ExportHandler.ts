@@ -1,4 +1,5 @@
 import { ColumnDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { combineLatest } from "rxjs";
 import { map } from "rxjs/operators";
 import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
 import { Schema } from "../../Models/Schema";
@@ -11,6 +12,15 @@ function isExportable(field: FieldSchema) {
 }
 
 export const exportHandler: Handler = (props, observables) => {
+  const optionsObservable = combineLatest(observables.gridOptions, props.options.noExport).pipe(
+    map(([options, noExport]) => {
+      return {
+        ...options,
+        exportButton: !noExport
+      };
+    })
+  );
+
   const colDefinitionHandler = observables.columnDefinitions.pipe(
     map(([cols, schema]): [ColumnDefinitions, Schema] => {
       const newCols = cols.map(col => {
@@ -25,6 +35,7 @@ export const exportHandler: Handler = (props, observables) => {
   );
   return {
     ...observables,
-    columnDefinitions: colDefinitionHandler
+    columnDefinitions: colDefinitionHandler,
+    gridOptions: optionsObservable
   };
 };

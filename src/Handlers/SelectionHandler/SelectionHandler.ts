@@ -63,7 +63,6 @@ export function createUncheckedChangeCallBack<Model>(
 export const selectionHandler: Handler = (props, observables) => {
   const optionsObservable = combineLatest(observables.gridOptions, props.options.enableSelection).pipe(
     map(([options, isSelectionEnabled]) => {
-      if (!isSelectionEnabled) return options;
       const onCheckedChanged = createUncheckedChangeCallBack(
         props.elements.grid,
         props.controllers.selectionController,
@@ -72,6 +71,8 @@ export const selectionHandler: Handler = (props, observables) => {
       );
       return {
         ...options,
+        selection: isSelectionEnabled,
+        showTextRowsSelected: false,
         selectionProps: rowData => {
           return {
             onChange: e => onCheckedChanged(rowData, e.target.checked)

@@ -21,72 +21,12 @@ export function setupGridWithOptions<Model>(
     initialPage: 0,
     pageSizeOptions: [5, 10, 20, 25, 50],
     debounceInterval: 0.7,
-    loadingType: "linear",
-    selection: options.selection != null,
-    showTextRowsSelected: false,
-    exportButton: options.export || true,
-    selectionProps:
-      onCheckedChange == null
-        ? undefined
-        : rowData => {
-            return {
-              onChange: e => {
-                onCheckedChange(rowData, e.target.checked);
-              }
-            };
-          }
+    loadingType: "linear"
   });
 
   gridElement.refreshEvent(refreshEvent);
 
   let actionDefinitions: ActionDefinitions = [];
-
-  actionDefinitions.push({
-    icon: "refresh",
-    isFreeAction: true,
-    tooltip: options.localization.refresh,
-    onClick: (event: any, data: Model) => refreshEvent.next(null)
-  });
-
-  if (options.onCreate != null) {
-    actionDefinitions.push({
-      icon: "add_box",
-      isFreeAction: true,
-      tooltip: options.localization.create,
-      onClick: (event: any, data: Model) => options.onCreate!()
-    });
-  }
-
-  if (options.onEdit != null) {
-    actionDefinitions.push({
-      icon: "edit_box",
-      isFreeAction: false,
-      tooltip: options.localization.edit,
-      onClick: (event: any, data: Model) => options.onEdit!(data)
-    });
-  }
-
-  if (options.onSelect != null) {
-    actionDefinitions.push({
-      icon: "check",
-      isFreeAction: false,
-      tooltip: options.localization.select,
-      onClick: (event: any, data: Model) => options.onSelect!(data)
-    });
-  }
-
-  if (options.onDelete != null) {
-    actionDefinitions.push({
-      icon: "delete_box",
-      isFreeAction: false,
-      tooltip: options.localization.delete,
-      onClick: async (event: any, data: Model) => {
-        if (await options.onDelete!(data as Model)) {
-          // TODO: refresh
-        }
-      }
-    });
-  }
 
   if (hideColumnsController != null && (options.hideColumnModal || true)) {
     actionDefinitions.push({
