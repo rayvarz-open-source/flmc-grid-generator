@@ -87,7 +87,13 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
   return {
     containerBuilder: () => new ContainerElement(),
     gridBuilder: () => new GridElement(),
-    hideColumnModalBuilder: () => new ModalElement(),
+    hideColumnModalBuilder: () =>
+      new ModalElement()
+        .minWidth(window.innerWidth * 0.7)
+        .maxWidth(window.innerWidth)
+        .maxHeight(window.innerHeight)
+        .noBackdropClickClose(false)
+        .noEscapeKeyDownClose(false),
     documentListModalBuilder: () => new ModalElement(),
     documentListContainerBuilder: () => new ContainerElement().direction(ContainerDirection.Row),
     observablesBuilder: () => {
