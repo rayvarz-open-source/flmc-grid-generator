@@ -24,7 +24,7 @@ export const exportHandler: Handler = (props, observables) => {
   const colDefinitionHandler = observables.columnDefinitions.pipe(
     map(([cols, schema]): [ColumnDefinitions, Schema] => {
       const newCols = cols.map(col => {
-        const field = schema.fields.find(v => v.fieldName === col.field)!;
+        const field = col.fieldDefinition;
         return {
           ...col,
           export: isExportable(field)

@@ -16,7 +16,7 @@ export const filterHandler: Handler = (props, observables) => {
   const colDefinitionHandler = observables.columnDefinitions.pipe(
     map(([cols, schema]): [ColumnDefinitions, Schema] => {
       const newCols = cols.map(col => {
-        const field = schema.fields.find(v => v.fieldName === col.field)!;
+        const field = col.fieldDefinition;
 
         const filters = schema.filters.filter(filter => filter.fieldName === field.fieldName);
         let defaultFilter: any = filters.filter(v => v.isDefault);

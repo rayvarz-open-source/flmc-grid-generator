@@ -21,9 +21,9 @@ export type Handler = (
 export const handlers: Handler[] = [
   commandHandler,
   tableLocalizationHandler,
+  columnDefinitionHandler,
   localDataSourceHandler,
   remoteDataSourceHandler,
-  columnDefinitionHandler,
   selectionHandler,
   customRowRendererHandler,
   filterHandler,

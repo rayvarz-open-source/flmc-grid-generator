@@ -7,7 +7,7 @@ export const customActionHandler: Handler = (props, observables) => {
   const actions = combineLatest(
     props.options.customActionsPosition,
     props.controllers.customActionsController,
-    observables.columnDefinitions
+    observables.actionDefinitions
   ).pipe(
     map(([position, customActions, currentActions]) => {
       if (position === CustomActionPosition.End) return [...currentActions, ...customActions];

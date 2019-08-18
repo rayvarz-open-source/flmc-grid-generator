@@ -8,7 +8,7 @@ export const sortHandler: Handler = (props, observables) => {
   const colDefinitionHandler = observables.columnDefinitions.pipe(
     map(([cols, schema]): [ColumnDefinitions, Schema] => {
       const newCols = cols.map(col => {
-        const field = schema.fields.find(v => v.fieldName === col.field)!;
+        const field = col.fieldDefinition;
 
         let sorts = schema.sorts.filter(sort => sort.fieldName == field.fieldName && sort.type == SortSchemaType.All);
 

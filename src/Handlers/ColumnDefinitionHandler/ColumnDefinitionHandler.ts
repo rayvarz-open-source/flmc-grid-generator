@@ -14,7 +14,8 @@ export const columnDefinitionHandler: Handler = (props, observables) => {
           return {
             title: field.title,
             editable: field.isEditable ? "always" : "never",
-            fieldDefinition: field
+            fieldDefinition: field,
+            field: field.fieldName
           };
         });
       return [cols, schema];

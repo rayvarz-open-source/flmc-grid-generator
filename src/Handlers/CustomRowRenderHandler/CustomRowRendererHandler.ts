@@ -32,7 +32,7 @@ export const customRowRendererHandler: Handler = (props, observables) => {
   const colDefinitionHandler = observables.columnDefinitions.pipe(
     map(([cols, definitions]): [ColumnDefinitions, Schema] => {
       const newCols = cols.map(col => {
-        const field = definitions.fields.find(v => v.fieldName === col.field)!;
+        const field = col.fieldDefinition;
         const renderer = handleCustomComponentRenderer(field, {
           onImageListClick: documents => handleDocumentList(documents)
         });
