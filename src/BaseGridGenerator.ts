@@ -31,12 +31,15 @@ export type BaseControllers<Model extends object> = {
   paginationController: BehaviorSubject<PaginationInfo>;
   commandController: BehaviorSubject<GridCommand>;
   selectionController: BehaviorSubject<Model[]>;
+  currentPageDataController: BehaviorSubject<Model[]>;
   customActionsController: BehaviorSubject<Action<Model>[]>;
   containerController: BehaviorSubject<IElement[]>;
+  keyFieldName: BehaviorSubject<string>;
 };
 
 export type BaseOptions = {
   noHideColumnModel: Observable<boolean>;
+  enableSelection: Observable<boolean>;
   noExport: Observable<boolean>;
   noRefresh: Observable<boolean>;
   customActionsPosition: Observable<CustomActionPosition>;

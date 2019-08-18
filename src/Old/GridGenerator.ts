@@ -3,9 +3,8 @@ import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IE
 import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { BehaviorSubject } from "rxjs";
 import { DocumentModel } from "./DocumentModel";
-import { isFilterChanged, materialTableFilterToGridFilter } from "./Filter";
 import { Filter, Sorts } from "./GridRequestModel";
-import { FilterSchemaType, GridResultModel, PaginationInfo, Schema } from "./GridResultModel";
+import { GridResultModel, PaginationInfo, Schema } from "./GridResultModel";
 import { defaultOptions, Options } from "./Options";
 import { setupCustomFilters } from "./SetupCustomFilters";
 import { setupGridWithOptions } from "./SetupGridWithOptions";
@@ -123,79 +122,6 @@ async function createGrid<Model>(
     documentListModalController.open.next(true);
   };
   setupGridWithSchema(schema, gridElement, options, handleDocumentList);
-
-  let needSchema = true;
-  let cachedPageSize = 0;
-  let lastFilters: Filter[] | null = null;
-
-  gridElement.datasource(async query => {
-    let filters = materialTableFilterToGridFilter(query.filters, schema.value);
-    if (query.search) {
-      filters.push({
-        fieldName: "ALL",
-        type: FilterSchemaType.LIKE,
-        value: query.search
-      });
-    }
-
-    let needPageSize = lastFilters == null || isFilterChanged(lastFilters, filters);
-    lastFilters = filters;
-
-    let requestFilters = [...filters, ...(options.filters || [])];
-
-    var result = await datasource({
-      pageNo: query.page,
-      pageSize: query.pageSize,
-      needSchema: needSchema,
-      needPagination: needPageSize,
-      sorts:
-        query.orderBy != null
-          ? [
-              {
-                fieldName: query.orderBy.field as string,
-                type: query.orderDirection.toUpperCase()
-              }
-            ]
-          : null,
-      filters: requestFilters
-    });
-
-    options.filtersController!.next(requestFilters);
-
-    if (needSchema) {
-      needSchema = false;
-      schema.next(result.schema);
-      keyFieldName.next(result.schema.fields.filter(v => v.isKey)[0].fieldName);
-    }
-
-    if (needPageSize) {
-      options.pagination!.next(result.pagination);
-      cachedPageSize = result.pagination.totalRow;
-    }
-    currentPageData.next(result.value);
-    return {
-      data: result.value.map(v => {
-        let mixin = {};
-        if (options.selection != null) {
-          mixin = {
-            ...mixin,
-            tableData: {
-              checked:
-                options.selection.value.filter(selected => selected[keyFieldName.value] == v[keyFieldName.value])
-                  .length > 0
-            }
-          };
-        }
-
-        return {
-          ...v,
-          ...mixin
-        };
-      }),
-      page: needPageSize ? 0 : query.page,
-      totalCount: cachedPageSize
-    };
-  });
 
   setupCustomFilters(gridElement);
 

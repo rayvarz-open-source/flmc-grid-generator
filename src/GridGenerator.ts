@@ -37,8 +37,10 @@ export type Controllers<Model extends object> = {
   paginationController?: BehaviorSubject<PaginationInfo>;
   commandController?: BehaviorSubject<GridCommand>;
   selectionController?: BehaviorSubject<Model[]>;
+  currentPageDataController?: BehaviorSubject<Model[]>;
   customActionsController?: BehaviorSubject<Action<Model>[]>;
   containerController?: BehaviorSubject<IElement[]>;
+  keyFieldName?: BehaviorSubject<string>;
 };
 
 export type Options = {
@@ -47,6 +49,7 @@ export type Options = {
   noRefresh?: Observable<boolean>;
   customActionsPosition?: Observable<CustomActionPosition>;
   localization?: Observable<Localization>;
+  enableSelection?: Observable<boolean> | boolean;
 };
 
 export type Builders = {
@@ -123,6 +126,10 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
       props.controllers && props.controllers.selectionController
         ? props.controllers.selectionController
         : new BehaviorSubject<Model[]>([]),
+    currentPageDataController:
+      props.controllers && props.controllers.currentPageDataController
+        ? props.controllers.currentPageDataController
+        : new BehaviorSubject<Model[]>([]),
     customActionsController:
       props.controllers && props.controllers.customActionsController
         ? props.controllers.customActionsController
@@ -130,7 +137,11 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     containerController:
       props.controllers && props.controllers.containerController
         ? props.controllers.containerController
-        : new BehaviorSubject<IElement[]>([])
+        : new BehaviorSubject<IElement[]>([]),
+    keyFieldName:
+      props.controllers && props.controllers.keyFieldName
+        ? props.controllers.keyFieldName
+        : new BehaviorSubject<string>("")
   };
 
   let options: BaseOptions = {
@@ -144,6 +155,12 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
         ? props.options.noHideColumnModel
         : new BehaviorSubject<boolean>(false),
     noRefresh: props.options && props.options.noRefresh ? props.options.noRefresh : new BehaviorSubject<boolean>(false),
+    enableSelection:
+      props.options && props.options.enableSelection
+        ? typeof props.options.enableSelection === "boolean"
+          ? new BehaviorSubject<boolean>(props.options.enableSelection)
+          : props.options.enableSelection
+        : new BehaviorSubject<boolean>(false),
     localization:
       props.options && props.options.localization
         ? props.options.localization
