@@ -102,7 +102,7 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
     }
   };
 
-  props.controllers.containerController.next([gridElement, hideColumnModalElement]);
+  props.controllers.containerController.next([gridElement, hideColumnModalElement, documentListModal]);
   // attribute observables
   let observables = props.builders.observablesBuilder();
   // run handlers

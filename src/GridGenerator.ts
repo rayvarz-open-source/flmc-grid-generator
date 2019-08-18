@@ -94,7 +94,7 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
         .maxHeight(window.innerHeight)
         .noBackdropClickClose(false)
         .noEscapeKeyDownClose(false),
-    documentListModalBuilder: () => new ModalElement(),
+    documentListModalBuilder: () => new ModalElement().noBackdropClickClose(false).noEscapeKeyDownClose(false),
     documentListContainerBuilder: () => new ContainerElement().direction(ContainerDirection.Row),
     observablesBuilder: () => {
       return {
