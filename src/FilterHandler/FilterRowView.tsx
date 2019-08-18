@@ -11,14 +11,12 @@ import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { Container, Modal } from "flmc-lite-renderer";
-import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { MapToView } from "flmc-lite-renderer/build/form/elements/ElementToViewMapper";
 import jMoment from "moment-jalaali";
 import * as React from "react";
 import { BehaviorSubject } from "rxjs";
-import { createGridViaDataSource } from "..";
-import { FieldSchema, FieldShemaTypeName, FilterSchema } from "../../GridResultModel";
-import { defaultOptions } from "../Options";
+import { FieldSchema, FieldShemaTypeName } from "../Models/Field";
+import { FilterSchema } from "../Models/Filter";
 
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
 
@@ -57,43 +55,47 @@ function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupF
   const [value, setValue] = React.useState<any>("");
   let source = field.type.source!;
 
-  function createElement(): IElement {
-    let element = createGridViaDataSource(
-      async options => {
-        let result = await fetch(source.address!, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            ...source.request,
-            schema: options.needSchema,
-            pagination: {
-              needInfo: options.needPagination,
-              pageNo: options.pageNo,
-              pageSize: options.pageSize
-            },
-            filters: [...(options.filters || []), ...(source.request!.filters || [])],
-            sorts: [...(options.sorts || []), ...(source.request!.sorts || [])]
-          })
-        });
-        return (await result.json()) as any;
-      },
-      {
-        onSelect: (model: any) => {
-          setValue(model[source.valueFieldName]);
-          onFilterChanged(columnDef.tableData.id, model[source.keyFieldName]);
-          open.next(false);
-        },
-        ...defaultOptions
-      }
-    );
-    return element;
-  }
+  // function createElement(): IElement {
+  //   let element = createGridViaDataSource(
+  //     async options => {
+  //       let result = await fetch(source.address!, {
+  //         method: "POST",
+  //         headers: {
+  //           "content-type": "application/json"
+  //         },
+  //         body: JSON.stringify({
+  //           ...source.request,
+  //           schema: options.needSchema,
+  //           pagination: {
+  //             needInfo: options.needPagination,
+  //             pageNo: options.pageNo,
+  //             pageSize: options.pageSize
+  //           },
+  //           filters: [...(options.filters || []), ...(source.request!.filters || [])],
+  //           sorts: [...(options.sorts || []), ...(source.request!.sorts || [])]
+  //         })
+  //       });
+  //       return (await result.json()) as any;
+  //     },
+  //     {
+  //       onSelect: (model: any) => {
+  //         setValue(model[source.valueFieldName]);
+  //         onFilterChanged(columnDef.tableData.id, model[source.keyFieldName]);
+  //         open.next(false);
+  //       },
+  //       ...defaultOptions
+  //     }
+  //   );
+  //   return element;
+  // }
 
   const modal = React.useMemo(
     () =>
-      Modal(Container([createElement()]))
+      Modal(
+        Container([
+          // createElement()
+        ])
+      )
         .open(open)
         .noEscapeKeyDownClose(false)
         .noBackdropClickClose(false)

@@ -3,6 +3,7 @@ import { commandHandler } from "./CommandHandler/CommandHandler";
 import { customRowRendererHandler } from "./CustomRowRenderHandler/CustomRowRendererHandler";
 import { localDataSourceHandler } from "./DataSourceHandler/LocalDataSourceHandler";
 import { remoteDataSourceHandler } from "./DataSourceHandler/RemoteDataSourceHandler";
+import { filterHandler } from "./FilterHandler/FilterHandler";
 import { selectionHandler } from "./SelectionHandler/SelectionHandler";
 
 export type Handler = (
@@ -15,5 +16,6 @@ export const handlers: Handler[] = [
   localDataSourceHandler,
   remoteDataSourceHandler,
   selectionHandler,
-  customRowRendererHandler
+  customRowRendererHandler,
+  filterHandler
 ];

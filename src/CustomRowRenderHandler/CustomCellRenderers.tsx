@@ -4,7 +4,7 @@ import _momentJalali from "moment-jalali";
 import * as React from "react";
 import { DocumentModel } from "../Models/DocumentModel";
 import { FieldSchema, FieldShemaTypeName } from "../Models/Field";
-import { Barcode } from "../Old/CustomViews/Barcode";
+import { Barcode } from "./Barcode";
 const momentJalali = _momentJalali;
 
 export type RowRenderer = (rowData: any) => React.ReactElement;
