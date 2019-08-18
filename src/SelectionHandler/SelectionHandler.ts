@@ -1,7 +1,9 @@
-import { BehaviorSubject } from "rxjs";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
+import { BehaviorSubject, combineLatest } from "rxjs";
+import { map } from "rxjs/operators";
+import { Handler } from "../Handlers";
 
-export function setupGridSelection<Model>(
+export function createUncheckedChangeCallBack<Model>(
   gridElement: GridElement,
   selectedItems: BehaviorSubject<Model[]>,
   currentPageData: BehaviorSubject<Model[]>,
@@ -57,3 +59,30 @@ export function setupGridSelection<Model>(
     else removeSelectedItem(model);
   };
 }
+
+export const selectionHandler: Handler = (props, observables) => {
+  const optionsObservable = combineLatest(observables.gridOptions, props.options.enableSelection).pipe(
+    map(([options, isSelectionEnabled]) => {
+      if (!isSelectionEnabled) return options;
+      const onCheckedChanged = createUncheckedChangeCallBack(
+        props.elements.grid,
+        props.controllers.selectionController,
+        props.controllers.currentPageDataController,
+        props.controllers.keyFieldName
+      );
+      return {
+        ...options,
+        selectionProps: rowData => {
+          return {
+            onChange: e => onCheckedChanged(rowData, e.target.checked)
+          };
+        }
+      };
+    })
+  );
+
+  return {
+    ...observables,
+    gridOptions: optionsObservable
+  };
+};

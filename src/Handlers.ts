@@ -2,6 +2,7 @@ import { AttributeObservables, BaseProps, ElementInstances } from "./BaseGridGen
 import { commandHandler } from "./CommandHandler/CommandHandler";
 import { localDataSourceHandler } from "./DataSourceHandler/LocalDataSourceHandler";
 import { remoteDataSourceHandler } from "./DataSourceHandler/RemoteDataSourceHandler";
+import { selectionHandler } from "./SelectionHandler/SelectionHandler";
 
 export type Handler = (
   props: BaseProps<any> & ElementInstances,
@@ -11,5 +12,6 @@ export type Handler = (
 export const handlers: Handler[] = [
   commandHandler, //
   localDataSourceHandler,
-  remoteDataSourceHandler
+  remoteDataSourceHandler,
+  selectionHandler
 ];
