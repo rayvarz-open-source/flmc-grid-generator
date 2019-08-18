@@ -1,6 +1,6 @@
-import { FieldShemaTypeName } from "../Models/Field";
-import { Filter, FilterSchemaType } from "../Models/Filter";
-import { Schema } from "../Models/Schema";
+import { FieldShemaTypeName } from "../../Models/Field";
+import { Filter, FilterSchemaType } from "../../Models/Filter";
+import { Schema } from "../../Models/Schema";
 
 export function isFilterChanged(oldFilters: Filter[], newFilters: Filter[]): boolean {
   if (oldFilters.length != newFilters.length) return true;

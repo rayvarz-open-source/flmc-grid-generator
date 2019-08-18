@@ -1,7 +1,7 @@
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { handleCustomComponentRenderer } from "../CustomRowRenderHandler/CustomCellRenderers";
+import { handleCustomComponentRenderer } from "../Handlers/CustomRowRenderHandler/CustomCellRenderers";
 import { DocumentModel } from "../Models/DocumentModel";
 import { FieldSchema, FieldShemaTypeName, Schema, SortSchemaType } from "./GridResultModel";
 import { Options } from "./Options";

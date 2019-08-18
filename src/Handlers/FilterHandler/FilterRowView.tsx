@@ -15,8 +15,8 @@ import { MapToView } from "flmc-lite-renderer/build/form/elements/ElementToViewM
 import jMoment from "moment-jalaali";
 import * as React from "react";
 import { BehaviorSubject } from "rxjs";
-import { FieldSchema, FieldShemaTypeName } from "../Models/Field";
-import { FilterSchema } from "../Models/Filter";
+import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
+import { FilterSchema } from "../../Models/Filter";
 
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
 

@@ -2,8 +2,8 @@ import { Icon } from "@material-ui/core";
 // @ts-ignore
 import _momentJalali from "moment-jalali";
 import * as React from "react";
-import { DocumentModel } from "../Models/DocumentModel";
-import { FieldSchema, FieldShemaTypeName } from "../Models/Field";
+import { DocumentModel } from "../../Models/DocumentModel";
+import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
 import { Barcode } from "./Barcode";
 const momentJalali = _momentJalali;
 

@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
-import { Filter } from "../Models/Filter";
-import { GridResultModel } from "../Models/GridResultModel";
-import { Sort } from "../Models/Sort";
+import { Filter } from "../../Models/Filter";
+import { GridResultModel } from "../../Models/GridResultModel";
+import { Sort } from "../../Models/Sort";
 
 export type DataSourceFunctionOptions = {
   pageNo: number;

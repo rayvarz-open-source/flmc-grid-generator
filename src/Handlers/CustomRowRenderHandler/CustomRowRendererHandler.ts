@@ -2,9 +2,9 @@ import { Image, ImageScaleType } from "flmc-lite-renderer";
 import { ColumnDefinitions } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
+import { DocumentModel } from "../../Models/DocumentModel";
+import { Schema } from "../../Models/Schema";
 import { Handler } from "../Handlers";
-import { DocumentModel } from "../Models/DocumentModel";
-import { Schema } from "../Models/Schema";
 import { handleCustomComponentRenderer } from "./CustomCellRenderers";
 
 export const customRowRendererHandler: Handler = (props, observables) => {

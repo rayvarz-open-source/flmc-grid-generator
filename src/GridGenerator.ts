@@ -22,9 +22,9 @@ import {
   BaseGridGenerator,
   BaseOptions
 } from "./BaseGridGenerator";
-import { GridCommand, GridCommands } from "./CommandHandler/Commands";
-import { CustomActionPosition } from "./CustomActionHandler/CustomActionPosition";
-import { DataSource } from "./DataSourceHandler/DataSource";
+import { GridCommand, GridCommands } from "./Handlers/CommandHandler/Commands";
+import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
+import { DataSource } from "./Handlers/DataSourceHandler/DataSource";
 import { Filter } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
 import { PaginationInfo } from "./Models/Pagination";

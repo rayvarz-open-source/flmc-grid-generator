@@ -1,8 +1,8 @@
 import { Datasource } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { BehaviorSubject } from "rxjs";
+import { Filter, FilterSchemaType } from "../../Models/Filter";
 import { isFilterChanged, materialTableFilterToGridFilter } from "../FilterHandler/materialTableFilterToGridFilter";
 import { Handler } from "../Handlers";
-import { Filter, FilterSchemaType } from "../Models/Filter";
 import { DataSourceFunction } from "./DataSource";
 
 export const remoteDataSourceHandler: Handler = (props, observables) => {

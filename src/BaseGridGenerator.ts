@@ -15,10 +15,10 @@ import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/Modal
 import { Action } from "material-table";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { GridCommand } from "./CommandHandler/Commands";
-import { CustomActionPosition } from "./CustomActionHandler/CustomActionPosition";
-import { DataSource } from "./DataSourceHandler/DataSource";
-import { handlers } from "./Handlers";
+import { GridCommand } from "./Handlers/CommandHandler/Commands";
+import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
+import { DataSource } from "./Handlers/DataSourceHandler/DataSource";
+import { handlers } from "./Handlers/Handlers";
 import { Filter } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
 import { PaginationInfo } from "./Models/Pagination";
