@@ -1,3 +1,4 @@
+import { ContainerDirection } from "flmc-lite-renderer";
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { ContainerElement } from "flmc-lite-renderer/build/form/elements/container/ContainerElement";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
@@ -13,7 +14,7 @@ import {
 } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import {
   AttributeObservables,
   BaseBuilders,
@@ -57,6 +58,8 @@ export type Builders = {
   gridBuilder?: () => GridElement;
   hideColumnModalBuilder?: () => ModalElement;
   observablesBuilder?: () => AttributeObservables;
+  documentListModalBuilder?: () => ModalElement;
+  documentListContainerBuilder?: () => ContainerElement;
 };
 
 export type Props<Model extends object> = {
@@ -80,22 +83,26 @@ export const defaultLocalization: Localization = {
   columnVisibilityTitle: "Hide/Show Columns"
 };
 
-export const defaultBuilders: BaseBuilders = {
-  containerBuilder: () => new ContainerElement(),
-  gridBuilder: () => new GridElement(),
-  hideColumnModalBuilder: () => new ModalElement(),
-  observablesBuilder: () => {
-    return {
-      actionDefinitions: new BehaviorSubject<ActionDefinitions>([]).asObservable(),
-      columnDefinitions: new BehaviorSubject<ColumnDefinitions>([]).asObservable(),
-      componentsOverride: new BehaviorSubject<ComponentsOverride>({}).asObservable(),
-      datasource: new BehaviorSubject<Datasource>([]).asObservable(),
-      rowActionDefinitions: new BehaviorSubject<RowActionDefinitions>({}).asObservable(),
-      gridOptions: new BehaviorSubject<GridOptions>({}).asObservable(),
-      title: new BehaviorSubject<Title>("").asObservable(),
-      localizationDefinition: new BehaviorSubject<LocalizationDefinition>({}).asObservable()
-    };
-  }
+export const makeDefaultBuilders = <Model extends object>(controllers: BaseControllers<Model>): BaseBuilders => {
+  return {
+    containerBuilder: () => new ContainerElement(),
+    gridBuilder: () => new GridElement(),
+    hideColumnModalBuilder: () => new ModalElement(),
+    documentListModalBuilder: () => new ModalElement(),
+    documentListContainerBuilder: () => new ContainerElement().direction(ContainerDirection.Row),
+    observablesBuilder: () => {
+      return {
+        actionDefinitions: new BehaviorSubject<ActionDefinitions>([]).asObservable(),
+        columnDefinitions: combineLatest(new BehaviorSubject<ColumnDefinitions>([]), controllers.schemaController),
+        componentsOverride: new BehaviorSubject<ComponentsOverride>({}).asObservable(),
+        datasource: new BehaviorSubject<Datasource>([]).asObservable(),
+        rowActionDefinitions: new BehaviorSubject<RowActionDefinitions>({}).asObservable(),
+        gridOptions: new BehaviorSubject<GridOptions>({}).asObservable(),
+        title: new BehaviorSubject<Title>("").asObservable(),
+        localizationDefinition: new BehaviorSubject<LocalizationDefinition>({}).asObservable()
+      };
+    }
+  };
 };
 
 export function GridGenerator<Model extends object>(props: Props<Model>): IElement {
@@ -167,6 +174,8 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
         : new BehaviorSubject<Localization>(defaultLocalization)
   };
 
+  let defaultBuilders = makeDefaultBuilders<Model>(controllers);
+
   let builders: BaseBuilders = {
     containerBuilder:
       props.builders && props.builders.containerBuilder
@@ -183,7 +192,15 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     hideColumnModalBuilder:
       props.builders && props.builders.hideColumnModalBuilder
         ? props.builders.hideColumnModalBuilder
-        : defaultBuilders.hideColumnModalBuilder
+        : defaultBuilders.hideColumnModalBuilder,
+    documentListContainerBuilder:
+      props.builders && props.builders.documentListContainerBuilder
+        ? props.builders.documentListContainerBuilder
+        : defaultBuilders.documentListContainerBuilder,
+    documentListModalBuilder:
+      props.builders && props.builders.documentListModalBuilder
+        ? props.builders.documentListModalBuilder
+        : defaultBuilders.documentListModalBuilder
   };
 
   return BaseGridGenerator<Model>({ controllers, options, dataSource: props.dataSource, builders });

@@ -1,14 +1,14 @@
-import { defaultOptions, Options } from "./Options";
-import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
-import { BehaviorSubject, Observable, isObservable } from "rxjs";
 import { Container, Grid } from "flmc-lite-renderer";
-import { Schema } from "./GridResultModel";
-import { DocumentModel } from "./DocumentModel";
-import { setupImagePreviewModal } from "./SetupImagePreviewModal";
+import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
+import { BehaviorSubject, isObservable, Observable } from "rxjs";
+import { DocumentModel } from "../Models/DocumentModel";
+import { Schema } from "./GridResultModel";
+import { defaultOptions, Options } from "./Options";
 import { setupGridWithOptions } from "./SetupGridWithOptions";
 import { setupGridWithSchema } from "./SetupGridWithSchema";
-import { setupHideColumnModal, HideColumnsController } from "./SetupHideColumnModal";
+import { HideColumnsController, setupHideColumnModal } from "./SetupHideColumnModal";
+import { setupImagePreviewModal } from "./SetupImagePreviewModal";
 
 export function createLocalGridGenerator<Model>(
   schema: BehaviorSubject<Schema> | Schema,

@@ -14,6 +14,7 @@ import {
 import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
 import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { GridCommand } from "./CommandHandler/Commands";
 import { CustomActionPosition } from "./CustomActionHandler/CustomActionPosition";
 import { DataSource } from "./DataSourceHandler/DataSource";
@@ -51,6 +52,8 @@ export type BaseBuilders = {
   gridBuilder: () => GridElement;
   hideColumnModalBuilder: () => ModalElement;
   observablesBuilder: () => AttributeObservables;
+  documentListModalBuilder: () => ModalElement;
+  documentListContainerBuilder: () => ContainerElement;
 };
 
 export type ElementInstances = {
@@ -58,6 +61,8 @@ export type ElementInstances = {
     container: ContainerElement;
     grid: GridElement;
     hideColumnModal: ModalElement;
+    documentListModal: ModalElement;
+    documentListContainer: ContainerElement;
   };
 };
 
@@ -69,7 +74,7 @@ export type BaseProps<Model extends object> = {
 };
 
 export type AttributeObservables = {
-  columnDefinitions: Observable<ColumnDefinitions>;
+  columnDefinitions: Observable<[ColumnDefinitions, Schema]>;
   actionDefinitions: Observable<ActionDefinitions>;
   componentsOverride: Observable<ComponentsOverride>;
   datasource: Observable<Datasource>;
@@ -84,12 +89,16 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
   let containerElement = props.builders.containerBuilder().children(props.controllers.containerController);
   let gridElement = props.builders.gridBuilder();
   let hideColumnModalElement = props.builders.hideColumnModalBuilder();
+  let documentListContainer = props.builders.documentListContainerBuilder();
+  let documentListModal = props.builders.documentListModalBuilder().child(documentListContainer);
 
   let elements: ElementInstances = {
     elements: {
       container: containerElement,
       grid: gridElement,
-      hideColumnModal: hideColumnModalElement
+      hideColumnModal: hideColumnModalElement,
+      documentListContainer: documentListContainer,
+      documentListModal: documentListModal
     }
   };
 
@@ -102,7 +111,7 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
   }
   // connect grid to observables
   gridElement
-    .columnDefinitions(observables.columnDefinitions)
+    .columnDefinitions(observables.columnDefinitions.pipe(map(v => v[0])))
     .actionDefinitions(observables.actionDefinitions)
     .componentsOverride(observables.componentsOverride)
     .datasource(observables.datasource)

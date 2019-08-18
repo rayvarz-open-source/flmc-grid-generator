@@ -2,7 +2,7 @@ import { Button, Container, Label } from "flmc-lite-renderer";
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import Grid, { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
 import { BehaviorSubject } from "rxjs";
-import { DocumentModel } from "./DocumentModel";
+import { DocumentModel } from "../Models/DocumentModel";
 import { Filter, Sorts } from "./GridRequestModel";
 import { GridResultModel, PaginationInfo, Schema } from "./GridResultModel";
 import { defaultOptions, Options } from "./Options";
@@ -117,10 +117,7 @@ async function createGrid<Model>(
   setupGridWithOptions(gridElement, options, refreshEvent, handleCheckedChange, hideColumnController);
 
   let schema = options.schema!;
-  const handleDocumentList = (documents: DocumentModel[]) => {
-    documentListModalController.images.next(documents);
-    documentListModalController.open.next(true);
-  };
+
   setupGridWithSchema(schema, gridElement, options, handleDocumentList);
 
   setupCustomFilters(gridElement);
