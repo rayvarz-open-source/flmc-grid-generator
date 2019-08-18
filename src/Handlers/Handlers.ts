@@ -9,6 +9,7 @@ import { filterHandler } from "./FilterHandler/FilterHandler";
 import { refreshActionHandler } from "./RefreshActionHandler/RefreshActionHandler";
 import { selectionHandler } from "./SelectionHandler/SelectionHandler";
 import { sortHandler } from "./SortHandler/SortHandler";
+import { tableLocalizationHandler } from "./TableLocalizationHandler/TableLocalizationHandler";
 
 export type Handler = (
   props: BaseProps<any> & ElementInstances,
@@ -16,7 +17,8 @@ export type Handler = (
 ) => AttributeObservables;
 
 export const handlers: Handler[] = [
-  commandHandler, //
+  commandHandler,
+  tableLocalizationHandler,
   localDataSourceHandler,
   remoteDataSourceHandler,
   columnDefinitionHandler,
