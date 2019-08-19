@@ -1,5 +1,5 @@
 import { FieldShemaTypeName } from "../../Models/Field";
-import { Filter, FilterSchemaType } from "../../Models/Filter";
+import { Filter } from "../../Models/Filter";
 import { Schema } from "../../Models/Schema";
 
 export function isFilterChanged(oldFilters: Filter[], newFilters: Filter[]): boolean {
@@ -20,14 +20,16 @@ export function materialTableFilterToGridFilter(filters: any[], schema: Schema):
     .map(
       (filter): Filter => {
         let fieldName = filter.column.field;
-        let fieldType = schema.fields.filter(field => field.fieldName == fieldName)[0].type.name;
-        let value: number | string | null | boolean = null;
-        if (fieldType == FieldShemaTypeName.Int && !isNaN(filter.value)) value = parseInt(filter.value);
-        else if (fieldType == FieldShemaTypeName.Bit) value = filter.value === "checked";
+        let field = schema.fields.find(field => field.fieldName == fieldName)!;
+        let filterDef = schema.filters.find(filter => filter.isDefault && filter.fieldName === field.fieldName)!;
+
+        let value: any = null;
+        if (field.type.name == FieldShemaTypeName.Int && !isNaN(filter.value)) value = parseInt(filter.value);
+        else if (field.type.name == FieldShemaTypeName.Bit) value = filter.value === "checked";
         else value = filter.value;
         return {
-          fieldName: fieldName,
-          type: fieldType == FieldShemaTypeName.String ? FilterSchemaType.LIKE : FilterSchemaType.EQUAL_BY,
+          fieldName: filterDef.fieldName,
+          type: filterDef.type,
           value: value
         };
       }
