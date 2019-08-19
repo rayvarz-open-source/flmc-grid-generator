@@ -159,7 +159,7 @@ class CustomFilterRowView extends React.Component<Props> {
         <FormControl>
           <Select
             placeholder={"Y"}
-            value={columnDef.tableData.filterValue}
+            value={columnDef.tableData.filterValue == null ? "" : columnDef.tableData.filterValue}
             onChange={event => this.props.onFilterChanged(columnDef.tableData.id, event.target.value)}
             input={<Input />}
           >
