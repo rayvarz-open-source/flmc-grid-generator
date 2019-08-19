@@ -44,7 +44,7 @@ export type Controllers<Model extends object> = {
   customActionsController?: BehaviorSubject<Action<Model>[]>;
   containerController?: BehaviorSubject<IElement[]>;
   keyFieldName?: BehaviorSubject<string>;
-  hideColumnModalHiddenFieldsController: BehaviorSubject<FieldName[]>;
+  hideColumnModalHiddenFieldsController?: BehaviorSubject<FieldName[]>;
 };
 
 export type Options = {
