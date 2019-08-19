@@ -4,6 +4,7 @@ import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import { GridGenerator } from "../../GridGenerator";
 import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
+import { Filter } from "../../Models/Filter";
 import { KeyValueModel } from "../../Models/KeyValueModel";
 import { Localization } from "../../Models/Localization";
 import { Schema } from "../../Models/Schema";
@@ -41,7 +42,7 @@ export const filterHandler: Handler = (props, observables) => {
           filtering: canFilter,
           showListFilterModal: (onSelect: (model: KeyValueModel) => void) => {
             if (props.options.listFilterDataSource == null) return;
-            const source = defaultFilter!.source || field.type.source!;
+            const source = field.type.source! || defaultFilter!.source;
 
             props.elements.listFilterModal.child(
               GridGenerator({
@@ -88,3 +89,13 @@ export const filterHandler: Handler = (props, observables) => {
     columnDefinitions: colDefinitionHandler
   };
 };
+
+// inline edit logic :
+
+function processSourceFilters(filters: Filter[], row: any): Filter[] {
+  let newFilter = [...filters];
+  for (let filter of newFilter) {
+    if (typeof filter.value === "string" && filter.value.startsWith("@")) filter.value = row[filter.value.substring(1)];
+  }
+  return newFilter;
+}
