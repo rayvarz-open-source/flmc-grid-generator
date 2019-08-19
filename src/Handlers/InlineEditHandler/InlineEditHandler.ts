@@ -1,7 +1,11 @@
-import { OnRowClick } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
-import { BehaviorSubject } from "rxjs";
+import { ColumnDefinitions, OnRowClick } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { BehaviorSubject, combineLatest } from "rxjs";
 import { map } from "rxjs/operators";
+import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
+import { Filter } from "../../Models/Filter";
+import { Schema } from "../../Models/Schema";
 import { Handler } from "../Handlers";
+import InlineEditRowView from "./InlineEditRowView";
 
 export const inlineEditHandler: Handler = (props, observables) => {
   const rowActionDefinitionObservable = observables.rowActionDefinitions.pipe(
@@ -29,9 +33,56 @@ export const inlineEditHandler: Handler = (props, observables) => {
     });
   });
 
+  const componentOverride = observables.componentsOverride.pipe(
+    map(v => {
+      return {
+        ...v,
+        EditRow: InlineEditRowView
+      };
+    })
+  );
+
+  const colDefinitionHandler = combineLatest(
+    props.controllers.hideColumnModalHiddenFieldsController,
+    observables.columnDefinitions
+  ).pipe(
+    map(([hiddenFields, [cols, schema]]): [ColumnDefinitions, Schema] => {
+      const newCols = cols.map(col => {
+        const field: FieldSchema = col.fieldDefinition;
+        let isEditable = field.isEditable ? "always" : "never";
+        if (
+          ![
+            FieldShemaTypeName.List,
+            FieldShemaTypeName.LocalList,
+            FieldShemaTypeName.Bit,
+            FieldShemaTypeName.String,
+            FieldShemaTypeName.Int,
+            FieldShemaTypeName.Money
+          ].includes(field.type.name)
+        )
+          isEditable = "never";
+        return {
+          ...col,
+          editable: isEditable
+        };
+      });
+      return [newCols, schema];
+    })
+  );
+
   return {
     ...observables,
     rowActionDefinitions: rowActionDefinitionObservable,
-    onRowClick: onRowClick
+    onRowClick: onRowClick,
+    componentsOverride: componentOverride,
+    columnDefinitions: colDefinitionHandler
   };
 };
+
+function processSourceFilters(filters: Filter[], row: any): Filter[] {
+  let newFilter = [...filters];
+  for (let filter of newFilter) {
+    if (typeof filter.value === "string" && filter.value.startsWith("@")) filter.value = row[filter.value.substring(1)];
+  }
+  return newFilter;
+}
