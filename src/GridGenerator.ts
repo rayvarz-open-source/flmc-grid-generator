@@ -9,6 +9,7 @@ import {
   Datasource,
   GridOptions,
   LocalizationDefinition,
+  OnRowClick,
   RowActionDefinitions,
   Title
 } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
@@ -55,6 +56,7 @@ export type Options<Model> = {
   localization?: Observable<Localization>;
   enableSelection?: Observable<boolean> | boolean;
   listFilterDataSource?: GeneralDataSourceFunction<Model>;
+  inlineEditCallBack?: (oldModel: Model, newModel: Model) => Promise<void>;
 };
 
 export type Builders = {
@@ -79,7 +81,30 @@ export const defaultLocalization: Localization = {
   delete: "Delete",
   errorFetchingSchema: "Error fetching schema",
   loading: "Loading...",
-  materialTable: undefined,
+  materialTable: {
+    grouping: {
+      groupedBy: "Grouped By:",
+      placeholder: "Drag headers here to group by"
+    },
+    pagination: {
+      labelDisplayedRows: "{from}-{to} of {count}",
+      labelRowsPerPage: "Rows per page:",
+      labelRowsSelect: "rows"
+    },
+    toolbar: {},
+    header: {},
+    body: {
+      filterRow: {},
+      editRow: {
+        saveTooltip: "Save",
+        cancelTooltip: "Cancel",
+        deleteText: "Are you sure you want to delete this row?"
+      },
+      addTooltip: "Add",
+      deleteTooltip: "Delete",
+      editTooltip: "Edit"
+    }
+  },
   refresh: "Refresh",
   retry: "Retry",
   select: "Select",
@@ -117,6 +142,7 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
     documentListContainerBuilder: () => new ContainerElement().direction(ContainerDirection.Row),
     observablesBuilder: () => {
       return {
+        onRowClick: new BehaviorSubject<OnRowClick>(undefined),
         actionDefinitions: new BehaviorSubject<ActionDefinitions>([]).asObservable(),
         columnDefinitions: combineLatest(new BehaviorSubject<ColumnDefinitions>([]), controllers.schemaController),
         componentsOverride: new BehaviorSubject<ComponentsOverride>({}).asObservable(),
@@ -211,7 +237,8 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
         ? props.options.localization
         : new BehaviorSubject<Localization>(defaultLocalization),
     listFilterDataSource:
-      props.options && props.options.listFilterDataSource ? props.options.listFilterDataSource : undefined
+      props.options && props.options.listFilterDataSource ? props.options.listFilterDataSource : undefined,
+    inlineEditCallBack: props.options && props.options.inlineEditCallBack ? props.options.inlineEditCallBack : undefined
   };
 
   let defaultBuilders = makeDefaultBuilders<Model>(controllers);

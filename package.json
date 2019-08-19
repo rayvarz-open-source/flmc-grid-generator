@@ -40,7 +40,7 @@
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
-    "flmc-lite-renderer": "^1.0.31",
+    "flmc-lite-renderer": "^1.0.34",
     "material-table": "^1.40.0",
     "prettier": "1.18.2",
     "react-scripts-ts": "^4.0.8",

@@ -8,6 +8,7 @@ import { remoteDataSourceHandler } from "./DataSourceHandler/RemoteDataSourceHan
 import { exportHandler } from "./ExportHandler/ExportHandler";
 import { filterHandler } from "./FilterHandler/FilterHandler";
 import { hideColumnsModalHandler } from "./HideColumnsModalHandler/HideColumnsModalHandler";
+import { inlineEditHandler } from "./InlineEditHandler/InlineEditHandler";
 import { refreshActionHandler } from "./RefreshActionHandler/RefreshActionHandler";
 import { selectionHandler } from "./SelectionHandler/SelectionHandler";
 import { sortHandler } from "./SortHandler/SortHandler";
@@ -31,5 +32,6 @@ export const handlers: Handler[] = [
   exportHandler,
   refreshActionHandler,
   hideColumnsModalHandler,
-  customActionHandler
+  customActionHandler,
+  inlineEditHandler
 ];

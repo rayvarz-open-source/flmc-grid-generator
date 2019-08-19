@@ -17,7 +17,7 @@ export const columnDefinitionHandler: Handler = (props, observables) => {
         .map(field => {
           return {
             title: field.title,
-            editable: field.isEditable ? "always" : "never",
+            editable: "always",
             fieldDefinition: field,
             field: field.fieldName
           };

@@ -35,10 +35,18 @@ const ds = async dataSourceProps => {
   return resultAsJson;
 };
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(() => resolve(), ms));
+}
+
 const createGridViaDataSource = datasource => {
   return GridGenerator({
     options: {
-      listFilterDataSource: ds
+      listFilterDataSource: ds,
+      inlineEditCallBack: async (oldData, newData) => {
+        await sleep(3000);
+        return;
+      }
     },
     dataSource: options => ds({ ...options, url: datasource })
   });

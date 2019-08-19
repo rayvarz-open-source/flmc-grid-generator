@@ -8,6 +8,7 @@ import {
   Datasource,
   GridOptions,
   LocalizationDefinition,
+  OnRowClick,
   RowActionDefinitions,
   Title
 } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
@@ -49,6 +50,7 @@ export type BaseOptions<Model> = {
   customActionsPosition: Observable<CustomActionPosition>;
   localization: Observable<Localization>;
   listFilterDataSource?: GeneralDataSourceFunction<Model>;
+  inlineEditCallBack?: (oldModel: Model, newModel: Model) => Promise<void>;
 };
 
 export type BaseBuilders = {
@@ -88,6 +90,7 @@ export type AttributeObservables = {
   gridOptions: Observable<GridOptions>;
   title: Observable<Title>;
   localizationDefinition: Observable<LocalizationDefinition>;
+  onRowClick: Observable<OnRowClick>;
 };
 
 export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>): IElement {
@@ -126,6 +129,7 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
     .rowActionDefinitions(observables.rowActionDefinitions)
     .gridOptions(observables.gridOptions)
     .title(observables.title)
+    .onRowClick(observables.onRowClick)
     .localizationDefinition(observables.localizationDefinition);
 
   return containerElement;
