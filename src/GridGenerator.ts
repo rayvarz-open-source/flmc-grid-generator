@@ -14,7 +14,8 @@ import {
 } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, fromEvent, merge, Observable, of } from "rxjs";
+import { map } from "rxjs/operators";
 import {
   AttributeObservables,
   BaseBuilders,
@@ -86,14 +87,19 @@ export const defaultLocalization: Localization = {
 };
 
 export const makeDefaultBuilders = <Model extends object>(controllers: BaseControllers<Model>): BaseBuilders => {
+  let windowResizeEvent = merge(
+    of([window.innerHeight, window.innerWidth]),
+    fromEvent(window, "resize").pipe(map((v: any): [number, number] => [window.innerHeight, window.innerWidth]))
+  );
+
   return {
     containerBuilder: () => new ContainerElement(),
     gridBuilder: () => new GridElement(),
     hideColumnModalBuilder: () =>
       new ModalElement()
-        .minWidth(window.innerWidth * 0.7)
-        .maxWidth(window.innerWidth)
-        .maxHeight(window.innerHeight)
+        .minWidth(windowResizeEvent.pipe(map(([height, width]) => width * 0.7)))
+        .maxHeight(windowResizeEvent.pipe(map(([height, width]) => height)))
+        .maxWidth(windowResizeEvent.pipe(map(([height, width]) => width)))
         .noBackdropClickClose(false)
         .noEscapeKeyDownClose(false),
     documentListModalBuilder: () => new ModalElement().noBackdropClickClose(false).noEscapeKeyDownClose(false),
