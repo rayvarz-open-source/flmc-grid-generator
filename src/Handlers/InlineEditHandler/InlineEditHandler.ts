@@ -8,6 +8,7 @@ import { Handler } from "../Handlers";
 import InlineEditRowView from "./InlineEditRowView";
 
 export const inlineEditHandler: Handler = (props, observables) => {
+  if (props.options.inlineEditCallBack == null) return observables;
   const rowActionDefinitionObservable = observables.rowActionDefinitions.pipe(
     map(v => {
       return {
