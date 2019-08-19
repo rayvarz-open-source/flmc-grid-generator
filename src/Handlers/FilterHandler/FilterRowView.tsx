@@ -111,7 +111,6 @@ class CustomFilterRowView extends React.Component<Props> {
       <Tooltip title={columnDef.filter.filterName || ""}>
         <FormControl>
           <Select
-            placeholder={"Y"}
             value={columnDef.tableData.filterValue == null ? "" : columnDef.tableData.filterValue}
             onChange={event => this.props.onFilterChanged(columnDef.tableData.id, event.target.value)}
             input={<Input />}
@@ -160,7 +159,6 @@ class CustomFilterRowView extends React.Component<Props> {
     return (
       <Tooltip title={columnDef.filter.filterName || ""}>
         <TextField
-          placeholder={"Y"}
           style={isNumeric ? { float: "right" } : {}}
           type={isNumeric ? "number" : "text"}
           value={columnDef.tableData.filterValue || ""}
