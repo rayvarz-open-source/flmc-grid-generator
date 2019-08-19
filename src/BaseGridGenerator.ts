@@ -17,7 +17,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { GridCommand } from "./Handlers/CommandHandler/Commands";
 import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
-import { DataSource } from "./Handlers/DataSourceHandler/DataSource";
+import { DataSource, GeneralDataSourceFunction } from "./Handlers/DataSourceHandler/DataSource";
 import { handlers } from "./Handlers/Handlers";
 import { Filter } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
@@ -41,19 +41,21 @@ export type BaseControllers<Model extends object> = {
   hideColumnModalHiddenFieldsController: BehaviorSubject<FieldName[]>;
 };
 
-export type BaseOptions = {
+export type BaseOptions<Model> = {
   noHideColumnModel: Observable<boolean>;
   enableSelection: Observable<boolean>;
   noExport: Observable<boolean>;
   noRefresh: Observable<boolean>;
   customActionsPosition: Observable<CustomActionPosition>;
   localization: Observable<Localization>;
+  listFilterDataSource?: GeneralDataSourceFunction<Model>;
 };
 
 export type BaseBuilders = {
   containerBuilder: () => ContainerElement;
   gridBuilder: () => GridElement;
   hideColumnModalBuilder: () => ModalElement;
+  listFilterModalBuilder: () => ModalElement;
   observablesBuilder: () => AttributeObservables;
   documentListModalBuilder: () => ModalElement;
   documentListContainerBuilder: () => ContainerElement;
@@ -64,6 +66,7 @@ export type ElementInstances = {
     container: ContainerElement;
     grid: GridElement;
     hideColumnModal: ModalElement;
+    listFilterModal: ModalElement;
     documentListModal: ModalElement;
     documentListContainer: ContainerElement;
   };
@@ -71,7 +74,7 @@ export type ElementInstances = {
 
 export type BaseProps<Model extends object> = {
   dataSource: DataSource<Model>;
-  options: BaseOptions;
+  options: BaseOptions<Model>;
   builders: BaseBuilders;
   controllers: BaseControllers<Model>;
 };
@@ -93,6 +96,7 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
   let gridElement = props.builders.gridBuilder();
   let hideColumnModalElement = props.builders.hideColumnModalBuilder();
   let documentListContainer = props.builders.documentListContainerBuilder();
+  let listFilterModal = props.builders.listFilterModalBuilder();
   let documentListModal = props.builders.documentListModalBuilder().child(documentListContainer);
 
   let elements: ElementInstances = {
@@ -101,11 +105,12 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
       grid: gridElement,
       hideColumnModal: hideColumnModalElement,
       documentListContainer: documentListContainer,
-      documentListModal: documentListModal
+      documentListModal: documentListModal,
+      listFilterModal: listFilterModal
     }
   };
 
-  props.controllers.containerController.next([gridElement, hideColumnModalElement, documentListModal]);
+  props.controllers.containerController.next([gridElement, hideColumnModalElement, documentListModal, listFilterModal]);
   // attribute observables
   let observables = props.builders.observablesBuilder();
   // run handlers

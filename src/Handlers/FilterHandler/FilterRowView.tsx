@@ -10,11 +10,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { Container, Modal } from "flmc-lite-renderer";
-import { MapToView } from "flmc-lite-renderer/build/form/elements/ElementToViewMapper";
 import jMoment from "moment-jalaali";
 import * as React from "react";
-import { BehaviorSubject } from "rxjs";
 import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
 import { FilterSchema } from "../../Models/Filter";
 
@@ -51,57 +48,7 @@ type RemoteLookupFilterProps = {
 };
 
 function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupFilterProps) {
-  const [open, setOpen] = React.useState(() => new BehaviorSubject<boolean>(false));
   const [value, setValue] = React.useState<any>("");
-  let source = field.type.source!;
-
-  // function createElement(): IElement {
-  //   let element = createGridViaDataSource(
-  //     async options => {
-  //       let result = await fetch(source.address!, {
-  //         method: "POST",
-  //         headers: {
-  //           "content-type": "application/json"
-  //         },
-  //         body: JSON.stringify({
-  //           ...source.request,
-  //           schema: options.needSchema,
-  //           pagination: {
-  //             needInfo: options.needPagination,
-  //             pageNo: options.pageNo,
-  //             pageSize: options.pageSize
-  //           },
-  //           filters: [...(options.filters || []), ...(source.request!.filters || [])],
-  //           sorts: [...(options.sorts || []), ...(source.request!.sorts || [])]
-  //         })
-  //       });
-  //       return (await result.json()) as any;
-  //     },
-  //     {
-  //       onSelect: (model: any) => {
-  //         setValue(model[source.valueFieldName]);
-  //         onFilterChanged(columnDef.tableData.id, model[source.keyFieldName]);
-  //         open.next(false);
-  //       },
-  //       ...defaultOptions
-  //     }
-  //   );
-  //   return element;
-  // }
-
-  const modal = React.useMemo(
-    () =>
-      Modal(
-        Container([
-          // createElement()
-        ])
-      )
-        .open(open)
-        .noEscapeKeyDownClose(false)
-        .noBackdropClickClose(false)
-        .maxHeight(window.innerWidth * 0.8),
-    [open]
-  );
 
   return (
     <>
@@ -128,7 +75,14 @@ function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupF
             }
             startAdornment={
               <InputAdornment position="start">
-                <IconButton onClick={() => open.next(true)}>
+                <IconButton
+                  onClick={() => {
+                    columnDef.showListFilterModal(model => {
+                      setValue(model.value);
+                      onFilterChanged(columnDef.tableData.id, model.key);
+                    });
+                  }}
+                >
                   <Icon>menu</Icon>
                 </IconButton>
               </InputAdornment>
@@ -136,7 +90,6 @@ function RemoteLookupFilter({ field, columnDef, onFilterChanged }: RemoteLookupF
           />
         </FormControl>
       </Tooltip>
-      <MapToView weight={0} element={modal} />
     </>
   );
 }

@@ -26,7 +26,7 @@ import {
 } from "./BaseGridGenerator";
 import { GridCommand, GridCommands } from "./Handlers/CommandHandler/Commands";
 import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
-import { DataSource } from "./Handlers/DataSourceHandler/DataSource";
+import { DataSource, GeneralDataSourceFunction } from "./Handlers/DataSourceHandler/DataSource";
 import { Filter } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
 import { PaginationInfo } from "./Models/Pagination";
@@ -47,13 +47,14 @@ export type Controllers<Model extends object> = {
   hideColumnModalHiddenFieldsController?: BehaviorSubject<FieldName[]>;
 };
 
-export type Options = {
+export type Options<Model> = {
   noHideColumnModel?: Observable<boolean>;
   noExport?: Observable<boolean>;
   noRefresh?: Observable<boolean>;
   customActionsPosition?: Observable<CustomActionPosition>;
   localization?: Observable<Localization>;
   enableSelection?: Observable<boolean> | boolean;
+  listFilterDataSource?: GeneralDataSourceFunction<Model>;
 };
 
 export type Builders = {
@@ -63,13 +64,14 @@ export type Builders = {
   observablesBuilder?: () => AttributeObservables;
   documentListModalBuilder?: () => ModalElement;
   documentListContainerBuilder?: () => ContainerElement;
+  listFilterModalBuilder?: () => ModalElement;
 };
 
 export type Props<Model extends object> = {
   dataSource: DataSource<Model>;
-  options?: Options;
+  options?: Options<Model>;
   builders?: BaseBuilders;
-  controllers?: BaseControllers<Model>;
+  controllers?: Controllers<Model>;
 };
 
 export const defaultLocalization: Localization = {
@@ -95,6 +97,15 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
   return {
     containerBuilder: () => new ContainerElement(),
     gridBuilder: () => new GridElement(),
+    listFilterModalBuilder: () =>
+      new ModalElement()
+        .minWidth(windowResizeEvent.pipe(map(([height, width]) => width * 0.7)))
+        .maxHeight(windowResizeEvent.pipe(map(([height, width]) => height)))
+        .maxWidth(windowResizeEvent.pipe(map(([height, width]) => width)))
+        .noBackdropClickClose(false)
+        .visibleHeader(false)
+        .noEscapeKeyDownClose(false)
+        .noPadding(true),
     hideColumnModalBuilder: () =>
       new ModalElement()
         .minWidth(windowResizeEvent.pipe(map(([height, width]) => width * 0.7)))
@@ -178,7 +189,7 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
         : new BehaviorSubject<FieldName[]>([])
   };
 
-  let options: BaseOptions = {
+  let options: BaseOptions<Model> = {
     customActionsPosition:
       props.options && props.options.customActionsPosition
         ? props.options.customActionsPosition
@@ -198,12 +209,18 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     localization:
       props.options && props.options.localization
         ? props.options.localization
-        : new BehaviorSubject<Localization>(defaultLocalization)
+        : new BehaviorSubject<Localization>(defaultLocalization),
+    listFilterDataSource:
+      props.options && props.options.listFilterDataSource ? props.options.listFilterDataSource : undefined
   };
 
   let defaultBuilders = makeDefaultBuilders<Model>(controllers);
 
   let builders: BaseBuilders = {
+    listFilterModalBuilder:
+      props.builders && props.builders.listFilterModalBuilder
+        ? props.builders.listFilterModalBuilder
+        : defaultBuilders.listFilterModalBuilder,
     containerBuilder:
       props.builders && props.builders.containerBuilder
         ? props.builders.containerBuilder

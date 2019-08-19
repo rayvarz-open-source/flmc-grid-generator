@@ -13,5 +13,8 @@ export type DataSourceFunctionOptions = {
 };
 
 export type DataSourceFunction<Model> = (options: DataSourceFunctionOptions) => Promise<GridResultModel<Model>>;
+export type GeneralDataSourceFunction<Model> = (
+  options: DataSourceFunctionOptions & { url: string }
+) => Promise<GridResultModel<Model>>;
 
 export type DataSource<Model> = BehaviorSubject<Model[]> | DataSourceFunction<Model>;

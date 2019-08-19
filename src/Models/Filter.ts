@@ -1,3 +1,5 @@
+import { FieldSchemaTypeSource } from "./Field";
+
 export enum FilterSchemaType {
   LIKE = "like",
   EQUAL_BY = "equalBy"
@@ -9,7 +11,7 @@ export interface FilterSchema {
   fieldName: string;
   type: FilterSchemaType;
   value: null;
-  source: null;
+  source: null | FieldSchemaTypeSource;
 }
 
 export type Filter = {
