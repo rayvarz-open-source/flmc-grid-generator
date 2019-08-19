@@ -5,37 +5,42 @@ import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import "./App.css";
 
+const ds = async dataSourceProps => {
+  let result = await fetch(dataSourceProps.url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      storeId: 9
+    },
+    body: JSON.stringify({
+      filters: [
+        {
+          fieldName: "fStoreId",
+          type: "equalBy",
+          value: 9
+        },
+        ...dataSourceProps.filters
+      ],
+      sorts: dataSourceProps.sorts,
+      ignoredFields: [],
+      schema: dataSourceProps.needSchema,
+      pagination: {
+        needInfo: dataSourceProps.needPagination,
+        pageNo: dataSourceProps.pageNo,
+        pageSize: dataSourceProps.pageSize
+      }
+    })
+  });
+  let resultAsJson = await result.json();
+  return resultAsJson;
+};
+
 const createGridViaDataSource = datasource => {
   return GridGenerator({
-    dataSource: async dataSourceProps => {
-      let result = await fetch(datasource, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          storeId: 9
-        },
-        body: JSON.stringify({
-          filters: [
-            {
-              fieldName: "fStoreId",
-              type: "equalBy",
-              value: 9
-            },
-            ...dataSourceProps.filters
-          ],
-          sorts: dataSourceProps.sorts,
-          ignoredFields: [],
-          schema: dataSourceProps.needSchema,
-          pagination: {
-            needInfo: dataSourceProps.needPagination,
-            pageNo: dataSourceProps.pageNo,
-            pageSize: dataSourceProps.pageSize
-          }
-        })
-      });
-      let resultAsJson = await result.json();
-      return resultAsJson;
-    }
+    options: {
+      listFilterDataSource: ds
+    },
+    dataSource: options => ds({ ...options, url: datasource })
   });
 };
 
