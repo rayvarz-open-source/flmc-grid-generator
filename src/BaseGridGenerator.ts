@@ -25,6 +25,8 @@ import { PaginationInfo } from "./Models/Pagination";
 import { Schema } from "./Models/Schema";
 import { Sort } from "./Models/Sort";
 
+export type FieldName = string;
+
 export type BaseControllers<Model extends object> = {
   schemaController: BehaviorSubject<Schema>;
   filtersController: BehaviorSubject<Filter[]>;
@@ -36,6 +38,7 @@ export type BaseControllers<Model extends object> = {
   customActionsController: BehaviorSubject<Action<Model>[]>;
   containerController: BehaviorSubject<IElement[]>;
   keyFieldName: BehaviorSubject<string>;
+  hideColumnModalHiddenFieldsController: BehaviorSubject<FieldName[]>;
 };
 
 export type BaseOptions = {

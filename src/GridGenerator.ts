@@ -20,7 +20,8 @@ import {
   BaseBuilders,
   BaseControllers,
   BaseGridGenerator,
-  BaseOptions
+  BaseOptions,
+  FieldName
 } from "./BaseGridGenerator";
 import { GridCommand, GridCommands } from "./Handlers/CommandHandler/Commands";
 import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
@@ -42,6 +43,7 @@ export type Controllers<Model extends object> = {
   customActionsController?: BehaviorSubject<Action<Model>[]>;
   containerController?: BehaviorSubject<IElement[]>;
   keyFieldName?: BehaviorSubject<string>;
+  hideColumnModalHiddenFieldsController: BehaviorSubject<FieldName[]>;
 };
 
 export type Options = {
@@ -163,7 +165,11 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     keyFieldName:
       props.controllers && props.controllers.keyFieldName
         ? props.controllers.keyFieldName
-        : new BehaviorSubject<string>("")
+        : new BehaviorSubject<string>(""),
+    hideColumnModalHiddenFieldsController:
+      props.controllers && props.controllers.hideColumnModalHiddenFieldsController
+        ? props.controllers.hideColumnModalHiddenFieldsController
+        : new BehaviorSubject<FieldName[]>([])
   };
 
   let options: BaseOptions = {

@@ -1,7 +1,8 @@
 import { Container, ContainerDirection, SelectBox, SelectBoxVariant } from "flmc-lite-renderer";
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
-import { BehaviorSubject, combineLatest } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { first, map, skip } from "rxjs/operators";
+import { FieldName } from "../../BaseGridGenerator";
 import { FieldSchema } from "../../Models/Field";
 import { Localization } from "../../Models/Localization";
 import { Schema } from "../../Models/Schema";
@@ -20,9 +21,12 @@ function chunk<T>(array: Array<T>, size: number): Array<Array<T>> {
   return chunked_arr;
 }
 
-export function setupHideColumnModal(schema: BehaviorSubject<Schema>): IElement {
-  function createControllerForField(field: FieldSchema): BehaviorSubject<boolean | null> {
-    let subject = new BehaviorSubject<boolean | null>(field.isVisible);
+export function setupHideColumnModal(schema: Observable<Schema>, hiddenFields: BehaviorSubject<FieldName[]>): IElement {
+  function createControllerForField(
+    field: FieldSchema,
+    hiddenFieldsSnapshot: FieldName[]
+  ): BehaviorSubject<boolean | null> {
+    let subject = new BehaviorSubject<boolean | null>(!hiddenFieldsSnapshot.includes(field.fieldName));
 
     // update schema if value changed
     subject
@@ -30,31 +34,23 @@ export function setupHideColumnModal(schema: BehaviorSubject<Schema>): IElement 
         skip(1),
         first()
       )
-      .subscribe(isChecked =>
-        schema.next({
-          ...schema.value,
-          fields: schema.value.fields.map(foundField => {
-            if (foundField.fieldName !== field.fieldName) return foundField;
-            return {
-              ...foundField,
-              isVisible: isChecked === true
-            };
-          })
-        })
-      );
+      .subscribe(isChecked => {
+        if (!isChecked) hiddenFields.next([...hiddenFields.value, field.fieldName]);
+        else hiddenFields.next([...hiddenFields.value.filter(v => v !== field.fieldName)]);
+      });
 
     return subject;
   }
 
-  function createCheckboxElements(snapshot: Schema): IElement[] {
+  function createCheckboxElements(snapshot: Schema, hiddenFiels: FieldName[]): IElement[] {
     let elements: IElement[] = [];
 
-    let chunkedFields = chunk(snapshot.fields, 3);
+    let chunkedFields = chunk(snapshot.fields.filter(v => v.isVisible), 3);
 
     for (let index = 0; index < chunkedFields.length; index++) {
       let chunk = chunkedFields[index];
       let children: IElement[] = chunk.map(field =>
-        SelectBox(createControllerForField(field), true)
+        SelectBox(createControllerForField(field, hiddenFiels), true)
           .label(field.title || field.fieldName)
           .variant(SelectBoxVariant.CheckBox)
       );
@@ -72,12 +68,18 @@ export function setupHideColumnModal(schema: BehaviorSubject<Schema>): IElement 
     return elements;
   }
 
-  return Container(schema.pipe(map(snapshot => [...createCheckboxElements(snapshot)])));
+  return Container(
+    combineLatest(schema, hiddenFields).pipe(
+      map(([schemaSnapshot, hiddenFieldsSnapshot]) => [...createCheckboxElements(schemaSnapshot, hiddenFieldsSnapshot)])
+    )
+  );
 }
 
 export const hideColumnsModalHandler: Handler = (props, observables) => {
   const openHideColumnsModal = (localization: Localization) => {
-    props.elements.hideColumnModal.childContainer.next(setupHideColumnModal(props.controllers.schemaController));
+    props.elements.hideColumnModal.childContainer.next(
+      setupHideColumnModal(props.controllers.schemaController, props.controllers.hideColumnModalHiddenFieldsController)
+    );
     props.elements.hideColumnModal.titleContainer.next(localization.columnVisibilityTitle);
     props.elements.hideColumnModal.openContainer.next(true);
   };
