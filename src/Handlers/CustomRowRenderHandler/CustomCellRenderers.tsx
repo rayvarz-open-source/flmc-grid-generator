@@ -70,6 +70,13 @@ export function handleCustomComponentRenderer(field: FieldSchema, callbacks: Cal
         if (data == null) return <> </>;
         return <QRCode value={data} />;
       };
+    case FieldShemaTypeName.Object:
+      return rowData => {
+        let data = rowData[field.fieldName];
+        data = data == null ? {} : data;
+        data = data[field.type.source!.valueFieldName];
+        return <p>{data + ""}</p>; // convert objects to string to be a valid react node
+      };
     default:
       return rowData => {
         let data = rowData[field.fieldName];
