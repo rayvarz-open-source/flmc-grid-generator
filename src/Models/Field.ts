@@ -31,6 +31,7 @@ export interface FieldSchema {
   type: FieldType;
   isKey: boolean;
   isVisible: boolean;
+  isVisibleDefault: boolean;
   order: number;
   isEditable: boolean;
 }

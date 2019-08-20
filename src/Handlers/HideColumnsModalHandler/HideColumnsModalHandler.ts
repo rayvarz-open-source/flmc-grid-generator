@@ -98,6 +98,12 @@ export const hideColumnsModalHandler: Handler = (props, observables) => {
     })
   );
 
+  props.controllers.schemaController.subscribe(v => {
+    props.controllers.hideColumnModalHiddenFieldsController.next(
+      v.fields.filter(f => f.isVisible && !f.isVisibleDefault).map(f => f.fieldName)
+    );
+  });
+
   return {
     ...observables,
     actionDefinitions: actions
