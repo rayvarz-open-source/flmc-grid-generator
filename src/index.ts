@@ -1,3 +1,4 @@
+import * as QRCodeView from "react-qrcode-logo";
 import { GridGenerator } from "./GridGenerator";
 
-export { GridGenerator };
+export { GridGenerator, QRCodeView };

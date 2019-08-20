@@ -1,6 +1,7 @@
 import { Datasource } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { BehaviorSubject } from "rxjs";
 import { Filter, FilterSchemaType } from "../../Models/Filter";
+import { Schema } from "../../Models/Schema";
 import { isFilterChanged, materialTableFilterToGridFilter } from "../FilterHandler/materialTableFilterToGridFilter";
 import { Handler } from "../Handlers";
 import { DataSourceFunction } from "./DataSource";
@@ -61,9 +62,10 @@ export const remoteDataSourceHandler: Handler = (props, observables) => {
       props.controllers.paginationController.next(result.pagination);
       cachedPageSize = result.pagination.totalRow;
     }
-    props.controllers.currentPageDataController.next(result.value);
+    const proccessedResult = processResultValue(result.value, props.controllers.schemaController.value);
+    props.controllers.currentPageDataController.next(proccessedResult);
     return {
-      data: result.value.map(v => {
+      data: proccessedResult.map(v => {
         let mixin = {};
         if (isSelectionEnabled) {
           mixin = {
@@ -92,3 +94,34 @@ export const remoteDataSourceHandler: Handler = (props, observables) => {
     datasource: dataSourceObservable
   };
 };
+
+function processResultValue(originalItems: any[], schema: Schema): any[] {
+  let items = [...originalItems];
+  // handle refrence values, e.g: @barcode
+  let refrenceNames = schema.fields.map(field => `@${field.fieldName}`);
+
+  const hasRefrenceName = (value: string) => {
+    for (let refrenceName of refrenceNames) {
+      if (value.includes(refrenceName)) return true;
+    }
+    return false;
+  };
+
+  schema.fields.forEach(field => {
+    if (
+      field.type &&
+      field.type.source &&
+      typeof field.type.source.values === "string" &&
+      hasRefrenceName(field.type.source.values)
+    ) {
+      // change row data with refrence value
+      for (let row of items) {
+        let col = field.type.source.values + "";
+        for (let refrenceName of refrenceNames) col = col.replace(refrenceName, row[refrenceName.substring(1)] + "");
+        row[field.fieldName] = col;
+      }
+    }
+  });
+
+  return items;
+}

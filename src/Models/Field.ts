@@ -16,6 +16,7 @@ export enum FieldShemaTypeName {
   Image = "Image",
   ImageList = "ImageList",
   Barcode = "Barcode",
+  QRCode = "QR",
   List = "List",
   LocalList = "LocalList"
 }

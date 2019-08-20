@@ -2,6 +2,7 @@ import { Icon } from "@material-ui/core";
 // @ts-ignore
 import _momentJalali from "moment-jalali";
 import * as React from "react";
+import { QRCode } from "react-qrcode-logo";
 import { DocumentModel } from "../../Models/DocumentModel";
 import { FieldSchema, FieldShemaTypeName } from "../../Models/Field";
 import { Barcode } from "./Barcode";
@@ -62,6 +63,12 @@ export function handleCustomComponentRenderer(field: FieldSchema, callbacks: Cal
         let data = rowData[field.fieldName];
         if (data == null) return <> </>;
         return <Barcode value={data} />;
+      };
+    case FieldShemaTypeName.QRCode:
+      return rowData => {
+        let data = rowData[field.fieldName];
+        if (data == null) return <> </>;
+        return <QRCode value={data} />;
       };
     default:
       return rowData => {
