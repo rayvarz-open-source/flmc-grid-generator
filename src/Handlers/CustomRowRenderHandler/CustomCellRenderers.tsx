@@ -64,7 +64,11 @@ export function handleCustomComponentRenderer(field: FieldSchema, callbacks: Cal
         return <Barcode value={data} />;
       };
     default:
-      return undefined;
+      return rowData => {
+        let data = rowData[field.fieldName];
+        data = data == null ? " - " : data;
+        return <p>{data + ""}</p>; // convert objects to string to be a valid react node
+      };
   }
 }
 
