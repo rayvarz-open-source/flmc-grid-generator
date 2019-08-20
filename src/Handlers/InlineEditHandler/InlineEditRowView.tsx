@@ -58,6 +58,9 @@ type Props = {
   level: number;
   components: any;
   isTreeData: boolean;
+  detailPanel: any;
+  onTreeExpandChanged: any;
+  onToggleDetailPanel: any;
 };
 
 export default class InlineEditRowView extends React.Component<Props, any> {
@@ -286,12 +289,12 @@ export default class InlineEditRowView extends React.Component<Props, any> {
       });
 
     const {
-      //   detailPanel,
+      detailPanel,
       isTreeData,
       onRowClick,
       onRowSelected,
-      //   onTreeExpandChanged,
-      //   onToggleDetailPanel,
+      onTreeExpandChanged,
+      onToggleDetailPanel,
       onEditingApproved,
       onEditingCanceled,
       getFieldValue,
