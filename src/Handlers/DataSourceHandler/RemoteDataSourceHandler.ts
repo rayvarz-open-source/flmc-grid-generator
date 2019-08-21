@@ -95,7 +95,7 @@ export const remoteDataSourceHandler: Handler = (props, observables) => {
   };
 };
 
-function processResultValue(originalItems: any[], schema: Schema): any[] {
+export function processResultValue(originalItems: any[], schema: Schema): any[] {
   let items = [...originalItems];
   // handle refrence values, e.g: @barcode
   let refrenceNames = schema.fields.map(field => `@${field.fieldName}`);
