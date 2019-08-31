@@ -1,5 +1,6 @@
 import { GridGenerator } from "flmc-grid-generator";
-import FLMC, { Button, FormController, Label } from "flmc-lite-renderer";
+import { AdvanceFilterView } from "flmc-grid-generator/build/Handlers/AdvanceFilterHandler/AdvanceFilterView";
+import FLMC, { Button, FormController, Label, Modal, Raw } from "flmc-lite-renderer";
 import React from "react";
 import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
@@ -59,7 +60,15 @@ class SampleForm extends FormController {
   selection = new BehaviorSubject([]);
   //
   elements = [
-    createGridViaDataSource("-"),
+    Modal(Raw(() => <AdvanceFilterView />))
+      .visibleHeader(false)
+      .open(true)
+      .minWidth(window.innerWidth * 0.7)
+      .maxWidth(window.innerWidth * 0.7)
+      .minHeight(window.innerHeight * 0.75)
+      .maxHeight(window.innerHeight * 0.75)
+      .noPadding(true),
+    // createGridViaDataSource("-"),
     Label(this.selection.pipe(map(v => `${v.length} selected`))),
     Button("deselect All").onClick(() => this.selection.next([]))
   ];
