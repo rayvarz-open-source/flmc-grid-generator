@@ -38,7 +38,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
     );
   }
   let element: React.ReactNode;
-  if (subExpressions.length < 3) {
+  if (subExpressions.length < 4) {
     element = (
       <div style={{ flexDirection: "row", display: "flex", alignItems: "center" }}>
         {createKeyword("(")}

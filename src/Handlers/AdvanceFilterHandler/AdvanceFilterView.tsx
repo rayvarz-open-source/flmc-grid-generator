@@ -71,17 +71,6 @@ export function AdvanceFilterView(props: Props) {
                   type: FilterSchemaType.EQUAL_BY,
                   fieldName: "Title",
                   value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
                 },
                 {
                   type: FilterSchemaType.EQUAL_BY,
@@ -94,27 +83,6 @@ export function AdvanceFilterView(props: Props) {
               type: FilterSchemaType.OR,
               fieldName: "",
               value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
                 {
                   type: FilterSchemaType.EQUAL_BY,
                   fieldName: "Title",
@@ -135,118 +103,6 @@ export function AdvanceFilterView(props: Props) {
                   type: FilterSchemaType.EQUAL_BY,
                   fieldName: "Title",
                   value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.OR,
-                  fieldName: "",
-                  value: [
-                    {
-                      type: FilterSchemaType.EQUAL_BY,
-                      fieldName: "Title",
-                      value: "test"
-                    },
-                    {
-                      type: FilterSchemaType.EQUAL_BY,
-                      fieldName: "Title",
-                      value: "test"
-                    }
-                  ]
-                },
-                {
-                  type: FilterSchemaType.OR,
-                  fieldName: "",
-                  value: [
-                    {
-                      type: FilterSchemaType.EQUAL_BY,
-                      fieldName: "Title",
-                      value: "test"
-                    },
-                    {
-                      type: FilterSchemaType.EQUAL_BY,
-                      fieldName: "Title",
-                      value: "test"
-                    },
-                    {
-                      type: FilterSchemaType.OR,
-                      fieldName: "",
-                      value: [
-                        {
-                          type: FilterSchemaType.EQUAL_BY,
-                          fieldName: "Title",
-                          value: "test"
-                        },
-                        {
-                          type: FilterSchemaType.EQUAL_BY,
-                          fieldName: "Title",
-                          value: "test"
-                        }
-                      ]
-                    },
-                    {
-                      type: FilterSchemaType.OR,
-                      fieldName: "",
-                      value: [
-                        {
-                          type: FilterSchemaType.EQUAL_BY,
-                          fieldName: "Title",
-                          value: "test"
-                        },
-                        {
-                          type: FilterSchemaType.OR,
-                          fieldName: "",
-                          value: [
-                            {
-                              type: FilterSchemaType.EQUAL_BY,
-                              fieldName: "Title",
-                              value: "test"
-                            },
-                            {
-                              type: FilterSchemaType.OR,
-                              fieldName: "",
-                              value: [
-                                {
-                                  type: FilterSchemaType.EQUAL_BY,
-                                  fieldName: "Title",
-                                  value: "test"
-                                },
-                                {
-                                  type: FilterSchemaType.EQUAL_BY,
-                                  fieldName: "Title",
-                                  value: "test"
-                                }
-                              ]
-                            },
-                            {
-                              type: FilterSchemaType.EQUAL_BY,
-                              fieldName: "Title",
-                              value: "test"
-                            }
-                          ]
-                        },
-                        {
-                          type: FilterSchemaType.EQUAL_BY,
-                          fieldName: "Title",
-                          value: "test"
-                        }
-                      ]
-                    }
-                  ]
                 }
               ]
             }

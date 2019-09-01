@@ -18,7 +18,7 @@ const useValueContainer = makeStyles((theme: Theme) => createStyles({
     fontSize: "1rem",
     position: "absolute",
     right: 3,
-    transition: "100ms"
+    transition: "150ms"
   }
 }));
 type ValueContainerProps = {
