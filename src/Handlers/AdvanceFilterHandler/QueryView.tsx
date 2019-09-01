@@ -3,19 +3,40 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { Filter, FilterSchemaType, getFilterSchemaTypeName } from "../../Models/Filter";
 
-type InputSectionProps = {
-  isSelected: boolean;
-  onClick: () => void;
-};
+// const useInputSelectionStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     container: {
+//       width: "1.1rem",
+//       height: "1.1rem",
+//       borderRadius: 5,
+//       transition: "150ms",
+//       backgroundColor: "rgba(0,0,0,0.1)",
+//       marginRight: 3,
+//       marginLeft: 3,
+//       marginBottom: 2
+//     },
+//     icon: {
+//       transition: "150ms"
+//     }
+//   })
+// );
 
-function InputSection(props: InputSectionProps) {
-  return (
-    <ButtonBase
-      onClick={props.onClick}
-      style={{ width: 100, height: 50, backgroundColor: props.isSelected ? "blue" : "red" }}
-    />
-  );
-}
+// type InputSectionProps = {
+//   isSelected: boolean;
+//   onClick: () => void;
+// };
+
+// function InputSection(props: InputSectionProps) {
+//   const classes = useInputSelectionStyles();
+
+//   return (
+//     <ButtonBase className={classes.container} onClick={props.onClick} style={{ opacity: props.isSelected ? 0.5 : 0.3 }}>
+//       <Icon className={classes.icon} style={{ opacity: props.isSelected ? 0.5 : 0.3 }}>
+//         {"center_focus_strong"}
+//       </Icon>
+//     </ButtonBase>
+//   );
+// }
 
 //
 
@@ -32,6 +53,7 @@ const useAndOrStyles = makeStyles((theme: Theme) =>
 
 type AndOrExpressionProps = {
   expression: Filter;
+  depth: number;
 };
 
 function AndOrExpression(props: AndOrExpressionProps) {
@@ -57,18 +79,37 @@ function AndOrExpression(props: AndOrExpressionProps) {
     );
   }
 
-  return (
-    <>
-      {createKeyword("(")}
-      {subExpressions.map((exp, i) => (
-        <React.Fragment key={`${exp.fieldName}_${i}`}>
-          <Expression expression={exp} />
-          {i !== subExpressions.length - 1 && createKeyword(operatorName, "body2")}
-        </React.Fragment>
-      ))}
-      {createKeyword(")")}
-    </>
-  );
+  let element: React.ReactNode;
+
+  if (subExpressions.length < 3) {
+    element = (
+      <div style={{ flexDirection: "row", display: "flex", alignItems: "center" }}>
+        {createKeyword("(")}
+        {subExpressions.map((exp, i) => (
+          <React.Fragment key={`${exp.fieldName}_${i}`}>
+            <Expression depth={0} expression={exp} />
+            {i !== subExpressions.length - 1 && createKeyword(operatorName, "body2")}
+          </React.Fragment>
+        ))}
+        {createKeyword(")")}
+      </div>
+    );
+  } else {
+    element = (
+      <div style={{ flexDirection: "column", display: "flex" }}>
+        {createKeyword("(")}
+        {subExpressions.map((exp, i) => (
+          <React.Fragment key={`${exp.fieldName}_${i}`}>
+            <Expression depth={props.depth + 1} expression={exp} />
+            {i !== subExpressions.length - 1 && createKeyword(operatorName, "body2")}
+          </React.Fragment>
+        ))}
+        {createKeyword(")")}
+      </div>
+    );
+  }
+
+  return <div style={{ marginLeft: props.depth * 15 }}>{element}</div>;
 }
 
 //
@@ -144,11 +185,12 @@ const useExpressionStyle = makeStyles((theme: Theme) =>
 
 type ExpressionProps = {
   expression: Filter;
+  depth: number;
 };
 
 function Expression(props: ExpressionProps) {
   const classes = useExpressionStyle();
-  const { expression } = props;
+  const { expression, ...others } = props;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [hover, setHover] = React.useState(false);
@@ -164,30 +206,37 @@ function Expression(props: ExpressionProps) {
   }
 
   if ([FilterSchemaType.AND, FilterSchemaType.OR].includes(expression.type)) {
-    return <AndOrExpression expression={expression} />;
+    return <AndOrExpression depth={props.depth} expression={expression} {...others} />;
   } else {
     return (
-      <div className={classes.container} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-        <Typography variant="body2">{expression.fieldName}</Typography>
-        <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
-        <ValueContainerView value={expression.value || "None"} onClick={handleClick} />
-        <IconButton className={classes.deleteButton} style={{ opacity: hover ? 0.7 : 0.2 }}>
-          <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
-        </IconButton>
-
-        <Menu
-          id={`type_select_${expression.fieldName}`}
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
+      <div style={{ display: "flex" }}>
+        <div
+          className={classes.container}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          style={{ marginLeft: props.depth * 15 }}
         >
-          {filterTypes.map((item, i) => (
-            <MenuItem key={`option_${i}`} onClick={handleClose} value={item}>
-              {getFilterSchemaTypeName(item)}
-            </MenuItem>
-          ))}
-        </Menu>
+          <Typography variant="body2">{expression.fieldName}</Typography>
+          <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
+          <ValueContainerView value={expression.value || "None"} onClick={handleClick} />
+          <IconButton className={classes.deleteButton} style={{ opacity: hover ? 0.7 : 0.2 }}>
+            <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
+          </IconButton>
+
+          <Menu
+            id={`type_select_${expression.fieldName}`}
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {filterTypes.map((item, i) => (
+              <MenuItem key={`option_${i}`} onClick={handleClose} value={item}>
+                {getFilterSchemaTypeName(item)}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
       </div>
     );
   }
@@ -202,11 +251,11 @@ const useQueryViewStyle = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       overflow: "auto",
-      overflowX: "hidden",
+      overflowX: "auto",
       flexWrap: "wrap",
       padding: 25,
       alignContent: "baseline",
-      alignItems: "baseline",
+      alignItems: "center",
       userSelect: "none"
     }
   })
@@ -221,7 +270,7 @@ export function QueryView(props: Props) {
 
   return (
     <div className={classes.container}>
-      <Expression expression={props.query} />
+      <Expression depth={0} expression={props.query} />
     </div>
   );
 }
