@@ -1,7 +1,8 @@
 
 import * as React from "react";
-import { Filter, FilterSchemaType } from "../../../Models/Filter";
+import { FilterSchemaType } from "../../../Models/Filter";
 import { AndOrExpression } from "./AndOrExpression";
+import { ExpressionModel } from "./ExpressionModel";
 import { FilterExpressionView } from "./FilterExpressionView";
 // const useInputSelectionStyles = makeStyles((theme: Theme) =>
 //   createStyles({
@@ -38,7 +39,7 @@ import { FilterExpressionView } from "./FilterExpressionView";
 //
 
 type ExpressionProps = {
-  expression: Filter;
+  expression: ExpressionModel;
   depth: number;
 };
 export function Expression(props: ExpressionProps) {

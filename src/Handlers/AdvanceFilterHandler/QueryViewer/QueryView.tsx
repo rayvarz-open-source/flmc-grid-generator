@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
-import { Filter } from "../../../Models/Filter";
+import { ExpressionModel } from "./ExpressionModel";
 import { Expression } from "./ExpressionView";
 
 const useQueryViewStyle = makeStyles((theme: Theme) =>
@@ -34,7 +34,7 @@ const useQueryViewStyle = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  query: Filter;
+  query: ExpressionModel;
 };
 
 export function QueryView(props: Props) {

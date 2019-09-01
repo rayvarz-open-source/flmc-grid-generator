@@ -1,8 +1,92 @@
 import * as React from "react";
-import { FilterSchemaType } from "../../Models/Filter";
+import { Filter, FilterSchemaType } from "../../Models/Filter";
 import ItemExplorer from "./ItemExplorer";
+import { ExpressionModel } from "./QueryViewer/ExpressionModel";
 import { QueryView } from "./QueryViewer/QueryView";
 export type Props = {};
+
+const FILTER = {
+  type: FilterSchemaType.AND,
+  fieldName: "",
+  value: [
+    {
+      type: FilterSchemaType.OR,
+      fieldName: "",
+      value: [
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        },
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        }
+      ]
+    },
+    {
+      type: FilterSchemaType.EQUAL_BY,
+      fieldName: "Title",
+      value: "test"
+    },
+    {
+      type: FilterSchemaType.OR,
+      fieldName: "",
+      value: [
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        },
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        },
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        }
+      ]
+    },
+    {
+      type: FilterSchemaType.OR,
+      fieldName: "",
+      value: [
+        {
+          type: FilterSchemaType.EQUAL_BY,
+          fieldName: "Title",
+          value: "test"
+        }
+      ]
+    },
+  ]
+};
+
+function createExpressionFromFilter(filter: Filter, startPath: number[]): ExpressionModel {
+  if ([FilterSchemaType.AND, FilterSchemaType.OR].includes(filter.type)) {
+    return {
+      ...{
+        ...filter,
+        value: (filter.value as Filter[]).map((f, i) => {
+          let _path = [...startPath, i];
+          return {
+            ...createExpressionFromFilter(f, _path),
+            path: _path
+          };
+        })
+      },
+      path: startPath
+    };
+  } else {
+    return {
+      ...filter,
+      path: startPath
+    };
+  }
+}
 
 export function AdvanceFilterView(props: Props) {
   return (
@@ -32,83 +116,7 @@ export function AdvanceFilterView(props: Props) {
           }
         ]}
       />
-      <QueryView
-        query={{
-          type: FilterSchemaType.AND,
-          fieldName: "",
-          value: [
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.EQUAL_BY,
-              fieldName: "Title",
-              value: "test"
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                }
-              ]
-            },
-            {
-              type: FilterSchemaType.OR,
-              fieldName: "",
-              value: [
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                },
-                {
-                  type: FilterSchemaType.EQUAL_BY,
-                  fieldName: "Title",
-                  value: "test"
-                }
-              ]
-            }
-          ]
-        }}
-      />
+      <QueryView query={createExpressionFromFilter(FILTER, [0])} />
     </div>
   );
 }

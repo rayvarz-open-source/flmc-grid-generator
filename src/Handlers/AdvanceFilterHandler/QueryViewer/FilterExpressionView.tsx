@@ -1,7 +1,8 @@
 import { Icon, IconButton, Menu, MenuItem, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
-import { Filter, FilterSchemaType, getFilterSchemaTypeName } from "../../../Models/Filter";
+import { FilterSchemaType, getFilterSchemaTypeName } from "../../../Models/Filter";
+import { ExpressionModel } from "./ExpressionModel";
 import { ValueContainerView } from "./ValueContainerView";
 
 const useExpressionStyle = makeStyles((theme: Theme) =>
@@ -24,7 +25,7 @@ const useExpressionStyle = makeStyles((theme: Theme) =>
 );
 
 type Props = {
-  expression: Filter;
+  expression: ExpressionModel;
   depth: number;
 };
 
