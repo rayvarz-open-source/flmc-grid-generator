@@ -10,31 +10,31 @@ export function AdvanceFilterView(props: Props) {
           {
             title: "General",
             children: [
-                { title: "Or operator" },
-                { title: "And operator" },
+                { title: "Or operator", icon: "flip_to_back" },
+                { title: "And operator", icon: "flip_to_front" },
             ]
           },
           {
             title: "Fields",
             children: [
-                { title: "Start Date" },
-                { title: "End Date" },
-                { title: "Title" },
-                { title: "Description" },
+                { title: "Start Date", icon: "date_range" },
+                { title: "End Date", icon: "date_range" },
+                { title: "Title", icon: "subtitles" },
+                { title: "Description", icon: "subtitles" },
             ]
           },
           {
             title: "Schema Templates",
             children: [
-                { title: "Item Available" },
-                { title: "Order Point" },
+                { title: "Item Available", icon: "check_box" },
+                { title: "Order Point", icon: "menu" },
             ]
           },
           {
             title: "User Templates",
             children: [
-                { title: "My Template 1" },
-                { title: "My Filter Template 3" },
+                { title: "My Template 1", icon: "menu" },
+                { title: "My Filter Template 3", icon: "menu" },
             ]
           },
         ]}

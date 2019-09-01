@@ -4,6 +4,7 @@ import * as React from "react";
 
 export type ItemModel = {
   title: string;
+  icon: string;
 };
 
 export type CategoryType = {
@@ -29,6 +30,11 @@ const useItemStyles = makeStyles((theme: Theme) =>
         backgroundColor: "rgba(0,0,0,0.1)"
       }
     },
+    titleContainer: {
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "row"
+    },
     label: {
       color: theme.palette.text.primary,
       fontSize: 14,
@@ -41,6 +47,10 @@ const useItemStyles = makeStyles((theme: Theme) =>
     },
     icon: {
       color: "rgba(0,0,0,0.19)"
+    },
+    prefixIcon: {
+        color: "rgba(0,0,0,0.19)",
+        fontSize: "1.2rem"
     }
   })
 );
@@ -51,7 +61,12 @@ function Item(props: ItemProps) {
 
   return (
     <div onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)} className={classes.container}>
-      <Typography className={classes.label}>{props.item.title}</Typography>
+      <div className={classes.titleContainer}>
+        <Icon className={classes.prefixIcon}>
+          {props.item.icon}
+        </Icon>
+        <Typography className={classes.label}>{props.item.title}</Typography>
+      </div>
       <Icon style={{ opacity: hover ? 1 : 0 }} className={classes.icon}>
         {"add"}
       </Icon>
