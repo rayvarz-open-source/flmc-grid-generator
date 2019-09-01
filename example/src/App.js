@@ -60,14 +60,7 @@ class SampleForm extends FormController {
   selection = new BehaviorSubject([]);
   //
   elements = [
-    Modal(Raw(() => <AdvanceFilterView />))
-      .visibleHeader(false)
-      .open(true)
-      .minWidth(window.innerWidth * 0.7)
-      .maxWidth(window.innerWidth * 0.7)
-      .minHeight(window.innerHeight * 0.75)
-      .maxHeight(window.innerHeight * 0.75)
-      .noPadding(true),
+    Raw(() => <AdvanceFilterView />),
     // createGridViaDataSource("-"),
     Label(this.selection.pipe(map(v => `${v.length} selected`))),
     Button("deselect All").onClick(() => this.selection.next([]))

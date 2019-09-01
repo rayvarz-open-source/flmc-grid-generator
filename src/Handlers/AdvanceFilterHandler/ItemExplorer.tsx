@@ -1,10 +1,12 @@
 import { ButtonBase, Icon, TextField, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 export type ItemModel = {
   title: string;
   icon: string;
+  id: number;
 };
 
 export type CategoryType = {
@@ -26,6 +28,7 @@ const useItemStyles = makeStyles((theme: Theme) =>
       paddingRight: 5,
       flexDirection: "row",
       justifyContent: "space-between",
+      backgroundColor: "rgba(244,244,244,1)",
       "&:hover": {
         backgroundColor: "rgba(0,0,0,0.1)"
       }
@@ -41,7 +44,6 @@ const useItemStyles = makeStyles((theme: Theme) =>
       display: "inline-block",
       marginLeft: 5,
       verticalAlign: "middle",
-      cursor: "default",
       WebkitTouchCallout: "none",
       userSelect: "none"
     },
@@ -51,31 +53,58 @@ const useItemStyles = makeStyles((theme: Theme) =>
     prefixIcon: {
       color: "rgba(0,0,0,0.19)",
       fontSize: "1.2rem"
-    },
-    rippleStyle: {
-      width: "100%",
-      height: "100%",
-      justifyContent: "space-between"
     }
   })
 );
+
+function getNoAnimationStyle(style, snapshot) {
+  if (!snapshot.isDropAnimating) {
+    return style;
+  }
+  return {
+    ...style,
+    // cannot be 0, but make it super tiny
+    transitionDuration: `0.001s`
+  };
+}
 
 function Item(props: ItemProps) {
   const classes = useItemStyles();
   const [hover, setHover] = React.useState(false);
 
-  return (
-    <div onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)} className={classes.container}>
-      <ButtonBase className={classes.rippleStyle}>
-        <div className={classes.titleContainer}>
-          <Icon className={classes.prefixIcon}>{props.item.icon}</Icon>
-          <Typography className={classes.label}>{props.item.title}</Typography>
-        </div>
-        <Icon style={{ opacity: hover ? 1 : 0 }} className={classes.icon}>
-          {"add"}
-        </Icon>
-      </ButtonBase>
+  const createChild = (provided: any, snapshot: any, isClone: boolean = false) => (
+    <div
+      ref={isClone ? undefined : provided.innerRef}
+      {...(isClone ? {} : provided.draggableProps)}
+      {...(isClone ? {} : provided.dragHandleProps)}
+      onMouseOver={() => setHover(true)}
+      onMouseOut={() => setHover(false)}
+      className={classes.container}
+      style={getNoAnimationStyle(provided.draggableProps.style, snapshot)}
+    >
+      <div className={classes.titleContainer}>
+        <Icon className={classes.prefixIcon}>{props.item.icon}</Icon>
+        <Typography className={classes.label}>{props.item.title}</Typography>
+      </div>
+      <Icon style={{ opacity: hover ? 1 : 0 }} className={classes.icon}>
+        {"add"}
+      </Icon>
     </div>
+  );
+
+  return (
+    <Draggable key={props.item.id + "dKey"} draggableId={props.item.id + "dId"} index={props.item.id}>
+      {(provided, snapshot) => (
+        <React.Fragment>
+          {createChild(provided, snapshot)}
+          {snapshot.isDragging && (
+            <div style={{ display: "none!important", transform: "none!important" }}>
+              {createChild(provided, snapshot, true)}
+            </div>
+          )}
+        </React.Fragment>
+      )}
+    </Draggable>
   );
 }
 //endregion
@@ -100,14 +129,14 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
       display: "inline-block",
       verticalAlign: "middle",
       marginTop: 1,
-      color: theme.palette.primary.contrastText,
-      transition: "200ms"
+      color: theme.palette.primary.contrastText
+      // transition: "200ms"
     },
     container: {
       backgroundColor: theme.palette.primary.main,
       padding: 3,
       paddingLeft: 5,
-      transition: "200ms",
+      // transition: "200ms",
       "&:hover": {
         backgroundColor: theme.palette.primary.dark
       }
@@ -135,7 +164,18 @@ function ItemHeader(props: CategoryItemProps) {
         </ButtonBase>
       </div>
 
-      {open && props.item.children.map((item, i) => <Item item={item} key={`key_${i}`} />)}
+      {open && (
+        <Droppable isDropDisabled={true} droppableId="sourceDroppable">
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef}>
+              {props.item.children.map((item, i) => (
+                <Item item={item} key={`key_${i}`} />
+              ))}
+              <div style={{ display: "none" }}>{provided.placeholder}</div>
+            </div>
+          )}
+        </Droppable>
+      )}
     </>
   );
 }
