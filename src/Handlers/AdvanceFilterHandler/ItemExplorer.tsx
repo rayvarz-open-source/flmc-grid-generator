@@ -1,4 +1,4 @@
-import { Icon, TextField, Typography } from "@material-ui/core";
+import { ButtonBase, Icon, TextField, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 
@@ -31,9 +31,9 @@ const useItemStyles = makeStyles((theme: Theme) =>
       }
     },
     titleContainer: {
-        alignItems: "center",
-        display: "flex",
-        flexDirection: "row"
+      alignItems: "center",
+      display: "flex",
+      flexDirection: "row"
     },
     label: {
       color: theme.palette.text.primary,
@@ -49,8 +49,13 @@ const useItemStyles = makeStyles((theme: Theme) =>
       color: "rgba(0,0,0,0.19)"
     },
     prefixIcon: {
-        color: "rgba(0,0,0,0.19)",
-        fontSize: "1.2rem"
+      color: "rgba(0,0,0,0.19)",
+      fontSize: "1.2rem"
+    },
+    rippleStyle: {
+      width: "100%",
+      height: "100%",
+      justifyContent: "space-between"
     }
   })
 );
@@ -61,15 +66,15 @@ function Item(props: ItemProps) {
 
   return (
     <div onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)} className={classes.container}>
-      <div className={classes.titleContainer}>
-        <Icon className={classes.prefixIcon}>
-          {props.item.icon}
+      <ButtonBase className={classes.rippleStyle}>
+        <div className={classes.titleContainer}>
+          <Icon className={classes.prefixIcon}>{props.item.icon}</Icon>
+          <Typography className={classes.label}>{props.item.title}</Typography>
+        </div>
+        <Icon style={{ opacity: hover ? 1 : 0 }} className={classes.icon}>
+          {"add"}
         </Icon>
-        <Typography className={classes.label}>{props.item.title}</Typography>
-      </div>
-      <Icon style={{ opacity: hover ? 1 : 0 }} className={classes.icon}>
-        {"add"}
-      </Icon>
+      </ButtonBase>
     </div>
   );
 }
@@ -106,6 +111,11 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
       "&:hover": {
         backgroundColor: theme.palette.primary.dark
       }
+    },
+    rippleStyle: {
+      width: "100%",
+      height: "100%",
+      justifyContent: "start"
     }
   })
 );
@@ -117,11 +127,14 @@ function ItemHeader(props: CategoryItemProps) {
   return (
     <>
       <div onClick={() => setOpen(!open)} className={classes.container}>
-        <Icon style={{ transform: `rotate(${open ? 90 : 0}deg)` }} className={classes.icon}>
-          {"keyboard_arrow_right"}
-        </Icon>
-        <Typography className={classes.label}>{props.item.title}</Typography>
+        <ButtonBase className={classes.rippleStyle}>
+          <Icon style={{ transform: `rotate(${open ? 90 : 0}deg)` }} className={classes.icon}>
+            {"keyboard_arrow_right"}
+          </Icon>
+          <Typography className={classes.label}>{props.item.title}</Typography>
+        </ButtonBase>
       </div>
+
       {open && props.item.children.map((item, i) => <Item item={item} key={`key_${i}`} />)}
     </>
   );
