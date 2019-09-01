@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FilterSchemaType } from "../../Models/Filter";
 import ItemExplorer from "./ItemExplorer";
-import { QueryView } from "./QueryView";
+import { QueryView } from "./QueryViewer/QueryView";
 export type Props = {};
 
 export function AdvanceFilterView(props: Props) {
