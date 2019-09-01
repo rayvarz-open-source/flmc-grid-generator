@@ -109,7 +109,7 @@ function AndOrExpression(props: AndOrExpressionProps) {
     );
   }
 
-  return <div style={{ marginLeft: props.depth * 15 }}>{element}</div>;
+  return <div style={{ marginLeft: 15 }}>{element}</div>;
 }
 
 //
@@ -214,7 +214,7 @@ function Expression(props: ExpressionProps) {
           className={classes.container}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
-          style={{ marginLeft: props.depth * 15 }}
+          style={{ marginLeft: props.depth == 0 ? 0 : 15 }}
         >
           <Typography variant="body2">{expression.fieldName}</Typography>
           <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
