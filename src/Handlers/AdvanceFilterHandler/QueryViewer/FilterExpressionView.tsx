@@ -42,14 +42,13 @@ export function FilterExpressionView(props: Props) {
     setAnchorEl(null);
   }
   const [hover, setHover] = React.useState(false);
-
   return (
     <div style={{ display: "flex" }}>
       <div
         className={classes.container}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
-        style={{ marginLeft: props.depth == 0 ? 0 : 15 }}
+        style={{ marginLeft: props.expression.path.length === 2 ? 15 : 0 }}
       >
         <Typography variant="body2">{expression.fieldName}</Typography>
         <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
