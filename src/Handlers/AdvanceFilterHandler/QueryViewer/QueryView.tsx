@@ -15,7 +15,20 @@ const useQueryViewStyle = makeStyles((theme: Theme) =>
       padding: 25,
       alignContent: "baseline",
       alignItems: "center",
-      userSelect: "none"
+      userSelect: "none",
+      "&::-webkit-scrollbar-track": {
+        borderRadius: 10,
+        backgroundColor: "#f3f3f3"
+      },
+      "&::-webkit-scrollbar": {
+        width: 4,
+        backgroundColor: "#F5F5F5"
+      },
+      "&::-webkit-scrollbar-thumb": {
+        borderRadius: 10,
+        backgroundColor: theme.palette.primary.main,
+        opacity: 0.4
+      }
     }
   })
 );
