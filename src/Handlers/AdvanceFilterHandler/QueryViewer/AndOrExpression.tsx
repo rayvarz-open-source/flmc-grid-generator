@@ -29,7 +29,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
       <Typography
         variant={variant as any}
         className={classes.keyword}
-        style={{ opacity: hoverOverBrackets ? 0.8 : 0.5 }}
+        style={{ opacity: hoverOverBrackets ? 1.0 : 0.5 }}
         onMouseEnter={() => setHoverOverBrackets(true)}
         onMouseLeave={() => setHoverOverBrackets(false)}
       >
