@@ -1,5 +1,7 @@
 import * as React from "react";
+import { FilterSchemaType } from "../../Models/Filter";
 import ItemExplorer from "./ItemExplorer";
+import { QueryView } from "./QueryView";
 export type Props = {};
 
 export function AdvanceFilterView(props: Props) {
@@ -9,37 +11,168 @@ export function AdvanceFilterView(props: Props) {
         categories={[
           {
             title: "General",
-            children: [
-                { title: "Or operator", icon: "flip_to_back" },
-                { title: "And operator", icon: "flip_to_front" },
-            ]
+            children: [{ title: "Or operator", icon: "flip_to_back" }, { title: "And operator", icon: "flip_to_front" }]
           },
           {
             title: "Fields",
             children: [
-                { title: "Start Date", icon: "date_range" },
-                { title: "End Date", icon: "date_range" },
-                { title: "Title", icon: "subtitles" },
-                { title: "Description", icon: "subtitles" },
+              { title: "Start Date", icon: "date_range" },
+              { title: "End Date", icon: "date_range" },
+              { title: "Title", icon: "subtitles" },
+              { title: "Description", icon: "subtitles" }
             ]
           },
           {
             title: "Schema Templates",
-            children: [
-                { title: "Item Available", icon: "check_box" },
-                { title: "Order Point", icon: "menu" },
-            ]
+            children: [{ title: "Item Available", icon: "check_box" }, { title: "Order Point", icon: "menu" }]
           },
           {
             title: "User Templates",
-            children: [
-                { title: "My Template 1", icon: "menu" },
-                { title: "My Filter Template 3", icon: "menu" },
-            ]
-          },
+            children: [{ title: "My Template 1", icon: "menu" }, { title: "My Filter Template 3", icon: "menu" }]
+          }
         ]}
       />
-      <div style={{ flex: 9 }} />
+      <QueryView
+        query={{
+          type: FilterSchemaType.AND,
+          fieldName: "",
+          value: [
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.EQUAL_BY,
+              fieldName: "Title",
+              value: "test"
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                }
+              ]
+            },
+            {
+              type: FilterSchemaType.OR,
+              fieldName: "",
+              value: [
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.EQUAL_BY,
+                  fieldName: "Title",
+                  value: "test"
+                },
+                {
+                  type: FilterSchemaType.OR,
+                  fieldName: "",
+                  value: [
+                    {
+                      type: FilterSchemaType.EQUAL_BY,
+                      fieldName: "Title",
+                      value: "test"
+                    },
+                    {
+                      type: FilterSchemaType.EQUAL_BY,
+                      fieldName: "Title",
+                      value: "test"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }}
+      />
     </div>
   );
 }
