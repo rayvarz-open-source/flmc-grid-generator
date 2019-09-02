@@ -2,6 +2,7 @@ import * as React from "react";
 import { FieldShemaTypeName } from "../../../../Models/Field";
 import { ExpressionModel } from "../ExpressionModel";
 import { BitValueEditor } from "./BitValueEditor";
+import { DateValueEditor } from "./DateValueEditor";
 import { InputValueEditor } from "./InputValueEditor";
 import { LocalListValueEditor } from "./LocalListValueEditor";
 
@@ -16,9 +17,8 @@ export function ValueEditor(props: Props) {
     case FieldShemaTypeName.Barcode:
       return <InputValueEditor expression={props.expression} type={"text"} />;
     case FieldShemaTypeName.GregorianDateTime:
-      return null;
     case FieldShemaTypeName.PersianDate:
-      return null;
+      return <DateValueEditor expression={props.expression} />;
     case FieldShemaTypeName.String:
       return <InputValueEditor expression={props.expression} type={"text"} />;
     case FieldShemaTypeName.Money:
