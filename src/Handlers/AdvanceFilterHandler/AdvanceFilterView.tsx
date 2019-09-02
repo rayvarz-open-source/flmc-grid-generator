@@ -1,13 +1,18 @@
 import { Modal } from "@material-ui/core";
 import * as React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
+import { FieldShemaTypeName, FieldType } from "../../Models/Field";
 import { Filter, FilterSchemaType } from "../../Models/Filter";
+import { Schema } from "../../Models/Schema";
 import { AdvanceFilterContext } from "./AdvanceFilterContext";
-import ItemExplorer from "./ItemExplorer";
+import ItemExplorer, { CategoryType } from "./ItemExplorer";
 import { ExpressionModel } from "./QueryViewer/ExpressionModel";
 import { QueryView } from "./QueryViewer/QueryView";
 
-export type Props = {};
+export type Props = {
+  currentFilters: Filter[];
+  schema: Schema;
+};
 
 const FILTER = {
   type: FilterSchemaType.AND,
@@ -92,6 +97,25 @@ function createExpressionFromFilter(filter: Filter, startPath: number[]): Expres
   }
 }
 
+function getIconByFieldType(type: FieldType): string {
+    switch(type.name) {
+        case FieldShemaTypeName.Bit: return "check_box";
+        case FieldShemaTypeName.GregorianDateTime: return "date_range";
+        case FieldShemaTypeName.PersianDate: return "date_range";
+        case FieldShemaTypeName.Image: return "image";
+        case FieldShemaTypeName.ImageList: return "image";
+        case FieldShemaTypeName.Int: return "exposure_plus_2";
+        case FieldShemaTypeName.List: return "dehaze";
+        case FieldShemaTypeName.LocalList: return "dehaze";
+        case FieldShemaTypeName.Money: return "attach_money";
+        case FieldShemaTypeName.Object: return "crop_square";
+        case FieldShemaTypeName.QRCode: return "format_align_justify";
+        case FieldShemaTypeName.Barcode: return "format_align_justify";
+        case FieldShemaTypeName.String: return "subtitles";
+        default: return "crop_square";
+    }
+}
+
 export function AdvanceFilterViewContent(props: Props) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [allowDrop, setAllowDrop] = React.useState(false);
@@ -100,7 +124,7 @@ export function AdvanceFilterViewContent(props: Props) {
   function onDragEnd(result: any) {
     setAllowDrop(true);
     setIsDragging(false);
-    setDraggingItem("None")
+    setDraggingItem("None");
   }
   function onDragStart(result: any) {
     setAllowDrop(false);
@@ -109,10 +133,29 @@ export function AdvanceFilterViewContent(props: Props) {
   }
 
   function onDropped(id: string) {
-      if (allowDrop) {
-        alert(id)
-        setAllowDrop(false)
+    if (allowDrop) {
+      alert(id);
+      setAllowDrop(false);
+    }
+  }
+
+  function createCategoriesFromSchema(): CategoryType[] {
+    // find all schema fields that has filter
+    const fieldsWithFilter = props.schema.fields.filter(
+      v => v.title != null && props.schema.filters.find(v => v.fieldName == v.fieldName) != null
+    );
+    return [
+      {
+        title: "Fields",
+        children: fieldsWithFilter.map((v, i) => {
+            return {
+                title: v.title,
+                icon: getIconByFieldType(v.type),
+                id: i
+            }
+        })
       }
+    ];
   }
 
   return (
@@ -124,33 +167,11 @@ export function AdvanceFilterViewContent(props: Props) {
               {
                 title: "General",
                 children: [
-                  { title: "Or operator", icon: "flip_to_back", id: 0 },
-                  { title: "And operator", icon: "flip_to_front", id: 1 }
+                  { title: "Or operator", icon: "flip_to_back", id: -2 },
+                  { title: "And operator", icon: "flip_to_front", id: -4 }
                 ]
               },
-              {
-                title: "Fields",
-                children: [
-                  { title: "Start Date", icon: "date_range", id: 2 },
-                  { title: "End Date", icon: "date_range", id: 3 },
-                  { title: "Title", icon: "subtitles", id: 4 },
-                  { title: "Description", icon: "subtitles", id: 5 }
-                ]
-              },
-              {
-                title: "Schema Templates",
-                children: [
-                  { title: "Item Available", icon: "check_box", id: 6 },
-                  { title: "Order Point", icon: "menu", id: 7 }
-                ]
-              },
-              {
-                title: "User Templates",
-                children: [
-                  { title: "My Template 1", icon: "menu", id: 8 },
-                  { title: "My Filter Template 3", icon: "menu", id: 9 },
-                ]
-              }
+              ...createCategoriesFromSchema()
             ]}
           />
           <QueryView query={createExpressionFromFilter(FILTER, [0])} />
@@ -160,7 +181,7 @@ export function AdvanceFilterViewContent(props: Props) {
   );
 }
 
-export function AdvanceFilterView() {
+export function AdvanceFilterView(props: Props) {
   return (
     <Modal disableEnforceFocus open={true}>
       <div
@@ -174,7 +195,7 @@ export function AdvanceFilterView() {
           outline: "none"
         }}
       >
-        <AdvanceFilterViewContent />
+        <AdvanceFilterViewContent {...props} />
       </div>
     </Modal>
   );
