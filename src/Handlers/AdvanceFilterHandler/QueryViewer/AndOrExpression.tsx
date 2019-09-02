@@ -28,13 +28,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
   const [hoverOverBrackets, setHoverOverBrackets] = React.useState(false);
 
   const createKeyword = (value: string, variant: string = "h6") => (
-    <Typography
-      variant={variant as any}
-      className={classes.keyword}
-      style={{ opacity: hoverOverBrackets ? 1.0 : 0.5 }}
-      onMouseEnter={() => setHoverOverBrackets(true)}
-      onMouseLeave={() => setHoverOverBrackets(false)}
-    >
+    <Typography variant={variant as any} className={classes.keyword} style={{ opacity: hoverOverBrackets ? 1.0 : 0.5 }}>
       {value}
     </Typography>
   );
@@ -63,7 +57,20 @@ export function AndOrExpression(props: AndOrExpressionProps) {
   } else {
     element = <div style={{ flexDirection: "column", display: "flex" }}>{elementChild(props.depth + 1)}</div>;
   }
-  return <div style={{ marginLeft: 15 }}>{element}</div>;
+  return (
+    <div
+      onMouseEnter={() => setHoverOverBrackets(true)}
+      onMouseLeave={() => setHoverOverBrackets(false)}
+      style={{
+        marginLeft: 15,
+        backgroundColor: hoverOverBrackets ? "rgba(0,0,0,0.03)" : "rgba(0,0,0,0)",
+        borderRadius: 10,
+        padding: 3
+      }}
+    >
+      {element}
+    </div>
+  );
 }
 
 function calculateExpressionDepth(expression: ExpressionModel): number {
