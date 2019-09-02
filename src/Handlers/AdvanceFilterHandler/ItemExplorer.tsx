@@ -124,14 +124,12 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
       display: "inline-block",
       marginLeft: theme.direction == "rtl" ? 0 : 5,
       marginRight: theme.direction != "rtl" ? 0 : 5,
-      verticalAlign: "middle",
       cursor: "default",
       WebkitTouchCallout: "none",
       userSelect: "none"
     },
     icon: {
       display: "inline-block",
-      verticalAlign: "middle",
       marginTop: 1,
       color: theme.palette.primary.contrastText
       // transition: "200ms"
@@ -139,8 +137,11 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
     container: {
       backgroundColor: theme.palette.primary.main,
       padding: 3,
-      paddingLeft: theme.direction == "rtl" ? 0 : 5,
-      paddingRight: theme.direction != "rtl" ? 0 : 5,
+      paddingLeft: 5,
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      paddingRight: 5,
       // transition: "200ms",
       "&:hover": {
         backgroundColor: theme.palette.primary.dark

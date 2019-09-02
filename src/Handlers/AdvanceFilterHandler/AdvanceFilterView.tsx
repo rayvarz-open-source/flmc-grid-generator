@@ -246,7 +246,7 @@ export function AdvanceFilterViewContent(props: AdvanceFilterContentProps) {
           <ItemExplorer
             categories={[
               {
-                title: props.localization.fieldSectionHeader,
+                title: props.localization.generalSectionHeader,
                 children: [
                   { title: props.localization.orOperator, icon: "flip_to_back", id: OR_INDEX },
                   { title: props.localization.andOperator, icon: "flip_to_front", id: AND_INDEX }
