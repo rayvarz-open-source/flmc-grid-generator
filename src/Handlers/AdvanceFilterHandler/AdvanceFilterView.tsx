@@ -81,19 +81,25 @@ const AND_INDEX = -1;
 const OR_INDEX = -2;
 
 function getExpressionByPath(source: ExpressionModel, path: number[]): ExpressionModel {
-    console.log("start")
+  console.log("start");
   let lastExpression = source;
   for (let index of path.slice(1)) {
     console.log(lastExpression, path, index);
     lastExpression = lastExpression.value[index];
   }
-  console.log("end")
+  console.log("end");
   return lastExpression;
 }
 
 function insertInnerPath(source: ExpressionModel, expression: ExpressionModel, path: number[]) {
   let parent = getExpressionByPath(source, path);
   parent.value.push(expression);
+}
+
+function deletePath(source: ExpressionModel, path: number[]) {
+  let child = getExpressionByPath(source, path);
+  let parent = getExpressionByPath(source, path.slice(0, path.length - 1));
+  parent.value = parent.value.filter(v => v !== child);
 }
 
 export function AdvanceFilterViewContent(props: Props) {
@@ -163,6 +169,11 @@ export function AdvanceFilterViewContent(props: Props) {
     }
   }
 
+  function onDelete(path: number[]) {
+    deletePath(queryExpression, path);
+    setQueryExpression(createExpressionFromFilter(queryExpression, [0]));
+  }
+
   function createCategoriesFromSchema(): CategoryType[] {
     return [
       {
@@ -180,7 +191,7 @@ export function AdvanceFilterViewContent(props: Props) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-      <AdvanceFilterContext.Provider value={{ isDragging, onDropped }}>
+      <AdvanceFilterContext.Provider value={{ isDragging, onDropped, onDelete }}>
         <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
           <ItemExplorer
             categories={[

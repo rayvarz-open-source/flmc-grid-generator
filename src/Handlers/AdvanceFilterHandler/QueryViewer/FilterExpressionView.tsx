@@ -2,6 +2,7 @@ import { Icon, IconButton, Menu, MenuItem, Typography } from "@material-ui/core"
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { FilterSchemaType, getFilterSchemaTypeName } from "../../../Models/Filter";
+import { AdvanceFilterContext } from "../AdvanceFilterContext";
 import { ExpressionModel } from "./ExpressionModel";
 import { ValueContainerView } from "./ValueContainerView";
 
@@ -43,40 +44,45 @@ export function FilterExpressionView(props: Props) {
   }
   const [hover, setHover] = React.useState(false);
   return (
-    <div style={{ display: "flex" }}>
-      <div
-        className={classes.container}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        style={{ marginLeft: props.expression.path.length === 2 ? 15 : 0 }}
-      >
-        <Typography variant="body2">{expression.fieldName}</Typography>
-        <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
-        <ValueContainerView value={expression.value || "None"} onClick={handleClick} />
-        <IconButton
-          className={classes.deleteButton}
-          style={{
-            opacity: hover ? 0.7 : 0.0,
-            transitionDelay: hover ? "150ms" : "0ms",
-            width: hover ? "1rem" : "0rem"
-          }}
+    <AdvanceFilterContext.Consumer>
+      {(value) => (
+        <div style={{ display: "flex" }}>
+        <div
+          className={classes.container}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          style={{ marginLeft: props.expression.path.length === 2 ? 15 : 0 }}
         >
-          <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
-        </IconButton>
-        <Menu
-          id={`type_select_${expression.fieldName}`}
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {filterTypes.map((item, i) => (
-            <MenuItem key={`option_${i}`} onClick={handleClose} value={item}>
-              {getFilterSchemaTypeName(item)}
-            </MenuItem>
-          ))}
-        </Menu>
+          <Typography variant="body2">{expression.fieldName}</Typography>
+          <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
+          <ValueContainerView value={expression.value || "None"} onClick={handleClick} />
+          <IconButton
+            onClick={() => value.onDelete(props.expression.path)}
+            className={classes.deleteButton}
+            style={{
+              opacity: hover ? 0.7 : 0.0,
+              transitionDelay: hover ? "150ms" : "0ms",
+              width: hover ? "1rem" : "0rem"
+            }}
+          >
+            <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
+          </IconButton>
+          <Menu
+            id={`type_select_${expression.fieldName}`}
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {filterTypes.map((item, i) => (
+              <MenuItem key={`option_${i}`} onClick={handleClose} value={item}>
+                {getFilterSchemaTypeName(item)}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
       </div>
-    </div>
+      )}
+    </AdvanceFilterContext.Consumer>
   );
 }
