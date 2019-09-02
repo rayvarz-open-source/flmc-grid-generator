@@ -39,7 +39,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
     </Typography>
   );
 
-  const _path = props.expression.path.join('-');
+  const _path = props.expression.path.join("-");
 
   const elementChild = (depth: number) => (
     <>
@@ -48,9 +48,10 @@ export function AndOrExpression(props: AndOrExpressionProps) {
       {subExpressions.map((exp, i) => (
         <React.Fragment key={`${exp.fieldName}_${i}`}>
           <Expression depth={0} expression={exp} />
-          {i !== subExpressions.length - 1 ? createKeyword(operatorName, "body2") : <DropZone id={`inner#${_path}`} />}
+          {i !== subExpressions.length - 1 && createKeyword(operatorName, "body2")}
         </React.Fragment>
       ))}
+      <DropZone id={`inner#${_path}`} />
       {createKeyword(")")}
       {/* {props.expression.path.length !== 1 && <DropZone id={`after#${_path}`} />} */}
     </>

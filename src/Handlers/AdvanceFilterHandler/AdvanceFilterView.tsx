@@ -14,66 +14,6 @@ export type Props = {
   schema: Schema;
 };
 
-const FILTER = {
-  type: FilterSchemaType.AND,
-  fieldName: "",
-  value: [
-    {
-      type: FilterSchemaType.OR,
-      fieldName: "",
-      value: [
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        },
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        }
-      ]
-    },
-    {
-      type: FilterSchemaType.EQUAL_BY,
-      fieldName: "Title",
-      value: "test"
-    },
-    {
-      type: FilterSchemaType.OR,
-      fieldName: "",
-      value: [
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        },
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        },
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        }
-      ]
-    },
-    {
-      type: FilterSchemaType.OR,
-      fieldName: "",
-      value: [
-        {
-          type: FilterSchemaType.EQUAL_BY,
-          fieldName: "Title",
-          value: "test"
-        }
-      ]
-    }
-  ]
-};
-
 function createExpressionFromFilter(filter: Filter, startPath: number[]): ExpressionModel {
   if ([FilterSchemaType.AND, FilterSchemaType.OR].includes(filter.type)) {
     return {
@@ -130,18 +70,36 @@ function getIconByFieldType(type: FieldType): string {
   }
 }
 
+const DEFAULT_EXPRESSION: ExpressionModel = {
+  fieldName: "",
+  path: [],
+  type: FilterSchemaType.AND,
+  value: []
+};
+
 export function AdvanceFilterViewContent(props: Props) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [allowDrop, setAllowDrop] = React.useState(false);
   const [draggingItem, setDraggingItem] = React.useState("None");
 
+  const [queryExpression, setQueryExpression] = React.useState<ExpressionModel>(DEFAULT_EXPRESSION);
+
   const fieldsWithFilter = React.useMemo(
     () =>
       props.schema.fields.filter(
-        v => v.title != null && props.schema.filters.find(v => v.fieldName == v.fieldName) != null
+        v => v.title != null && props.schema.filters.find(v => v.fieldName === v.fieldName) != null
       ),
     [props.schema]
   );
+
+  React.useEffect(() => {
+    if (props.currentFilters.length === 1 && props.currentFilters[0].type === FilterSchemaType.AND)
+      setQueryExpression(createExpressionFromFilter(props.currentFilters[0], [0]));
+    else if (props.currentFilters.length === 0)
+      setQueryExpression(createExpressionFromFilter({ ...DEFAULT_EXPRESSION }, [0]));
+    else setQueryExpression(createExpressionFromFilter({ ...DEFAULT_EXPRESSION, value: props.currentFilters }, [0]));
+    return () => setQueryExpression(DEFAULT_EXPRESSION);
+  }, [props.currentFilters]);
 
   function onDragEnd(result: any) {
     setAllowDrop(true);
@@ -194,7 +152,7 @@ export function AdvanceFilterViewContent(props: Props) {
               ...createCategoriesFromSchema()
             ]}
           />
-          <QueryView query={createExpressionFromFilter(FILTER, [0])} />
+          <QueryView query={queryExpression} />
         </div>
       </AdvanceFilterContext.Provider>
     </DragDropContext>
