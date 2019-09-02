@@ -1,6 +1,7 @@
 import { ButtonBase, Icon, TextField, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
+import { MutableRefObject } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
 export type ItemModel = {
@@ -194,18 +195,19 @@ const useSearchStyles = makeStyles((theme: Theme) =>
 type SearchProps = {
   value: string;
   onChange: (value: string) => void;
+  inputRef: MutableRefObject<any>;
 };
 
 function Search(props: SearchProps) {
   const classes = useSearchStyles();
-
   return (
     <TextField
       className={classes.box}
       value={props.value}
       onChange={v => props.onChange(v.target.value)}
       variant={"filled"}
-      placeholder="Search..."
+      placeholder={'Press "/" to search...'}
+      inputRef={props.inputRef}
       inputProps={{
         style: {
           height: 30,
@@ -248,6 +250,18 @@ type Props = {
 export default function ItemExplorer(props: Props) {
   const classes = useStyles();
   const [value, setValue] = React.useState("");
+  const inputRef = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    const eventHandler = (e: KeyboardEvent) => {
+      if (e.key !== "/" || inputRef.current == null) return;
+      inputRef.current.focus();
+      setTimeout(() => setValue(""), 0)
+    };
+    window.addEventListener("keydown", eventHandler);
+
+    return () => window.removeEventListener("keydown", eventHandler);
+  }, []);
 
   const filteredItems = React.useMemo(
     () =>
@@ -262,7 +276,7 @@ export default function ItemExplorer(props: Props) {
 
   return (
     <div className={classes.itemExplorer}>
-      <Search value={value} onChange={v => setValue(v)} />
+      <Search inputRef={inputRef} value={value} onChange={v => setValue(v)} />
       {filteredItems.map((item, i) => (
         <ItemHeader item={item} key={`category_${i}`} />
       ))}
