@@ -1,0 +1,1196 @@
+{
+  "fields": [
+    {
+      "fieldName": "id",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": true,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "title",
+      "relatedFieldName": null,
+      "title": "Title",
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 1,
+      "isEditable": false
+    },
+    {
+      "fieldName": "technicalTitle",
+      "relatedFieldName": null,
+      "title": "Techntical title",
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 2,
+      "isEditable": false
+    },
+    {
+      "fieldName": "unitId",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "unitDsc",
+      "relatedFieldName": null,
+      "title": "Unit",
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 4,
+      "isEditable": false
+    },
+    {
+      "fieldName": "groupId",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "groupDsc",
+      "relatedFieldName": null,
+      "title": "Item group",
+      "type": {
+        "name": "List",
+        "source": {
+          "address": "*/itemGrp/getAll",
+          "keyFieldName": "title",
+          "valueFieldName": "title",
+          "request": {
+            "value": null,
+            "filters": [],
+            "sorts": [],
+            "ignoredFields": [],
+            "schema": false,
+            "pagination": {
+              "needInfo": false,
+              "pageNo": 0,
+              "pageSize": 10,
+              "needResults": true
+            }
+          },
+          "values": null
+        }
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 6,
+      "isEditable": false
+    },
+    {
+      "fieldName": "itemType",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "itemTypeDsc",
+      "relatedFieldName": null,
+      "title": "Type",
+      "type": {
+        "name": "LocalList",
+        "source": {
+          "address": null,
+          "keyFieldName": "title",
+          "valueFieldName": "title",
+          "request": null,
+          "values": [
+            {
+              "id": 1,
+              "title": "Product"
+            },
+            {
+              "id": 2,
+              "title": "Personnel"
+            },
+            {
+              "id": 3,
+              "title": "Job"
+            },
+            {
+              "id": 4,
+              "title": "Asset"
+            },
+            {
+              "id": 5,
+              "title": "Object"
+            },
+            {
+              "id": 6,
+              "title": "Branch"
+            },
+            {
+              "id": 7,
+              "title": "Place"
+            }
+          ]
+        }
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 8,
+      "isEditable": false
+    },
+    {
+      "fieldName": "barcode",
+      "relatedFieldName": null,
+      "title": "Barcode",
+      "type": {
+        "name": "Barcode",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 9,
+      "isEditable": false
+    },
+    {
+      "fieldName": "localBarcode",
+      "relatedFieldName": null,
+      "title": "Local barcode",
+      "type": {
+        "name": "Barcode",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 10,
+      "isEditable": false
+    },
+    {
+      "fieldName": "uniqueBarcode",
+      "relatedFieldName": null,
+      "title": "Unique barcode",
+      "type": {
+        "name": "Barcode",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 11,
+      "isEditable": false
+    },
+    {
+      "fieldName": "qr",
+      "relatedFieldName": "uniqueBarcode",
+      "title": "Unique barcode (Qr)",
+      "type": {
+        "name": "QR",
+        "source": {
+          "address": null,
+          "keyFieldName": null,
+          "valueFieldName": null,
+          "request": null,
+          "values": "/qr/@uniqueBarcode"
+        }
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 11,
+      "isEditable": false
+    },
+    {
+      "fieldName": "isTemplate",
+      "relatedFieldName": null,
+      "title": "Template",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 12,
+      "isEditable": false
+    },
+    {
+      "fieldName": "qty",
+      "relatedFieldName": null,
+      "title": "Quantity",
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 13,
+      "isEditable": true
+    },
+    {
+      "fieldName": "orderPoint",
+      "relatedFieldName": null,
+      "title": "Order point",
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 14,
+      "isEditable": false
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "relatedFieldName": null,
+      "title": "X unti order point",
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 15,
+      "isEditable": false
+    },
+    {
+      "fieldName": "price",
+      "relatedFieldName": null,
+      "title": "Price",
+      "type": {
+        "name": "Money",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 16,
+      "isEditable": false
+    },
+    {
+      "fieldName": "discountPercent",
+      "relatedFieldName": null,
+      "title": "Discount percent",
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 17,
+      "isEditable": false
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "relatedFieldName": null,
+      "title": "Price after discount",
+      "type": {
+        "name": "Money",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 18,
+      "isEditable": false
+    },
+    {
+      "fieldName": "includedTax",
+      "relatedFieldName": null,
+      "title": "Has tax",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 19,
+      "isEditable": false
+    },
+    {
+      "fieldName": "dontShowinginStoreItem",
+      "relatedFieldName": null,
+      "title": "Hidden in panel",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 20,
+      "isEditable": false
+    },
+    {
+      "fieldName": "isNotForSelling",
+      "relatedFieldName": null,
+      "title": "Not sellable",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 21,
+      "isEditable": false
+    },
+    {
+      "fieldName": "statusId",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "statusDsc",
+      "relatedFieldName": null,
+      "title": "Status",
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 23,
+      "isEditable": false
+    },
+    {
+      "fieldName": "isEditable",
+      "relatedFieldName": null,
+      "title": "Editable",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 24,
+      "isEditable": false
+    },
+    {
+      "fieldName": "pollId",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "isLocked",
+      "relatedFieldName": null,
+      "title": "Locked",
+      "type": {
+        "name": "Bit",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 26,
+      "isEditable": false
+    },
+    {
+      "fieldName": "commentWaitForConfirmCnt",
+      "relatedFieldName": null,
+      "title": "Has waiting for confirmationcomment ",
+      "type": {
+        "name": "Int",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 27,
+      "isEditable": false
+    },
+    {
+      "fieldName": "saveDateTime",
+      "relatedFieldName": null,
+      "title": "Save Time",
+      "type": {
+        "name": "PersianDate",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 27,
+      "isEditable": false
+    },
+    {
+      "fieldName": "completeLink",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "thumbcompeleteLink",
+      "relatedFieldName": null,
+      "title": null,
+      "type": {
+        "name": "String",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": false,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "document",
+      "relatedFieldName": null,
+      "title": "Image",
+      "type": {
+        "name": "Image",
+        "source": null
+      },
+      "isKey": false,
+      "isVisible": true,
+      "isVisibleDefault": true,
+      "isFuncFilter": false,
+      "order": 0,
+      "isEditable": false
+    },
+    {
+      "fieldName": "fStoreId",
+      "relatedFieldName": null,
+      "title": null,
+      "type": null,
+      "isKey": false,
+      "isVisible": false,
+      "isVisibleDefault": true,
+      "isFuncFilter": true,
+      "order": 0,
+      "isEditable": false
+    }
+  ],
+  "filters": [
+    {
+      "fieldName": "title",
+      "filterName": "title",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "title",
+      "filterName": "title",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "technicalTitle",
+      "filterName": "technicalTitle",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "technicalTitle",
+      "filterName": "technicalTitle",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "unitDsc",
+      "filterName": "unitDsc",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "unitDsc",
+      "filterName": "unitDsc",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "groupDsc",
+      "filterName": "groupDsc",
+      "type": "equalBy",
+      "value": null,
+      "source": {
+        "address": "/api/itemGrp/getAll",
+        "keyFieldName": "title",
+        "valueFieldName": "title",
+        "request": {
+          "value": null,
+          "filters": [
+            {
+              "fieldName": "id",
+              "filterName": null,
+              "type": "equalBy",
+              "value": "@itemType",
+              "source": null,
+              "isDefault": false
+            }
+          ],
+          "sorts": [],
+          "ignoredFields": [],
+          "schema": false,
+          "pagination": {
+            "needInfo": false,
+            "pageNo": 0,
+            "pageSize": 10,
+            "needResults": true
+          }
+        },
+        "values": null
+      },
+      "isDefault": true
+    },
+    {
+      "fieldName": "groupDsc",
+      "filterName": "groupDsc",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "itemTypeDsc",
+      "filterName": "itemTypeDsc",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "itemTypeDsc",
+      "filterName": "itemTypeDsc",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "barcode",
+      "filterName": "barcode",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "barcode",
+      "filterName": "barcode",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "localBarcode",
+      "filterName": "localBarcode",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "localBarcode",
+      "filterName": "localBarcode",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "uniqueBarcode",
+      "filterName": "uniqueBarcode",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "uniqueBarcode",
+      "filterName": "uniqueBarcode",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "isTemplate",
+      "filterName": "isTemplate",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "qty",
+      "filterName": "qty",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "qty",
+      "filterName": "qty",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "qty",
+      "filterName": "qty",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "qty",
+      "filterName": "qty",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "qty",
+      "filterName": "qty",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "orderPoint",
+      "filterName": "orderPoint",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "orderPoint",
+      "filterName": "orderPoint",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "orderPoint",
+      "filterName": "orderPoint",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "orderPoint",
+      "filterName": "orderPoint",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "orderPoint",
+      "filterName": "orderPoint",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "filterName": "nearByOrderPoint",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "filterName": "nearByOrderPoint",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "filterName": "nearByOrderPoint",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "filterName": "nearByOrderPoint",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "filterName": "nearByOrderPoint",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "price",
+      "filterName": "price",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "price",
+      "filterName": "price",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "price",
+      "filterName": "price",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "price",
+      "filterName": "price",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "price",
+      "filterName": "price",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "discountPercent",
+      "filterName": "discountPercent",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "discountPercent",
+      "filterName": "discountPercent",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "discountPercent",
+      "filterName": "discountPercent",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "discountPercent",
+      "filterName": "discountPercent",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "discountPercent",
+      "filterName": "discountPercent",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "filterName": "priceAfterDiscount",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "filterName": "priceAfterDiscount",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "filterName": "priceAfterDiscount",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "filterName": "priceAfterDiscount",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "filterName": "priceAfterDiscount",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "includedTax",
+      "filterName": "includedTax",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "dontShowinginStoreItem",
+      "filterName": "dontShowinginStoreItem",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "isNotForSelling",
+      "filterName": "isNotForSelling",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "statusDsc",
+      "filterName": "statusDsc",
+      "type": "like",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "isEditable",
+      "filterName": "isEditable",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "isLocked",
+      "filterName": "isLocked",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "commentWaitForConfirmCnt",
+      "filterName": "commentWaitForConfirmCnt",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "saveDateTime",
+      "filterName": "saveDateTime",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": true
+    },
+    {
+      "fieldName": "saveDateTime",
+      "filterName": "saveDateTime",
+      "type": "greaterThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "saveDateTime",
+      "filterName": "saveDateTime",
+      "type": "lessThan",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "saveDateTime",
+      "filterName": "saveDateTime",
+      "type": "greaterThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "saveDateTime",
+      "filterName": "saveDateTime",
+      "type": "lessThanOrEqual",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    },
+    {
+      "fieldName": "fStoreId",
+      "filterName": "fStoreId",
+      "type": "equalBy",
+      "value": null,
+      "source": null,
+      "isDefault": false
+    }
+  ],
+  "sorts": [
+    {
+      "fieldName": "title",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "technicalTitle",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "unitDsc",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "groupDsc",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "itemTypeDsc",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "barcode",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "localBarcode",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "uniqueBarcode",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "isTemplate",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "qty",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "orderPoint",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "nearByOrderPoint",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "price",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "discountPercent",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "priceAfterDiscount",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "includedTax",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "dontShowinginStoreItem",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "isNotForSelling",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "statusDsc",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "isEditable",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "isLocked",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "commentWaitForConfirmCnt",
+      "type": "ALL",
+      "order": 0
+    },
+    {
+      "fieldName": "saveDateTime",
+      "type": "ALL",
+      "order": 0
+    }
+  ]
+}

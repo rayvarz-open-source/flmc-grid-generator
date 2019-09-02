@@ -1,10 +1,10 @@
+import { createMuiTheme } from '@material-ui/core/styles';
 import { GridGenerator } from "flmc-grid-generator";
 import FLMC, { Button, FormController, Label } from "flmc-lite-renderer";
 import React from "react";
 import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import "./App.css";
-
 const ds = async dataSourceProps => {
   let result = await fetch(dataSourceProps.url, {
     method: "POST",
@@ -35,6 +35,10 @@ const ds = async dataSourceProps => {
   return resultAsJson;
 };
 
+const theme = createMuiTheme({
+  direction: "rtl"
+});
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
@@ -52,6 +56,7 @@ const createGridViaDataSource = datasource => {
   });
 };
 
+
 class SampleForm extends FormController {
   time = new BehaviorSubject(null);
   date = new BehaviorSubject(null);
@@ -59,6 +64,7 @@ class SampleForm extends FormController {
   selection = new BehaviorSubject([]);
   //
   elements = [
+    // Raw(() => <AdvanceFilterView schema={_schema} currentFilters={[]} />),
     createGridViaDataSource("-"),
     Label(this.selection.pipe(map(v => `${v.length} selected`))),
     Button("deselect All").onClick(() => this.selection.next([]))
@@ -83,7 +89,7 @@ const routes = [
 ];
 
 function App() {
-  return <FLMC routes={routes} />;
+  return <FLMC theme={theme} routes={routes} />;
 }
 
 export default App;
