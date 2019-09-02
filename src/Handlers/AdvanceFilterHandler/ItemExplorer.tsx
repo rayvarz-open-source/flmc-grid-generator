@@ -44,7 +44,8 @@ const useItemStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
       fontSize: 14,
       display: "inline-block",
-      marginLeft: 5,
+      marginLeft: theme.direction == "rtl" ? 0 : 5,
+      marginRight: theme.direction != "rtl" ? 0 : 5,
       verticalAlign: "middle",
       WebkitTouchCallout: "none",
       userSelect: "none"
@@ -121,7 +122,8 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       fontSize: 14,
       display: "inline-block",
-      marginLeft: 5,
+      marginLeft: theme.direction == "rtl" ? 0 : 5,
+      marginRight: theme.direction != "rtl" ? 0 : 5,
       verticalAlign: "middle",
       cursor: "default",
       WebkitTouchCallout: "none",
@@ -137,7 +139,8 @@ const useItemHeaderStyles = makeStyles((theme: Theme) =>
     container: {
       backgroundColor: theme.palette.primary.main,
       padding: 3,
-      paddingLeft: 5,
+      paddingLeft: theme.direction == "rtl" ? 0 : 5,
+      paddingRight: theme.direction != "rtl" ? 0 : 5,
       // transition: "200ms",
       "&:hover": {
         backgroundColor: theme.palette.primary.dark

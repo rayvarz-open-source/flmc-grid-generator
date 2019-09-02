@@ -2,6 +2,7 @@ import { Icon, IconButton, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { FilterSchemaType } from "../../../Models/Filter";
+import { useIsRtl } from "../../../Utils/useIsRtl";
 import { AdvanceFilterContext } from "../AdvanceFilterContext";
 import { DropZone } from "./DropZone";
 import { ExpressionModel } from "./ExpressionModel";
@@ -31,6 +32,7 @@ type AndOrExpressionProps = {
   depth: number;
 };
 export function AndOrExpression(props: AndOrExpressionProps) {
+  const isRtl = useIsRtl();
   const { expression } = props;
   const advanceFilterContext = React.useContext(AdvanceFilterContext);
   const operatorName =
@@ -64,7 +66,8 @@ export function AndOrExpression(props: AndOrExpressionProps) {
               transitionDelay: hoverOverBrackets ? "150ms" : "0ms",
               width: hoverOverBrackets ? "1rem" : "0rem",
               height: hoverOverBrackets ? "1rem" : "0rem",
-              marginRight: hoverOverBrackets ? 3 : 0
+              marginRight: isRtl ? 0 : ( hoverOverBrackets ? 3 : 0),
+              marginLeft: isRtl ? ( hoverOverBrackets ? 3 : 0)  : 0
             }}
           >
             <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
@@ -94,7 +97,8 @@ export function AndOrExpression(props: AndOrExpressionProps) {
       onMouseEnter={() => setHoverOverBrackets(true)}
       onMouseLeave={() => setHoverOverBrackets(false)}
       style={{
-        marginLeft: 15,
+        marginLeft: isRtl ? 0 : 15,
+        marginRight: isRtl ? 15 : 0,
         backgroundColor: hoverOverBrackets ? "rgba(0,0,0,0.03)" : "rgba(0,0,0,0)",
         borderRadius: 10,
         padding: 3

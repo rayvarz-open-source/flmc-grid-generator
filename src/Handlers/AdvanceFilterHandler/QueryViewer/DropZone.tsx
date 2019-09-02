@@ -37,22 +37,20 @@ type Props = {
 
 export function DropZone(props: Props) {
   const classes = useStyles();
-
   return (
     <AdvanceFilterContext.Consumer>
       {value => (
         <MouseOverDetector>
           {isOver => {
-
-            if (isOver && !value.isDragging) /* dropped */ {
-                value.onDropped(props.id);
+            if (isOver && !value.isDragging) {
+              /* dropped */ value.onDropped(props.id);
             }
 
             let styles = {
               width: value.isDragging ? (isOver ? 180 : 22) : 0,
               height: value.isDragging ? 22 : 0,
-              transform: (value.isDragging && isOver) ? "scale(1.5, 1.5)" : "scale(1,1)",
-              opacity: ((isOver && value.isDragging) ? 0.3 : 0) + (value.isDragging ? 0.3 : 0)
+              transform: value.isDragging && isOver ? "scale(1.5, 1.5)" : "scale(1,1)",
+              opacity: (isOver && value.isDragging ? 0.3 : 0) + (value.isDragging ? 0.3 : 0)
             };
             return (
               <div

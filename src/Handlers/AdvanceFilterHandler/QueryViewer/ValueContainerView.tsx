@@ -11,13 +11,15 @@ const useValueContainer = makeStyles((theme: Theme) => createStyles({
     marginRight: 5,
     transition: "300ms",
     "&:hover": {
-      paddingRight: 20
+      paddingRight: theme.direction == "rtl" ? 0 : 20,
+      paddingLeft: theme.direction != "rtl" ? 0 : 20,
     }
   },
   editIcon: {
     fontSize: "1rem",
     position: "absolute",
-    right: 3,
+    right: theme.direction == "rtl" ? undefined : 3,
+    left: theme.direction != "rtl" ? undefined : 3,
     transition: "150ms"
   }
 }));

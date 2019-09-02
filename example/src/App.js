@@ -1,3 +1,4 @@
+import { createMuiTheme } from '@material-ui/core/styles';
 import { GridGenerator } from "flmc-grid-generator";
 import FLMC, { Button, FormController, Label } from "flmc-lite-renderer";
 import React from "react";
@@ -34,6 +35,10 @@ const ds = async dataSourceProps => {
   return resultAsJson;
 };
 
+const theme = createMuiTheme({
+  direction: "rtl"
+});
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(() => resolve(), ms));
 }
@@ -50,6 +55,7 @@ const createGridViaDataSource = datasource => {
     dataSource: options => ds({ ...options, url: datasource })
   });
 };
+
 
 class SampleForm extends FormController {
   time = new BehaviorSubject(null);
@@ -83,7 +89,7 @@ const routes = [
 ];
 
 function App() {
-  return <FLMC routes={routes} />;
+  return <FLMC theme={theme} routes={routes} />;
 }
 
 export default App;
