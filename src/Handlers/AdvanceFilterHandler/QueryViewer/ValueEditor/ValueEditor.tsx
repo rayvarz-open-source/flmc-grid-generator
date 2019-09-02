@@ -1,9 +1,9 @@
-import { Typography } from "@material-ui/core";
 import * as React from "react";
 import { FieldShemaTypeName } from "../../../../Models/Field";
 import { ExpressionModel } from "../ExpressionModel";
 import { BitValueEditor } from "./BitValueEditor";
 import { InputValueEditor } from "./InputValueEditor";
+import { LocalListValueEditor } from "./LocalListValueEditor";
 
 type Props = {
   expression: ExpressionModel;
@@ -26,10 +26,10 @@ export function ValueEditor(props: Props) {
     case FieldShemaTypeName.List:
       return null;
     case FieldShemaTypeName.LocalList:
-      return null;
+      return <LocalListValueEditor expression={props.expression} />;
     case FieldShemaTypeName.Int:
       return <InputValueEditor expression={props.expression} type={"number"} />;
     default:
-      return <Typography variant="body2">{" ? "}</Typography>;
+      return null;
   }
 }
