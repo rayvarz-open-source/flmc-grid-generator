@@ -6,6 +6,7 @@ import { useForceUpdate } from "../../../Utils/useForceUpdate";
 import { AdvanceFilterContext } from "../AdvanceFilterContext";
 import { ExpressionModel } from "./ExpressionModel";
 import { ValueContainerView } from "./ValueContainerView";
+import { ValueEditor } from "./ValueEditor/ValueEditor";
 
 const useExpressionStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +63,7 @@ export function FilterExpressionView(props: Props) {
           >
             <Typography variant="body2">{expression.fieldName}</Typography>
             <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
-            <ValueContainerView value={expression.value || "None"} onClick={handleClick} />
+            <ValueEditor expression={props.expression}/>
             <IconButton
               onClick={() => value.onDelete(props.expression.path)}
               className={classes.deleteButton}
