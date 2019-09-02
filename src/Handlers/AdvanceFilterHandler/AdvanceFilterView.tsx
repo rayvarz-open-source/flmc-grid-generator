@@ -94,17 +94,24 @@ function createExpressionFromFilter(filter: Filter, startPath: number[]): Expres
 
 export function AdvanceFilterViewContent(props: Props) {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [draggingItem, setDraggingItem] = React.useState("None");
 
   function onDragEnd(result: any) {
     setIsDragging(false);
+    setDraggingItem("None")
   }
   function onDragStart(result: any) {
     setIsDragging(true);
+    setDraggingItem(result.draggableId)
+  }
+
+  function onDropped(id: string) {
+    alert(id)
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-      <AdvanceFilterContext.Provider value={{ isDragging }}>
+      <AdvanceFilterContext.Provider value={{ isDragging, onDropped }}>
         <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
           <ItemExplorer
             categories={[

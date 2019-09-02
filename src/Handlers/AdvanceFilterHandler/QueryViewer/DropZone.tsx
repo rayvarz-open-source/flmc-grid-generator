@@ -43,8 +43,13 @@ export function DropZone(props: Props) {
       {value => (
         <MouseOverDetector>
           {isOver => {
+
+            if (isOver && !value.isDragging) /* dropped */ {
+                value.onDropped(props.id);
+            }
+
             let styles = {
-              width: value.isDragging ? (isOver ? 150 : 22) : 0,
+              width: value.isDragging ? (isOver ? 180 : 22) : 0,
               height: value.isDragging ? 22 : 0,
               transform: isOver ? "scale(1.5, 1.5)" : "scale(1,1)",
               opacity: (isOver ? 0.3 : 0) + (value.isDragging ? 0.3 : 0)
