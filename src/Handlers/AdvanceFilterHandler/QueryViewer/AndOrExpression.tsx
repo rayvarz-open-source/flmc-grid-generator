@@ -58,10 +58,17 @@ export function AndOrExpression(props: AndOrExpressionProps) {
   );
 
   let element: React.ReactNode;
-  if (subExpressions.length < 4) {
+  if (calculateExpressionDepth(expression) < 4) {
     element = <div style={{ flexDirection: "row", display: "flex", alignItems: "center" }}>{elementChild(0)}</div>;
   } else {
     element = <div style={{ flexDirection: "column", display: "flex" }}>{elementChild(props.depth + 1)}</div>;
   }
   return <div style={{ marginLeft: 15 }}>{element}</div>;
+}
+
+function calculateExpressionDepth(expression: ExpressionModel): number {
+  if (!Array.isArray(expression.value)) return 0;
+  let depth = expression.value.length;
+  let childrenDepths = expression.value.map(v => calculateExpressionDepth(v));
+  return depth + Math.max(...childrenDepths);
 }

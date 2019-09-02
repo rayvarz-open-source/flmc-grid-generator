@@ -145,6 +145,7 @@ export function AdvanceFilterViewContent(props: Props) {
       } else {
         const field = fieldsWithFilter[index];
         const firstFilter = props.schema.filters.find(v => v.fieldName === field.fieldName)!;
+        if (firstFilter == null) return;
         filter = {
           fieldName: field.fieldName,
           type: firstFilter.type,
