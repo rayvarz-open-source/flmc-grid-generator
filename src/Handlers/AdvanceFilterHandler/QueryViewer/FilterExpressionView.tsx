@@ -59,7 +59,6 @@ export function FilterExpressionView(props: Props) {
             className={classes.container}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            style={{ marginLeft: props.expression.path.length === 2 ? 15 : 0 }}
           >
             <Typography variant="body2">{expression.fieldName}</Typography>
             <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
