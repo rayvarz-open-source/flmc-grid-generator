@@ -61,7 +61,7 @@ export function FilterExpressionView(props: Props) {
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
           >
-            <Typography variant="body2">{expression.fieldName}</Typography>
+            <Typography variant="body2">{expression.extras.field.title}</Typography>
             <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
             <ValueEditor expression={props.expression}/>
             <IconButton
