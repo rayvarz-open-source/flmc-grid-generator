@@ -1,7 +1,8 @@
-import { Typography } from "@material-ui/core";
+import { Icon, IconButton, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { FilterSchemaType } from "../../../Models/Filter";
+import { AdvanceFilterContext } from "../AdvanceFilterContext";
 import { DropZone } from "./DropZone";
 import { ExpressionModel } from "./ExpressionModel";
 import { Expression } from "./ExpressionView";
@@ -13,6 +14,15 @@ const useAndOrStyles = makeStyles((theme: Theme) =>
       transition: "200ms",
       marginLeft: 5,
       marginRight: 5
+    },
+    deleteButton: {
+      padding: 0,
+      transition: "100ms"
+    },
+    startContainer: {
+      flexDirection: "row",
+      display: "flex",
+      alignItems: "center"
     }
   })
 );
@@ -27,6 +37,8 @@ export function AndOrExpression(props: AndOrExpressionProps) {
   const classes = useAndOrStyles();
   const [hoverOverBrackets, setHoverOverBrackets] = React.useState(false);
 
+  const advanceFilterContext = React.useContext(AdvanceFilterContext);
+
   const createKeyword = (value: string, variant: string = "h6") => (
     <Typography variant={variant as any} className={classes.keyword} style={{ opacity: hoverOverBrackets ? 1.0 : 0.5 }}>
       {value}
@@ -34,11 +46,29 @@ export function AndOrExpression(props: AndOrExpressionProps) {
   );
 
   const _path = props.expression.path.join("-");
+  const isRoot = props.expression.path.length === 1;
 
   const elementChild = (depth: number) => (
     <>
       {/* {props.expression.path.length !== 1 && <DropZone id={`before#${_path}`} />} */}
-      {createKeyword("(")}
+      <div className={classes.startContainer}>
+        {createKeyword("(")}
+        {!isRoot && (
+          <IconButton
+            onClick={() => advanceFilterContext.onDelete(props.expression.path)}
+            className={classes.deleteButton}
+            style={{
+              opacity: hoverOverBrackets ? 0.7 : 0.0,
+              transitionDelay: hoverOverBrackets ? "150ms" : "0ms",
+              width: hoverOverBrackets ? "1rem" : "0rem",
+              height: hoverOverBrackets ? "1rem" : "0rem",
+              marginRight: hoverOverBrackets ? 3 : 0
+            }}
+          >
+            <Icon style={{ fontSize: "1rem" }}>{"close"}</Icon>
+          </IconButton>
+        )}
+      </div>
       {subExpressions.map((exp, i) => (
         <React.Fragment key={`${exp.fieldName}_${i}`}>
           <Expression depth={0} expression={exp} />

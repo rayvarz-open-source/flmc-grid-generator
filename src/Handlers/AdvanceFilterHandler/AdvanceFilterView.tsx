@@ -81,13 +81,10 @@ const AND_INDEX = -1;
 const OR_INDEX = -2;
 
 function getExpressionByPath(source: ExpressionModel, path: number[]): ExpressionModel {
-  console.log("start");
   let lastExpression = source;
   for (let index of path.slice(1)) {
-    console.log(lastExpression, path, index);
     lastExpression = lastExpression.value[index];
   }
-  console.log("end");
   return lastExpression;
 }
 
