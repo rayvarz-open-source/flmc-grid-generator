@@ -14,15 +14,20 @@ export type Props = {
   schema: Schema;
 };
 
-function createExpressionFromFilter(filter: Filter | ExpressionModel, startPath: number[]): ExpressionModel {
+function createExpressionFromFilter(
+  filter: Filter | ExpressionModel,
+  startPath: number[],
+  schema: Schema
+): ExpressionModel {
   if ([FilterSchemaType.AND, FilterSchemaType.OR].includes(filter.type)) {
     return {
       ...{
+        ...DEFAULT_EXPRESSION,
         ...filter,
         value: (filter.value as Filter[]).map((f, i) => {
           let _path = [...startPath, i];
           return {
-            ...createExpressionFromFilter(f, _path),
+            ...createExpressionFromFilter(f, _path, schema),
             path: _path
           };
         })
@@ -30,10 +35,22 @@ function createExpressionFromFilter(filter: Filter | ExpressionModel, startPath:
       path: startPath
     };
   } else {
-    return {
-      ...filter,
-      path: startPath
-    };
+    const field = schema.fields.find(v => v.fieldName === filter.fieldName);
+    if (field)
+      return {
+        ...filter,
+        path: startPath,
+        extras: {
+          field: field,
+          filters: schema.filters.filter(v => v.fieldName === field.fieldName)
+        }
+      };
+    else
+      return {
+        ...DEFAULT_EXPRESSION,
+        ...filter,
+        path: startPath
+      };
   }
 }
 
@@ -74,7 +91,20 @@ const DEFAULT_EXPRESSION: ExpressionModel = {
   fieldName: "",
   path: [],
   type: FilterSchemaType.AND,
-  value: []
+  value: [],
+  extras: {
+    field: {
+      fieldName: "",
+      isEditable: false,
+      isKey: false,
+      isVisible: false,
+      isVisibleDefault: false,
+      order: 0,
+      title: "",
+      type: { name: FieldShemaTypeName.String, source: null }
+    },
+    filters: []
+  }
 };
 
 const AND_INDEX = -1;
@@ -116,10 +146,13 @@ export function AdvanceFilterViewContent(props: Props) {
 
   React.useEffect(() => {
     if (props.currentFilters.length === 1 && props.currentFilters[0].type === FilterSchemaType.AND)
-      setQueryExpression(createExpressionFromFilter(props.currentFilters[0], [0]));
+      setQueryExpression(createExpressionFromFilter(props.currentFilters[0], [0], props.schema));
     else if (props.currentFilters.length === 0)
-      setQueryExpression(createExpressionFromFilter({ ...DEFAULT_EXPRESSION }, [0]));
-    else setQueryExpression(createExpressionFromFilter({ ...DEFAULT_EXPRESSION, value: props.currentFilters }, [0]));
+      setQueryExpression(createExpressionFromFilter({ ...DEFAULT_EXPRESSION }, [0], props.schema));
+    else
+      setQueryExpression(
+        createExpressionFromFilter({ ...DEFAULT_EXPRESSION, value: props.currentFilters }, [0], props.schema)
+      );
     return () => setQueryExpression(DEFAULT_EXPRESSION);
   }, [props.currentFilters]);
 
@@ -160,15 +193,15 @@ export function AdvanceFilterViewContent(props: Props) {
         .split("#")[1]
         .split("-")
         .map(v => parseInt(v));
-      insertInnerPath(queryExpression, createExpressionFromFilter(filter, []), path);
-      setQueryExpression(createExpressionFromFilter(queryExpression, [0]));
+      insertInnerPath(queryExpression, createExpressionFromFilter(filter, [], props.schema), path);
+      setQueryExpression(createExpressionFromFilter(queryExpression, [0], props.schema));
       setAllowDrop(false);
     }
   }
 
   function onDelete(path: number[]) {
     deletePath(queryExpression, path);
-    setQueryExpression(createExpressionFromFilter(queryExpression, [0]));
+    setQueryExpression(createExpressionFromFilter(queryExpression, [0], props.schema));
   }
 
   function createCategoriesFromSchema(): CategoryType[] {
