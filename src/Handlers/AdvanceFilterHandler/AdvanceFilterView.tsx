@@ -14,7 +14,7 @@ export type Props = {
   schema: Schema;
 };
 
-function createExpressionFromFilter(filter: Filter, startPath: number[]): ExpressionModel {
+function createExpressionFromFilter(filter: Filter | ExpressionModel, startPath: number[]): ExpressionModel {
   if ([FilterSchemaType.AND, FilterSchemaType.OR].includes(filter.type)) {
     return {
       ...{
@@ -77,6 +77,25 @@ const DEFAULT_EXPRESSION: ExpressionModel = {
   value: []
 };
 
+const AND_INDEX = -1;
+const OR_INDEX = -2;
+
+function getExpressionByPath(source: ExpressionModel, path: number[]): ExpressionModel {
+    console.log("start")
+  let lastExpression = source;
+  for (let index of path.slice(1)) {
+    console.log(lastExpression, path, index);
+    lastExpression = lastExpression.value[index];
+  }
+  console.log("end")
+  return lastExpression;
+}
+
+function insertInnerPath(source: ExpressionModel, expression: ExpressionModel, path: number[]) {
+  let parent = getExpressionByPath(source, path);
+  parent.value.push(expression);
+}
+
 export function AdvanceFilterViewContent(props: Props) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [allowDrop, setAllowDrop] = React.useState(false);
@@ -105,7 +124,6 @@ export function AdvanceFilterViewContent(props: Props) {
     setAllowDrop(true);
     setTimeout(() => setAllowDrop(false), 300);
     setIsDragging(false);
-    setDraggingItem("None");
   }
 
   function onDragStart(result: any) {
@@ -116,7 +134,30 @@ export function AdvanceFilterViewContent(props: Props) {
 
   function onDropped(id: string) {
     if (allowDrop) {
-      alert(id);
+      const index = parseInt(draggingItem.split("dId")[0]);
+      let filter: Filter;
+      if ([AND_INDEX, OR_INDEX].includes(index)) {
+        filter = {
+          fieldName: "",
+          type: index === AND_INDEX ? FilterSchemaType.AND : FilterSchemaType.OR,
+          value: []
+        };
+      } else {
+        const field = fieldsWithFilter[index];
+        const firstFilter = props.schema.filters.find(v => v.fieldName === field.fieldName)!;
+        filter = {
+          fieldName: field.fieldName,
+          type: firstFilter.type,
+          value: null
+        };
+      }
+
+      const path = id
+        .split("#")[1]
+        .split("-")
+        .map(v => parseInt(v));
+      insertInnerPath(queryExpression, createExpressionFromFilter(filter, []), path);
+      setQueryExpression(createExpressionFromFilter(queryExpression, [0]));
       setAllowDrop(false);
     }
   }
@@ -145,8 +186,8 @@ export function AdvanceFilterViewContent(props: Props) {
               {
                 title: "General",
                 children: [
-                  { title: "Or operator", icon: "flip_to_back", id: -2 },
-                  { title: "And operator", icon: "flip_to_front", id: -4 }
+                  { title: "Or operator", icon: "flip_to_back", id: OR_INDEX },
+                  { title: "And operator", icon: "flip_to_front", id: AND_INDEX }
                 ]
               },
               ...createCategoriesFromSchema()
