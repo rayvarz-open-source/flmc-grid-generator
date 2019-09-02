@@ -98,22 +98,36 @@ function createExpressionFromFilter(filter: Filter, startPath: number[]): Expres
 }
 
 function getIconByFieldType(type: FieldType): string {
-    switch(type.name) {
-        case FieldShemaTypeName.Bit: return "check_box";
-        case FieldShemaTypeName.GregorianDateTime: return "date_range";
-        case FieldShemaTypeName.PersianDate: return "date_range";
-        case FieldShemaTypeName.Image: return "image";
-        case FieldShemaTypeName.ImageList: return "image";
-        case FieldShemaTypeName.Int: return "exposure_plus_2";
-        case FieldShemaTypeName.List: return "dehaze";
-        case FieldShemaTypeName.LocalList: return "dehaze";
-        case FieldShemaTypeName.Money: return "attach_money";
-        case FieldShemaTypeName.Object: return "crop_square";
-        case FieldShemaTypeName.QRCode: return "format_align_justify";
-        case FieldShemaTypeName.Barcode: return "format_align_justify";
-        case FieldShemaTypeName.String: return "subtitles";
-        default: return "crop_square";
-    }
+  switch (type.name) {
+    case FieldShemaTypeName.Bit:
+      return "check_box";
+    case FieldShemaTypeName.GregorianDateTime:
+      return "date_range";
+    case FieldShemaTypeName.PersianDate:
+      return "date_range";
+    case FieldShemaTypeName.Image:
+      return "image";
+    case FieldShemaTypeName.ImageList:
+      return "image";
+    case FieldShemaTypeName.Int:
+      return "exposure_plus_2";
+    case FieldShemaTypeName.List:
+      return "dehaze";
+    case FieldShemaTypeName.LocalList:
+      return "dehaze";
+    case FieldShemaTypeName.Money:
+      return "attach_money";
+    case FieldShemaTypeName.Object:
+      return "crop_square";
+    case FieldShemaTypeName.QRCode:
+      return "format_align_justify";
+    case FieldShemaTypeName.Barcode:
+      return "format_align_justify";
+    case FieldShemaTypeName.String:
+      return "subtitles";
+    default:
+      return "crop_square";
+  }
 }
 
 export function AdvanceFilterViewContent(props: Props) {
@@ -121,11 +135,21 @@ export function AdvanceFilterViewContent(props: Props) {
   const [allowDrop, setAllowDrop] = React.useState(false);
   const [draggingItem, setDraggingItem] = React.useState("None");
 
+  const fieldsWithFilter = React.useMemo(
+    () =>
+      props.schema.fields.filter(
+        v => v.title != null && props.schema.filters.find(v => v.fieldName == v.fieldName) != null
+      ),
+    [props.schema]
+  );
+
   function onDragEnd(result: any) {
     setAllowDrop(true);
+    setTimeout(() => setAllowDrop(false), 300);
     setIsDragging(false);
     setDraggingItem("None");
   }
+
   function onDragStart(result: any) {
     setAllowDrop(false);
     setIsDragging(true);
@@ -140,19 +164,15 @@ export function AdvanceFilterViewContent(props: Props) {
   }
 
   function createCategoriesFromSchema(): CategoryType[] {
-    // find all schema fields that has filter
-    const fieldsWithFilter = props.schema.fields.filter(
-      v => v.title != null && props.schema.filters.find(v => v.fieldName == v.fieldName) != null
-    );
     return [
       {
         title: "Fields",
         children: fieldsWithFilter.map((v, i) => {
-            return {
-                title: v.title,
-                icon: getIconByFieldType(v.type),
-                id: i
-            }
+          return {
+            title: v.title,
+            icon: getIconByFieldType(v.type),
+            id: i
+          };
         })
       }
     ];
