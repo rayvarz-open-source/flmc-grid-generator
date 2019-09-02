@@ -290,7 +290,8 @@ export function AdvanceFilterView(props: AdvanceFilterViewProps) {
           height: window.innerHeight * 0.75,
           margin: "auto",
           marginTop: (window.innerHeight * 0.25) / 2,
-          outline: "none"
+          outline: "none",
+          overflow: "hidden",
         }}
       >
         <AdvanceFilterViewContent {...contentProps} />
