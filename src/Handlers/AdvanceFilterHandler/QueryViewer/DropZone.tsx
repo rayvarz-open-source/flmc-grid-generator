@@ -52,7 +52,7 @@ export function DropZone(props: Props) {
               width: value.isDragging ? (isOver ? 180 : 22) : 0,
               height: value.isDragging ? 22 : 0,
               transform: (value.isDragging && isOver) ? "scale(1.5, 1.5)" : "scale(1,1)",
-              opacity: (isOver ? 0.3 : 0) + (value.isDragging ? 0.3 : 0)
+              opacity: ((isOver && value.isDragging) ? 0.3 : 0) + (value.isDragging ? 0.3 : 0)
             };
             return (
               <div
