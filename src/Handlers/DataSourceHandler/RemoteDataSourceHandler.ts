@@ -31,7 +31,7 @@ export const remoteDataSourceHandler: Handler = (props, observables) => {
     let needPageSize = lastFilters == null || isFilterChanged(lastFilters, filters);
     lastFilters = filters;
 
-    let requestFilters = [...filters];
+    let requestFilters = [...filters, ...props.controllers.advanceFiltersController.value];
 
     var result = await dataSourceFunction({
       pageNo: query.page,

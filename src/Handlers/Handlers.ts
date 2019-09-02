@@ -1,4 +1,5 @@
 import { AttributeObservables, BaseProps, ElementInstances } from "../BaseGridGenerator";
+import { advanceFilterHandler } from "./AdvanceFilterHandler/AdvanceFilterHandler";
 import { columnDefinitionHandler } from "./ColumnDefinitionHandler/ColumnDefinitionHandler";
 import { commandHandler } from "./CommandHandler/CommandHandler";
 import { customActionHandler } from "./CustomActionHandler/CustomActionHandler";
@@ -28,6 +29,7 @@ export const handlers: Handler[] = [
   selectionHandler,
   customRowRendererHandler,
   filterHandler,
+  advanceFilterHandler,
   sortHandler,
   exportHandler,
   refreshActionHandler,

@@ -1,11 +1,9 @@
 import { GridGenerator } from "flmc-grid-generator";
-import { AdvanceFilterView } from "flmc-grid-generator/build/Handlers/AdvanceFilterHandler/AdvanceFilterView";
-import FLMC, { Button, FormController, Label, Raw } from "flmc-lite-renderer";
+import FLMC, { Button, FormController, Label } from "flmc-lite-renderer";
 import React from "react";
 import { BehaviorSubject } from "rxjs";
 import { map } from "rxjs/operators";
 import "./App.css";
-import _schema from './exampleSchema.json';
 const ds = async dataSourceProps => {
   let result = await fetch(dataSourceProps.url, {
     method: "POST",
@@ -60,8 +58,8 @@ class SampleForm extends FormController {
   selection = new BehaviorSubject([]);
   //
   elements = [
-    Raw(() => <AdvanceFilterView schema={_schema} currentFilters={[]} />),
-    // createGridViaDataSource("-"),
+    // Raw(() => <AdvanceFilterView schema={_schema} currentFilters={[]} />),
+    createGridViaDataSource("-"),
     Label(this.selection.pipe(map(v => `${v.length} selected`))),
     Button("deselect All").onClick(() => this.selection.next([]))
   ];

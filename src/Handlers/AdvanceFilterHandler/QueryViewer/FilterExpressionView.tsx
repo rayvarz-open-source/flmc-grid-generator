@@ -1,7 +1,6 @@
 import { Icon, IconButton, Menu, MenuItem, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
-import { getFilterSchemaTypeName } from "../../../Models/Filter";
 import { useForceUpdate } from "../../../Utils/useForceUpdate";
 import { AdvanceFilterContext } from "../AdvanceFilterContext";
 import { ExpressionModel } from "./ExpressionModel";
@@ -56,14 +55,13 @@ export function FilterExpressionView(props: Props) {
     <AdvanceFilterContext.Consumer>
       {value => (
         <div style={{ display: "flex" }}>
-          <div
-            className={classes.container}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-          >
+          <div className={classes.container} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
             <Typography variant="body2">{expression.extras.field.title}</Typography>
-            <ValueContainerView value={getFilterSchemaTypeName(expression.type)} onClick={handleClick} />
-            <ValueEditor expression={props.expression}/>
+            <ValueContainerView
+              value={value.contentProps!.localization.filterTypeTranslator(expression.type)}
+              onClick={handleClick}
+            />
+            <ValueEditor expression={props.expression} />
             <IconButton
               onClick={() => value.onDelete(props.expression.path)}
               className={classes.deleteButton}
@@ -84,7 +82,7 @@ export function FilterExpressionView(props: Props) {
             >
               {props.expression.extras.filters.map((item, i) => (
                 <MenuItem key={`option_${i}`} onClick={e => handleItemClick(e, i)} value={item.type}>
-                  {getFilterSchemaTypeName(item.type)}
+                  {value.contentProps!.localization.filterTypeTranslator(item.type)}
                 </MenuItem>
               ))}
             </Menu>

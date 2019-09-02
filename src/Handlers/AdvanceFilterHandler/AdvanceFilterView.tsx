@@ -1,6 +1,7 @@
 import { Modal } from "@material-ui/core";
 import * as React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
+import { BehaviorSubject } from "rxjs";
 import { FieldShemaTypeName, FieldType } from "../../Models/Field";
 import { Filter, FilterSchemaType } from "../../Models/Filter";
 import { Schema } from "../../Models/Schema";
@@ -9,9 +10,28 @@ import ItemExplorer, { CategoryType } from "./ItemExplorer";
 import { ExpressionModel } from "./QueryViewer/ExpressionModel";
 import { QueryView } from "./QueryViewer/QueryView";
 
-export type Props = {
+export type AdvanceFilterLocalization = {
+  actionTooltip: string;
+  andOperator: string;
+  orOperator: string;
+  generalSectionHeader: string;
+  fieldSectionHeader: string;
+  searchPlaceholder: string;
+  filterTypeTranslator: (type: FilterSchemaType) => string;
+  apply: string;
+  cancel: string;
+  and: string;
+  or: string;
+  openBracket: string;
+  closeBracket: string;
+}
+
+export type AdvanceFilterContentProps = {
   currentFilters: Filter[];
   schema: Schema;
+  onApply: (filters: Filter[]) => void;
+  onCancel: () => void;
+  localization: AdvanceFilterLocalization
 };
 
 function createExpressionFromFilter(
@@ -67,7 +87,7 @@ function getIconByFieldType(type: FieldType): string {
     case FieldShemaTypeName.ImageList:
       return "image";
     case FieldShemaTypeName.Int:
-      return "exposure_plus_2";
+      return "filter_9_plus";
     case FieldShemaTypeName.List:
       return "dehaze";
     case FieldShemaTypeName.LocalList:
@@ -129,7 +149,7 @@ function deletePath(source: ExpressionModel, path: number[]) {
   parent.value = parent.value.filter(v => v !== child);
 }
 
-export function AdvanceFilterViewContent(props: Props) {
+export function AdvanceFilterViewContent(props: AdvanceFilterContentProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [allowDrop, setAllowDrop] = React.useState(false);
   const [draggingItem, setDraggingItem] = React.useState("None");
@@ -207,7 +227,7 @@ export function AdvanceFilterViewContent(props: Props) {
   function createCategoriesFromSchema(): CategoryType[] {
     return [
       {
-        title: "Fields",
+        title: props.localization.fieldSectionHeader,
         children: fieldsWithFilter.map((v, i) => {
           return {
             title: v.title,
@@ -221,15 +241,15 @@ export function AdvanceFilterViewContent(props: Props) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-      <AdvanceFilterContext.Provider value={{ isDragging, onDropped, onDelete }}>
+      <AdvanceFilterContext.Provider value={{ isDragging, onDropped, onDelete, contentProps: props, rootExpression: queryExpression }}>
         <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
           <ItemExplorer
             categories={[
               {
-                title: "General",
+                title: props.localization.fieldSectionHeader,
                 children: [
-                  { title: "Or operator", icon: "flip_to_back", id: OR_INDEX },
-                  { title: "And operator", icon: "flip_to_front", id: AND_INDEX }
+                  { title: props.localization.orOperator, icon: "flip_to_back", id: OR_INDEX },
+                  { title: props.localization.andOperator, icon: "flip_to_front", id: AND_INDEX }
                 ]
               },
               ...createCategoriesFromSchema()
@@ -242,9 +262,26 @@ export function AdvanceFilterViewContent(props: Props) {
   );
 }
 
-export function AdvanceFilterView(props: Props) {
+export type AdvanceFilterViewProps = {
+  contentProps: BehaviorSubject<AdvanceFilterContentProps>;
+  open: BehaviorSubject<boolean>;
+};
+
+export function AdvanceFilterView(props: AdvanceFilterViewProps) {
+  const [open, setOpen] = React.useState<boolean>(() => props.open.value);
+  const [contentProps, setContentProps] = React.useState<AdvanceFilterContentProps>(() => props.contentProps.value);
+
+  React.useEffect(() => {
+    let openSub = props.open.subscribe(v => setOpen(v));
+    let contentPropsSub = props.contentProps.subscribe(v => setContentProps(v));
+    return () => {
+      openSub.unsubscribe();
+      contentPropsSub.unsubscribe();
+    };
+  }, [props.open, props.contentProps]);
+
   return (
-    <Modal disableEnforceFocus open={true}>
+    <Modal disableEnforceFocus open={open}>
       <div
         style={{
           backgroundColor: "white",
@@ -256,7 +293,7 @@ export function AdvanceFilterView(props: Props) {
           outline: "none"
         }}
       >
-        <AdvanceFilterViewContent {...props} />
+        <AdvanceFilterViewContent {...contentProps} />
       </div>
     </Modal>
   );

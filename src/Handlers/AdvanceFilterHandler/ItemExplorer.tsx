@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import * as React from "react";
 import { MutableRefObject } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import { AdvanceFilterContext } from "./AdvanceFilterContext";
 
 export type ItemModel = {
   title: string;
@@ -196,6 +197,7 @@ type SearchProps = {
   value: string;
   onChange: (value: string) => void;
   inputRef: MutableRefObject<any>;
+  placeholder: string;
 };
 
 function Search(props: SearchProps) {
@@ -206,7 +208,7 @@ function Search(props: SearchProps) {
       value={props.value}
       onChange={v => props.onChange(v.target.value)}
       variant={"filled"}
-      placeholder={'Press "/" to search...'}
+      placeholder={props.placeholder}
       inputRef={props.inputRef}
       inputProps={{
         style: {
@@ -256,7 +258,7 @@ export default function ItemExplorer(props: Props) {
     const eventHandler = (e: KeyboardEvent) => {
       if (e.key !== "/" || inputRef.current == null) return;
       inputRef.current.focus();
-      setTimeout(() => setValue(""), 0)
+      setTimeout(() => setValue(""), 0);
     };
     window.addEventListener("keydown", eventHandler);
 
@@ -274,9 +276,16 @@ export default function ItemExplorer(props: Props) {
     [value, props.categories]
   );
 
+  const advanceFilterContext = React.useContext(AdvanceFilterContext);
+
   return (
     <div className={classes.itemExplorer}>
-      <Search inputRef={inputRef} value={value} onChange={v => setValue(v)} />
+      <Search
+        placeholder={advanceFilterContext.contentProps!.localization.searchPlaceholder}
+        inputRef={inputRef}
+        value={value}
+        onChange={v => setValue(v)}
+      />
       {filteredItems.map((item, i) => (
         <ItemHeader item={item} key={`category_${i}`} />
       ))}

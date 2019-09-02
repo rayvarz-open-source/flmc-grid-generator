@@ -1,21 +1,12 @@
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { ContainerElement } from "flmc-lite-renderer/build/form/elements/container/ContainerElement";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
-import {
-  ActionDefinitions,
-  ColumnDefinitions,
-  ComponentsOverride,
-  Datasource,
-  GridOptions,
-  LocalizationDefinition,
-  OnRowClick,
-  RowActionDefinitions,
-  Title
-} from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { ActionDefinitions, ColumnDefinitions, ComponentsOverride, Datasource, GridOptions, LocalizationDefinition, OnRowClick, RowActionDefinitions, Title } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { AdvanceFilterContentProps, AdvanceFilterViewProps } from "./Handlers/AdvanceFilterHandler/AdvanceFilterView";
 import { GridCommand } from "./Handlers/CommandHandler/Commands";
 import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
 import { DataSource, GeneralDataSourceFunction } from "./Handlers/DataSourceHandler/DataSource";
@@ -40,6 +31,9 @@ export type BaseControllers<Model extends object> = {
   containerController: BehaviorSubject<IElement[]>;
   keyFieldName: BehaviorSubject<string>;
   hideColumnModalHiddenFieldsController: BehaviorSubject<FieldName[]>;
+  advanceFiltersController: BehaviorSubject<Filter[]>;
+  advanceFilterOpenController: BehaviorSubject<boolean>;
+  advanceFilterContentPropsController: BehaviorSubject<AdvanceFilterContentProps>;
 };
 
 export type BaseOptions<Model> = {
@@ -61,6 +55,7 @@ export type BaseBuilders = {
   observablesBuilder: () => AttributeObservables;
   documentListModalBuilder: () => ModalElement;
   documentListContainerBuilder: () => ContainerElement;
+  advanceFilterViewBuilder: (props: AdvanceFilterViewProps) => IElement;
 };
 
 export type ElementInstances = {
@@ -71,6 +66,7 @@ export type ElementInstances = {
     listFilterModal: ModalElement;
     documentListModal: ModalElement;
     documentListContainer: ContainerElement;
+    advanceFilterModalView: IElement;
   };
 };
 
@@ -101,6 +97,10 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
   let documentListContainer = props.builders.documentListContainerBuilder();
   let listFilterModal = props.builders.listFilterModalBuilder();
   let documentListModal = props.builders.documentListModalBuilder().child(documentListContainer);
+  let advanceFilterModalElement = props.builders.advanceFilterViewBuilder({
+    open: props.controllers.advanceFilterOpenController,
+    contentProps: props.controllers.advanceFilterContentPropsController
+  });
 
   let elements: ElementInstances = {
     elements: {
@@ -109,11 +109,18 @@ export function BaseGridGenerator<Model extends object>(props: BaseProps<Model>)
       hideColumnModal: hideColumnModalElement,
       documentListContainer: documentListContainer,
       documentListModal: documentListModal,
-      listFilterModal: listFilterModal
+      listFilterModal: listFilterModal,
+      advanceFilterModalView: advanceFilterModalElement
     }
   };
 
-  props.controllers.containerController.next([gridElement, hideColumnModalElement, documentListModal, listFilterModal]);
+  props.controllers.containerController.next([
+    gridElement,
+    hideColumnModalElement,
+    documentListModal,
+    listFilterModal,
+    advanceFilterModalElement
+  ]);
   // attribute observables
   let observables = props.builders.observablesBuilder();
   // run handlers

@@ -1,4 +1,5 @@
 import { Localization as MLocalization } from "material-table";
+import { AdvanceFilterLocalization } from "../Handlers/AdvanceFilterHandler/AdvanceFilterView";
 
 export interface Localization {
   create: string;
@@ -10,6 +11,7 @@ export interface Localization {
   retry: string;
   select: string;
   edit: string;
+  advanceFilter: AdvanceFilterLocalization;
   columnVisibility: string;
   columnVisibilityTitle: string;
 }

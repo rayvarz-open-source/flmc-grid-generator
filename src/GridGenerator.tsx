@@ -1,34 +1,19 @@
-import { ContainerDirection } from "flmc-lite-renderer";
+import { ContainerDirection, Raw } from "flmc-lite-renderer";
 import IElement from "flmc-lite-renderer/build/flmc-data-layer/FormController/IElement";
 import { ContainerElement } from "flmc-lite-renderer/build/form/elements/container/ContainerElement";
 import { GridElement } from "flmc-lite-renderer/build/form/elements/grid/GridElement";
-import {
-  ActionDefinitions,
-  ColumnDefinitions,
-  ComponentsOverride,
-  Datasource,
-  GridOptions,
-  LocalizationDefinition,
-  OnRowClick,
-  RowActionDefinitions,
-  Title
-} from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
+import { ActionDefinitions, ColumnDefinitions, ComponentsOverride, Datasource, GridOptions, LocalizationDefinition, OnRowClick, RowActionDefinitions, Title } from "flmc-lite-renderer/build/form/elements/grid/GridElementAttributes";
 import { ModalElement } from "flmc-lite-renderer/build/form/elements/modal/ModalElement";
 import { Action } from "material-table";
+import * as React from "react";
 import { BehaviorSubject, combineLatest, fromEvent, merge, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import {
-  AttributeObservables,
-  BaseBuilders,
-  BaseControllers,
-  BaseGridGenerator,
-  BaseOptions,
-  FieldName
-} from "./BaseGridGenerator";
+import { AttributeObservables, BaseBuilders, BaseControllers, BaseGridGenerator, BaseOptions, FieldName } from "./BaseGridGenerator";
+import { AdvanceFilterContentProps, AdvanceFilterView } from "./Handlers/AdvanceFilterHandler/AdvanceFilterView";
 import { GridCommand, GridCommands } from "./Handlers/CommandHandler/Commands";
 import { CustomActionPosition } from "./Handlers/CustomActionHandler/CustomActionPosition";
 import { DataSource, GeneralDataSourceFunction } from "./Handlers/DataSourceHandler/DataSource";
-import { Filter } from "./Models/Filter";
+import { Filter, getFilterSchemaTypeName } from "./Models/Filter";
 import { Localization } from "./Models/Localization";
 import { PaginationInfo } from "./Models/Pagination";
 import { Schema } from "./Models/Schema";
@@ -46,6 +31,9 @@ export type Controllers<Model extends object> = {
   containerController?: BehaviorSubject<IElement[]>;
   keyFieldName?: BehaviorSubject<string>;
   hideColumnModalHiddenFieldsController?: BehaviorSubject<FieldName[]>;
+  advanceFiltersController?: BehaviorSubject<Filter[]>;
+  advanceFilterOpenController?: BehaviorSubject<boolean>;
+  advanceFilterContentPropsController?: BehaviorSubject<AdvanceFilterContentProps>;
 };
 
 export type Options<Model> = {
@@ -81,6 +69,21 @@ export const defaultLocalization: Localization = {
   delete: "Delete",
   errorFetchingSchema: "Error fetching schema",
   loading: "Loading...",
+  advanceFilter: {
+    and: "And",
+    closeBracket: ")",
+    openBracket: "(",
+    or: "Or",
+    actionTooltip: "Advance filter",
+    andOperator: "And operator",
+    apply: "Apply",
+    cancel: "Cancel",
+    fieldSectionHeader: "Fields",
+    filterTypeTranslator: getFilterSchemaTypeName,
+    generalSectionHeader: "General",
+    orOperator: "Or operator",
+    searchPlaceholder: 'Press "/" to search'
+  },
   materialTable: {
     grouping: {
       groupedBy: "Grouped By:",
@@ -140,6 +143,8 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
         .noEscapeKeyDownClose(false),
     documentListModalBuilder: () => new ModalElement().noBackdropClickClose(false).noEscapeKeyDownClose(false),
     documentListContainerBuilder: () => new ContainerElement().direction(ContainerDirection.Row),
+    advanceFilterViewBuilder: props =>
+      Raw(_ => <AdvanceFilterView open={props.open} contentProps={props.contentProps} />),
     observablesBuilder: () => {
       return {
         onRowClick: new BehaviorSubject<OnRowClick>(undefined),
@@ -212,7 +217,25 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     hideColumnModalHiddenFieldsController:
       props.controllers && props.controllers.hideColumnModalHiddenFieldsController
         ? props.controllers.hideColumnModalHiddenFieldsController
-        : new BehaviorSubject<FieldName[]>([])
+        : new BehaviorSubject<FieldName[]>([]),
+    advanceFiltersController:
+      props.controllers && props.controllers.advanceFiltersController
+        ? props.controllers.advanceFiltersController
+        : new BehaviorSubject<Filter[]>([]),
+    advanceFilterContentPropsController:
+      props.controllers && props.controllers.advanceFilterContentPropsController
+        ? props.controllers.advanceFilterContentPropsController
+        : new BehaviorSubject<AdvanceFilterContentProps>({
+            currentFilters: [],
+            schema: { fields: [], filters: [], sorts: [] },
+            localization: defaultLocalization.advanceFilter,
+            onApply: _ => {},
+            onCancel: () => {}
+          }),
+    advanceFilterOpenController:
+      props.controllers && props.controllers.advanceFilterOpenController
+        ? props.controllers.advanceFilterOpenController
+        : new BehaviorSubject<boolean>(false)
   };
 
   let options: BaseOptions<Model> = {
@@ -271,7 +294,11 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     documentListModalBuilder:
       props.builders && props.builders.documentListModalBuilder
         ? props.builders.documentListModalBuilder
-        : defaultBuilders.documentListModalBuilder
+        : defaultBuilders.documentListModalBuilder,
+    advanceFilterViewBuilder:
+      props.builders && props.builders.advanceFilterViewBuilder
+        ? props.builders.advanceFilterViewBuilder
+        : defaultBuilders.advanceFilterViewBuilder
   };
 
   return BaseGridGenerator<Model>({ controllers, options, dataSource: props.dataSource, builders });

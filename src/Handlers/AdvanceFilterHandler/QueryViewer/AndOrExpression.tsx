@@ -32,12 +32,14 @@ type AndOrExpressionProps = {
 };
 export function AndOrExpression(props: AndOrExpressionProps) {
   const { expression } = props;
-  const operatorName = expression.type === FilterSchemaType.AND ? "And" : "Or";
+  const advanceFilterContext = React.useContext(AdvanceFilterContext);
+  const operatorName =
+    expression.type === FilterSchemaType.AND
+      ? advanceFilterContext.contentProps!.localization.and
+      : advanceFilterContext.contentProps!.localization.or;
   const subExpressions = expression.value as ExpressionModel[];
   const classes = useAndOrStyles();
   const [hoverOverBrackets, setHoverOverBrackets] = React.useState(false);
-
-  const advanceFilterContext = React.useContext(AdvanceFilterContext);
 
   const createKeyword = (value: string, variant: string = "h6") => (
     <Typography variant={variant as any} className={classes.keyword} style={{ opacity: hoverOverBrackets ? 1.0 : 0.5 }}>
@@ -52,7 +54,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
     <>
       {/* {props.expression.path.length !== 1 && <DropZone id={`before#${_path}`} />} */}
       <div className={classes.startContainer}>
-        {createKeyword("(")}
+        {createKeyword(advanceFilterContext.contentProps!.localization.openBracket)}
         {!isRoot && (
           <IconButton
             onClick={() => advanceFilterContext.onDelete(props.expression.path)}
@@ -76,7 +78,7 @@ export function AndOrExpression(props: AndOrExpressionProps) {
         </React.Fragment>
       ))}
       <DropZone id={`inner#${_path}`} />
-      {createKeyword(")")}
+      {createKeyword(advanceFilterContext.contentProps!.localization.closeBracket)}
       {/* {props.expression.path.length !== 1 && <DropZone id={`after#${_path}`} />} */}
     </>
   );
