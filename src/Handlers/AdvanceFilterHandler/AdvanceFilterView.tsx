@@ -94,19 +94,25 @@ function createExpressionFromFilter(filter: Filter, startPath: number[]): Expres
 
 export function AdvanceFilterViewContent(props: Props) {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [allowDrop, setAllowDrop] = React.useState(false);
   const [draggingItem, setDraggingItem] = React.useState("None");
 
   function onDragEnd(result: any) {
+    setAllowDrop(true);
     setIsDragging(false);
     setDraggingItem("None")
   }
   function onDragStart(result: any) {
+    setAllowDrop(false);
     setIsDragging(true);
-    setDraggingItem(result.draggableId)
+    setDraggingItem(result.draggableId);
   }
 
   function onDropped(id: string) {
-    alert(id)
+      if (allowDrop) {
+        alert(id)
+        setAllowDrop(false)
+      }
   }
 
   return (
