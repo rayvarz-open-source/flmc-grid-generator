@@ -51,11 +51,24 @@ export function FilterExpressionView(props: Props) {
   }
 
   const [hover, setHover] = React.useState(false);
+  const [timeoutId, setTimeoutId] = React.useState<NodeJS.Timeout | null>(null);
   return (
     <AdvanceFilterContext.Consumer>
       {value => (
         <div style={{ display: "flex" }}>
-          <div className={classes.container} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+          <div
+            className={classes.container}
+            onMouseEnter={() => {
+              if (timeoutId != null) {
+                clearTimeout(timeoutId);
+                setTimeoutId(null);
+              }
+              setHover(true);
+            }}
+            onMouseLeave={() => {
+              setTimeoutId(setTimeout(() => setHover(false), 500));
+            }}
+          >
             <Typography variant="body2">{expression.extras.field.title}</Typography>
             <ValueContainerView
               value={value.contentProps!.localization.filterTypeTranslator(expression.type)}
