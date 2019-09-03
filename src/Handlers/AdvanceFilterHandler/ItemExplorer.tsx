@@ -30,7 +30,7 @@ const useItemStyles = makeStyles((theme: Theme) =>
       paddingRight: 5,
       flexDirection: "row",
       justifyContent: "space-between",
-      backgroundColor: "rgba(244,244,244,1)",
+      backgroundColor: "rgba(244,244,244,0.5)",
       "&:hover": {
         backgroundColor: "rgba(0,0,0,0.1)"
       }

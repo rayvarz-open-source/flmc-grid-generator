@@ -17,7 +17,7 @@ function MouseOverDetector({ children }: { children: (isOver: boolean) => React.
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
-      backgroundColor: "rgba(0,0,0,0.3)",
+      backgroundColor: theme.palette.primary.main,
       padding: 3,
       transition: "300ms",
       display: "flex",
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 5
     },
     icon: {
+      color: theme.palette.primary.contrastText,
       transition: "300ms"
     }
   })
@@ -37,6 +38,7 @@ type Props = {
 
 export function DropZone(props: Props) {
   const classes = useStyles();
+
   return (
     <AdvanceFilterContext.Consumer>
       {value => (
