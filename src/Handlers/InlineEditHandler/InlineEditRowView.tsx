@@ -151,8 +151,9 @@ export default class InlineEditRowView extends React.Component<Props, any> {
                 columnDef.fieldDefinition,
                 columnDef.tableData.id,
                 value,
-                value => {
+                _value => {
                   const data = { ...this.state.data };
+                  let value = _value.target !== null ? _value.target.value : _value;
                   setByString(data, columnDef.field, value);
                   // data[columnDef.field] = value;
                   this.setState({ data });
