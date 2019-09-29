@@ -20,7 +20,10 @@ export type CallBacks = {
  * @param integer n: length of decimal
  * @param integer x: length of sections
  */
-export const formatMoney = function(value: number, n: number, x: number) {
+export const formatMoney = function(_value: number | string, n: number, x: number) {
+  var value: number = typeof(_value) == "number" ? _value : Number(_value);
+  if (value == NaN)
+    throw Error(`formatMoney: '${_value}' is not a number`);
   var re = "\\d(?=(\\d{" + (x || 3) + "})+" + (n > 0 ? "\\." : "$") + ")";
   return value.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, "g"), "$&,");
 };
