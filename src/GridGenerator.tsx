@@ -45,6 +45,7 @@ export type Options<Model> = {
   enableSelection?: Observable<boolean> | boolean;
   listFilterDataSource?: GeneralDataSourceFunction<Model>;
   inlineEditCallBack?: (oldModel: Model, newModel: Model) => Promise<void>;
+  defaultGridOptions?: GridOptions;
 };
 
 export type Builders = {
@@ -116,7 +117,7 @@ export const defaultLocalization: Localization = {
   columnVisibilityTitle: "Hide/Show Columns"
 };
 
-export const makeDefaultBuilders = <Model extends object>(controllers: BaseControllers<Model>): BaseBuilders => {
+export const makeDefaultBuilders = <Model extends object>(controllers: BaseControllers<Model>, gridOptions: GridOptions): BaseBuilders => {
   let windowResizeEvent = merge(
     of([window.innerHeight, window.innerWidth]),
     fromEvent(window, "resize").pipe(map((v: any): [number, number] => [window.innerHeight, window.innerWidth]))
@@ -153,21 +154,23 @@ export const makeDefaultBuilders = <Model extends object>(controllers: BaseContr
         componentsOverride: new BehaviorSubject<ComponentsOverride>({}).asObservable(),
         datasource: new BehaviorSubject<Datasource>([]).asObservable(),
         rowActionDefinitions: new BehaviorSubject<RowActionDefinitions>({}).asObservable(),
-        gridOptions: new BehaviorSubject<GridOptions>({
-          actionsColumnIndex: -1,
-          filtering: true,
-          padding: "dense",
-          pageSize: 5,
-          initialPage: 0,
-          pageSizeOptions: [5, 10, 20, 25, 50],
-          debounceInterval: 0.7,
-          loadingType: "linear"
-        }).asObservable(),
+        gridOptions: new BehaviorSubject<GridOptions>(gridOptions).asObservable(),
         title: new BehaviorSubject<Title>("").asObservable(),
         localizationDefinition: new BehaviorSubject<LocalizationDefinition>({}).asObservable()
       };
     }
   };
+};
+
+export const DEFAULT_GRID_OPTIONS: GridOptions = {
+  actionsColumnIndex: -1,
+  filtering: true,
+  padding: "dense",
+  pageSize: 5,
+  initialPage: 0,
+  pageSizeOptions: [5, 10, 20, 25, 50],
+  debounceInterval: 0.7,
+  loadingType: "linear"
 };
 
 export function GridGenerator<Model extends object>(props: Props<Model>): IElement {
@@ -264,7 +267,7 @@ export function GridGenerator<Model extends object>(props: Props<Model>): IEleme
     inlineEditCallBack: props.options && props.options.inlineEditCallBack ? props.options.inlineEditCallBack : undefined
   };
 
-  let defaultBuilders = makeDefaultBuilders<Model>(controllers);
+  let defaultBuilders = makeDefaultBuilders<Model>(controllers, (props.options && props.options.defaultGridOptions) ? props.options.defaultGridOptions : DEFAULT_GRID_OPTIONS);
 
   let builders: BaseBuilders = {
     listFilterModalBuilder:
