@@ -38,8 +38,12 @@ export interface FilterSchema {
   source: null | FieldSchemaTypeSource;
 }
 
-export type Filter = {
-  fieldName: string;
+export type Filter<ResultModel = null> = {
+  fieldName: ResultModel extends null ? any : keyof ResultModel;
   type: FilterSchemaType;
-  value: any;
+  value: ResultModel extends null ? any : ResultModel[keyof ResultModel];
 };
+
+export function funcFilter(name: string): any {
+  return name;
+}

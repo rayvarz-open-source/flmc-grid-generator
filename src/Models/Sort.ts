@@ -7,7 +7,7 @@ export interface SortSchema {
   type: SortSchemaType;
 }
 
-export type Sort = {
-  fieldName: string;
+export type Sort<FieldNames = string> = {
+  fieldName: FieldNames;
   type: string;
 };
