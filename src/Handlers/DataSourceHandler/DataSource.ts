@@ -3,7 +3,7 @@ import { Filter, FilterSchemaType } from "../../Models/Filter";
 import { GridResultModel } from "../../Models/GridResultModel";
 import { Sort } from "../../Models/Sort";
 
-export type DataSourceFunctionOptions<Model> = {
+export type DataSourceFunctionOptions<Model = null> = {
   pageNo: number;
   pageSize: number;
   needSchema: boolean;
