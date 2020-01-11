@@ -3,7 +3,7 @@ import { Filter, FilterSchemaType } from "../../Models/Filter";
 import { GridResultModel } from "../../Models/GridResultModel";
 import { Sort } from "../../Models/Sort";
 
-export type DataSourceFunctionOptions<Model = any> = {
+export type DataSourceFunctionOptions<Model> = {
   pageNo: number;
   pageSize: number;
   needSchema: boolean;
@@ -12,7 +12,7 @@ export type DataSourceFunctionOptions<Model = any> = {
   filters: Filter<Model>[];
 };
 
-export type DataSourceFunction<Model> = (options: DataSourceFunctionOptions) => Promise<GridResultModel<Model>>;
+export type DataSourceFunction<Model> = (options: DataSourceFunctionOptions<Model>) => Promise<GridResultModel<Model>>;
 export type GeneralDataSourceFunction<Model> = (
   options: DataSourceFunctionOptions<Model> & { url: string }
 ) => Promise<GridResultModel<Model>>;
