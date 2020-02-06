@@ -8,6 +8,6 @@ export interface SortSchema {
 }
 
 export type Sort<FieldNames = string> = {
-  fieldName: FieldNames;
+  fieldName: keyof FieldNames;
   type: string;
 };
