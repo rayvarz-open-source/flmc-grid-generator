@@ -6,7 +6,11 @@ export interface FieldSchemaTypeSource {
   values: any[];
 }
 
-export enum FieldShemaTypeName {
+// WARNING! WILL REMOVE THIS TYPE IN FUTURE VERSIONS
+// Typo
+export type FieldShemaTypeName = FieldSchemaTypeName;
+
+export enum FieldSchemaTypeName {
   Int = "Int",
   String = "String",
   GregorianDateTime = "GregorianDateTime",
@@ -23,7 +27,7 @@ export enum FieldShemaTypeName {
 }
 
 export type FieldType = {
-  name: FieldShemaTypeName;
+  name: FieldSchemaTypeName;
   source: FieldSchemaTypeSource | null;
 };
 
